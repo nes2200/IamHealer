@@ -1,8 +1,10 @@
+using System.Collections;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     static GameManager _instance;
+
     public static GameManager Instance => _instance;
 
     UIManager        _ui;
@@ -23,8 +25,7 @@ public class GameManager : MonoBehaviour
     public CameraManager    Camera => _camera;
     public InputManager     Input => _input;
 
-
-
+    IEnumerator initializing;
 
     //Awake     : 시작할 때 (아침에 눈을 뜸)
     //OnEnabled : 시작할 때 (정신 차림)
@@ -40,10 +41,22 @@ public class GameManager : MonoBehaviour
         else
         {
             Destroy(this);
+            return;
         }
+        // IEnumerator => 반복자. 반복해서 함수가 실행됨 => 프레임 단위로 기다렸다가 실행.
+        // 한 번 실행하고 Yield 양보 했다가 다음 프레임에 또 나와서 실행하고 반복
+        initializing = InitializeManagers();
+        StartCoroutine(initializing);
+        
     }
 
-    void InitializeManagers()
+    private void OnDestroy()
+    {
+        StopCoroutine(initializing);
+        DeleteManagers();
+    }
+
+    IEnumerator InitializeManagers()
     {
         // UI를 만들어서 유저에게 보여줄 수 있는 공간 만들기
         // 데이터 불러오기
@@ -53,14 +66,34 @@ public class GameManager : MonoBehaviour
         // 사운드 세팅
         // 카메라 초기화
         // 유저 입력 받기 시작
-        CreatManager(ref _ui);
-        CreatManager(ref _data);
-        CreatManager(ref _save);
-        CreatManager(ref _setting);
-        CreatManager(ref _language);
-        CreatManager(ref _audio);
-        CreatManager(ref _camera);
-        CreatManager(ref _input);
+        yield return CreatManager(ref _ui).Connect(this);
+        yield return CreatManager(ref _data).Connect(this);
+        yield return CreatManager(ref _save).Connect(this);
+        yield return CreatManager(ref _setting).Connect(this);
+        yield return CreatManager(ref _language).Connect(this);
+        yield return CreatManager(ref _audio).Connect(this);
+        yield return CreatManager(ref _camera).Connect(this);
+        yield return CreatManager(ref _input).Connect(this);
+    }
+
+    void DeleteManagers()
+    {
+        // 유저 입력 받기 시작
+        Input?.Disconnect();
+        // 사운드 세팅
+        Audio?.Disconnect();
+        // 언어도 세팅
+        Language?.Disconnect();
+        // 설정값을 찾아서 세팅
+        Setting?.Disconnect();
+        // 유저 세이브 불러오기
+        Save?.Disconnect();
+        // 카메라 초기화
+        Camera?.Disconnect();
+        // UI를 만들어서 유저에게 보여줄 수 있는 공간 만들기
+        UI?.Disconnect();
+        // 데이터 불러오기
+        Data?.Disconnect();
     }
 
     //달라지는 것이 "자료형"뿐이라면 "자료형"에 따라 변수로 작용하는 함수를 만들 수 있다
@@ -72,8 +105,7 @@ public class GameManager : MonoBehaviour
     {
         if (targetVariable == null)
         {
-            targetVariable = gameObject.AddComponent<ManagerType>();
-            targetVariable.Connect(this);
+            targetVariable = this.TryAddComponent<ManagerType>();
         }
         return targetVariable;
     }

@@ -1,15 +1,16 @@
+using System.Collections;
 using UnityEngine;
 
 public abstract class ManagerBase : MonoBehaviour
 {
     GameManager _connectedManager;
 
-    public void Connect(GameManager newManager)
+    public IEnumerator Connect(GameManager newManager)
     {
         if (_connectedManager != null) Disconnect(); //이미 연결된 애가 있으면 끊고 간다
 
         _connectedManager = newManager;
-        Onconnected(newManager);
+        yield return Onconnected(newManager);
     }
 
     public void Disconnect()
@@ -18,6 +19,6 @@ public abstract class ManagerBase : MonoBehaviour
         OnDisconnected();
     }
 
-    protected abstract void Onconnected(GameManager newManager);
+    protected abstract IEnumerator Onconnected(GameManager newManager);
     protected abstract void OnDisconnected();
 }

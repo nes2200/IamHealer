@@ -1,9 +1,12 @@
+using System.Collections;
 using UnityEngine;
 
 public class InputManager : ManagerBase
 {
-    protected override void Onconnected(GameManager newManager)
+    protected override IEnumerator Onconnected(GameManager newManager)
     {
+        yield return null;
+
     }
 
     protected override void OnDisconnected()
