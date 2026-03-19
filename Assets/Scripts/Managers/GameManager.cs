@@ -45,14 +45,14 @@ public class GameManager : MonoBehaviour
         }
         // IEnumerator => 반복자. 반복해서 함수가 실행됨 => 프레임 단위로 기다렸다가 실행.
         // 한 번 실행하고 Yield 양보 했다가 다음 프레임에 또 나와서 실행하고 반복
+        // Ienumerator는 쓴다고 실행되는게 아니라 StartCoroutine()을 써야 진행된다.
         initializing = InitializeManagers();
         StartCoroutine(initializing);
-        
     }
 
-    private void OnDestroy()
+    private void OnDestroy() //매니저가 없어지면
     {
-        StopCoroutine(initializing);
+        if(initializing != null) StopCoroutine(initializing);
         DeleteManagers();
     }
 
@@ -66,14 +66,27 @@ public class GameManager : MonoBehaviour
         // 사운드 세팅
         // 카메라 초기화
         // 유저 입력 받기 시작
-        yield return CreatManager(ref _ui).Connect(this);
-        yield return CreatManager(ref _data).Connect(this);
-        yield return CreatManager(ref _save).Connect(this);
-        yield return CreatManager(ref _setting).Connect(this);
-        yield return CreatManager(ref _language).Connect(this);
-        yield return CreatManager(ref _audio).Connect(this);
-        yield return CreatManager(ref _camera).Connect(this);
-        yield return CreatManager(ref _input).Connect(this);
+        int totalLoadCount = 0;
+        totalLoadCount += CreatManager(ref _ui).LoadCount;
+        totalLoadCount += CreatManager(ref _data).LoadCount;
+        totalLoadCount += CreatManager(ref _save).LoadCount;
+        totalLoadCount += CreatManager(ref _setting).LoadCount;
+        totalLoadCount += CreatManager(ref _language).LoadCount;
+        totalLoadCount += CreatManager(ref _audio).LoadCount;
+        totalLoadCount += CreatManager(ref _camera).LoadCount;
+        totalLoadCount += CreatManager(ref _input).LoadCount;
+
+        yield return _ui.Connect(this);
+        UIManager.ClaimOpenUI(UIType.Loading); //UI가 연결됬으니 기능 실행해보기
+        if (UIManager.ClaimGetUI(UIType.Loading) is IProgress<int> loadingProgress) loadingProgress.Set(0, totalLoadCount);
+        yield return _data.Connect(this);
+        yield return _save.Connect(this);
+        yield return _setting.Connect(this);
+        yield return _language.Connect(this);
+        yield return _audio.Connect(this);
+        yield return _camera.Connect(this);
+        yield return _input.Connect(this);
+        UIManager.ClaimCloseUI(UIType.Loading);
     }
 
     void DeleteManagers()

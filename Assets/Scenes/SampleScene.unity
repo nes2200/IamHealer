@@ -179,7 +179,7 @@ MonoBehaviour:
   m_text: "\uC5EC\uAE30\uC5D0 \uBC30\uACBD \uC124\uBA85\naA1!/*\u3131\u314F\uAD22\uBDB4"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8e0e9f844e438b142bb154f0fb10701d, type: 2}
-  m_sharedMaterial: {fileID: -7388230558268064806, guid: 8e0e9f844e438b142bb154f0fb10701d, type: 2}
+  m_sharedMaterial: {fileID: 7730239384480465101, guid: 8e0e9f844e438b142bb154f0fb10701d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -315,8 +315,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Now Loading...
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8e0e9f844e438b142bb154f0fb10701d, type: 2}
+  m_sharedMaterial: {fileID: 7730239384480465101, guid: 8e0e9f844e438b142bb154f0fb10701d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1047,6 +1047,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0e7bf2834f806142828eb56c5ee6aaf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_LoadingScreen
+  progressBar: {fileID: 1377798956}
+  progressText: {fileID: 626815551}
+  loadingText: {fileID: 302880588}
+--- !u!114 &1377798956 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5336950483506019542, guid: a5250287c31434d4e972620937e5273d, type: 3}
+  m_PrefabInstance: {fileID: 8940818997512987545}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Slider
 --- !u!1 &1556335164
 GameObject:
   m_ObjectHideFlags: 0
@@ -1251,7 +1265,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5336950483506019542, guid: a5250287c31434d4e972620937e5273d, type: 3}
       propertyPath: m_Value
-      value: 0.5
+      value: 0.38
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -5,6 +5,8 @@ public abstract class ManagerBase : MonoBehaviour
 {
     GameManager _connectedManager;
 
+    public virtual int LoadCount => 1;
+
     public IEnumerator Connect(GameManager newManager)
     {
         if (_connectedManager != null) Disconnect(); //이미 연결된 애가 있으면 끊고 간다
