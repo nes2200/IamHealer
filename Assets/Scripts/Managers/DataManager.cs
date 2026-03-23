@@ -1,9 +1,20 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 public class DataManager : ManagerBase
 {
-    public override int LoadCount => 100;
+    public override int LoadCount
+    {
+        get
+        {
+            var task = Addressables.LoadResourceLocationsAsync("Global"); //열기
+            var result = task.WaitForCompletion();
+            int count = result.Count;
+            task.Release();
+            return count;
+        }
+    }
 
     protected override IEnumerator Onconnected(GameManager newManager)
     {
@@ -13,16 +24,29 @@ public class DataManager : ManagerBase
         IProgress<int> progressUI = loading as IProgress<int>;
         IStatus<string> statusUI = loading as IStatus<string>;
 
+        int loaded = 0;
+        int total = LoadCount;
+
+        //람다. Lambda. => 이름없는 함수. anonymous function
+        //함수 안에서 만들어지는 함수 => 변수로 저장할 수 있다
+        System.Action ProgressOnLoad = () => 
+        {
+            loaded++;
+            progressUI?.AddCurrent(1);
+            statusUI?.SetCurrentStatus($"Loading {loaded}/{total}");
+        };
+
+        LoadAllFromAssetBundle<GameObject>("Global", ProgressOnLoad); 
+
+        //그냥 함수를 실행하는 것이 아닌, 이 작업 시작을 지시해야 한다.
+        //LoadFileFromAssetBundle<GameObject>("Origin/Prefabs/Square.prefab");
+
         //if (TryGetFildFromResources("Prefabs/Square", out Sprite trash)) Debug.Log(trash);
 
         // Interface : 어떤 기능이 있을거란 약속.
 
-        for(int i = 0; i < LoadCount; i += 7)
-        {
-            progressUI?.AddCurrent(7);
-            statusUI?.SetCurrentStatus($"Loading {i + 1}/{LoadCount}");
-            yield return new WaitForSeconds(0.5f);
-        }
+        
+            
         yield return null;
     }
 
@@ -37,8 +61,48 @@ public class DataManager : ManagerBase
         return result != null;
     }
 
-    bool TryGetFileFromAssetBundle()
+    //async => 비동기함수 => 다른 함수와 같이 돌아갈 수 있는 함수
+    //Coroutine은 멀티 스레드가 아니다.
+    //혼자지만 둘이서 하는 것 처럼 보인다 => 효율은 떨어짐. 결국 한 사람이니까
+    //Coroutine은 데드락에 걸릴 일이 없다
+    //기다려야 하는 일은 없다.
+    //관리가 잘 된 멀티스레드 > 코루틴
+    public void SaveDataFile<T>(T target) where T : Object
     {
-        return false; 
+        if (target == null) return;
+
+        Debug.Log(target);
+    }
+
+
+    //Action -> 반환값이 없는 함수.
+    //Action<int>        => void Function(int a)
+    //Action<int, float> => void Function(int a, float b)
+    //
+    //Func<float>               => float Fuction()
+    //Func<float, int>          => int Fuction(float a)
+    //Func<float, string int>   => int Fuction(float a, string b)
+    async void LoadAllFromAssetBundle<T>(string label, System.Action actionForEachLoad) where T : Object
+    {
+        var finder = Addressables.LoadAssetsAsync<T>(label, (T loaded) => 
+        {
+            SaveDataFile(loaded); //로드 됬으니까 저장
+            actionForEachLoad(); //할 일 있으면 실행
+        });
+        await finder.Task;
+    }
+
+    async void LoadFileFromAssetBundle<T>(string address)  where T : Object
+    {
+        // A-, An-  
+        // "~이 아닌", "반대되는" 이라는 접두사
+        // 동기화하지 않는다 => 비동기
+        // 프로세스가 동기화하지 않는다 => 하나의 프로세스로 돌리는 것이 아니다 => 멀티스레드
+        // 스레드를 여럿 사용하기 위해서는 우선순위를 설정해야 함
+        // 특정 기능을 쓰려고 하는데, 다른 곳에서 이 기능을 쓰고있다? => 데드락
+        var finder = Addressables.LoadAssetAsync<GameObject>(address);
+        await finder.Task;
+        SaveDataFile(finder.Result);
+
     }
 }

@@ -76,16 +76,26 @@ public class GameManager : MonoBehaviour
         totalLoadCount += CreatManager(ref _camera).LoadCount;
         totalLoadCount += CreatManager(ref _input).LoadCount;
 
-        yield return _ui.Connect(this);
-        UIManager.ClaimOpenUI(UIType.Loading); //UI가 연결됬으니 기능 실행해보기
-        if (UIManager.ClaimGetUI(UIType.Loading) is IProgress<int> loadingProgress) loadingProgress.Set(0, totalLoadCount);
+        yield return _ui.Connect(this); 
+        UIBase loadingUI =  UIManager.ClaimOpenUI(UIType.Loading); //UI가 연결됬으니 기능 실행해보기
+        IProgress<int> loadingProgress = loadingUI as IProgress<int>;
+        loadingProgress?.Set(0, totalLoadCount);
+
         yield return _data.Connect(this);
+        loadingProgress?.AddCurrent(1);
         yield return _save.Connect(this);
+        loadingProgress?.AddCurrent(1);
         yield return _setting.Connect(this);
+        loadingProgress?.AddCurrent(1);
         yield return _language.Connect(this);
+        loadingProgress?.AddCurrent(1);
         yield return _audio.Connect(this);
+        loadingProgress?.AddCurrent(1);
         yield return _camera.Connect(this);
+        loadingProgress?.AddCurrent(1);
         yield return _input.Connect(this);
+        loadingProgress?.AddCurrent(1);
+        yield return new WaitForSeconds(1f);
         UIManager.ClaimCloseUI(UIType.Loading);
     }
 
