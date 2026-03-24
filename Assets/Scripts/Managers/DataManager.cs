@@ -1,9 +1,12 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
 public class DataManager : ManagerBase
 {
+    static Dictionary<System.Type, Dictionary<string, Object>> dataDictionary = new();
+
     public override int LoadCount
     {
         get
@@ -11,7 +14,7 @@ public class DataManager : ManagerBase
             var task = Addressables.LoadResourceLocationsAsync("Global"); //열기
             var result = task.WaitForCompletion();
             int count = result.Count;
-            task.Release();
+            task.Release(); //파일 열어놓은거 닫아주기
             return count;
         }
     }
@@ -24,7 +27,7 @@ public class DataManager : ManagerBase
         IProgress<int> progressUI = loading as IProgress<int>;
         IStatus<string> statusUI = loading as IStatus<string>;
 
-        int loaded = 0;
+        int loaded = 0; 
         int total = LoadCount;
 
         //람다. Lambda. => 이름없는 함수. anonymous function
@@ -36,7 +39,9 @@ public class DataManager : ManagerBase
             statusUI?.SetCurrentStatus($"Loading {loaded}/{total}");
         };
 
-        LoadAllFromAssetBundle<GameObject>("Global", ProgressOnLoad); 
+        LoadAllFromAssetBundle<GameObject>("Global", ProgressOnLoad);
+
+ 
 
         //그냥 함수를 실행하는 것이 아닌, 이 작업 시작을 지시해야 한다.
         //LoadFileFromAssetBundle<GameObject>("Origin/Prefabs/Square.prefab");
@@ -67,11 +72,32 @@ public class DataManager : ManagerBase
     //Coroutine은 데드락에 걸릴 일이 없다
     //기다려야 하는 일은 없다.
     //관리가 잘 된 멀티스레드 > 코루틴
-    public void SaveDataFile<T>(T target) where T : Object
+
+    //저장을 할 때 가장 중요한 것 -> 어떻게 꺼낼 것인가
+    public static void SaveDataFile<T>(T target) where T : Object
     {
         if (target == null) return;
+        Dictionary<string, Object> innerDic;
 
-        Debug.Log(target);
+        if(!dataDictionary.TryGetValue(typeof(T), out innerDic))
+        {
+            innerDic = new();
+            dataDictionary.Add(typeof(T), innerDic);
+        }
+        innerDic.TryAdd(target.name, target);
+    }
+
+    public static T LoadDataFile<T>(string fileName) where T : Object
+    {
+        if(dataDictionary.TryGetValue(typeof(T), out Dictionary<string, Object> innerDic))
+        {
+            if(innerDic.TryGetValue(fileName, out Object result))
+            {
+                return result as T;
+            }
+        }
+
+        return null;
     }
 
 
@@ -90,6 +116,7 @@ public class DataManager : ManagerBase
             actionForEachLoad(); //할 일 있으면 실행
         });
         await finder.Task;
+        finder.Release();
     }
 
     async void LoadFileFromAssetBundle<T>(string address)  where T : Object
@@ -103,6 +130,6 @@ public class DataManager : ManagerBase
         var finder = Addressables.LoadAssetAsync<GameObject>(address);
         await finder.Task;
         SaveDataFile(finder.Result);
-
+        finder.Release();
     }
 }
