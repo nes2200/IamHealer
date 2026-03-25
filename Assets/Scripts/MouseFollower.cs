@@ -5,18 +5,20 @@ public class MouseFollower : MonoBehaviour
     public GameObject square;
     void Start()
     {
-        InputManager.OnMouseMove += MoveToMouse;
-        InputManager.OnMouseLeftDown += MakeCopy;
+        InputManager.OnMouseLeftUp += CreatToMouse;
+        InputManager.OnMouseRightDown += DestroyOnMouse;
     }
 
-    void MoveToMouse(Vector2 screenPos, Vector3 worldPos)
+    void MoveToMouse(Vector2 screenPosition, Vector3 worldPosition)
     {
-
-        transform.position = worldPos;
+        transform.position = worldPosition;
     }
-    void MakeCopy(Vector3 worldPos)
+    void CreatToMouse(Vector2 screenPosition, Vector3 worldPosition)
     {
-        Instantiate(square).transform.position = worldPos;
-        
+        Instantiate(DataManager.LoadDataFile<GameObject>("Square 7"), worldPosition, Quaternion.identity);
+    }
+    void DestroyOnMouse(Vector2 screenPosition, Vector3 worldPosition)
+    {
+        Debug.Log(GameManager.Instance.Input.GetGameObjectUnderCursor()); 
     }
 }

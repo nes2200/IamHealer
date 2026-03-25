@@ -2,13 +2,17 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
+using System;
+using UnityEditor.Build;
+using UnityEngine.EventSystems;
+using UnityEngine.Rendering.Universal;
 
 //이벤트
 //      대리자
 //플레이어가 할 일을 대신 해주고, 열려있는 창이 있다면 그 친구의 기능도 수행하고
 //내가 신호주면 열결되어 있는 모든 애들이 한번에 기능을 수행하고 간다
-public delegate void MouseDownEvent(Vector3 position);
-public delegate void MouseUpEvent(Vector3 position);
+public delegate void MouseDownEvent(Vector2 screenPosition, Vector3 position);
+public delegate void MouseUpEvent(Vector2 screenPosition, Vector3 position);
 public delegate void MouseMoveEvent(Vector2 screenPosition, Vector3 worldPosition);
 
 //특정 클래스는 특정 컴포넌트와 함께 사용해야 한다
@@ -29,9 +33,12 @@ public class InputManager : ManagerBase
     PlayerInput targetInput;
     Dictionary<string, InputAction> actionDictionary = new();
 
-    public bool is2D = true;
+    List<RaycastResult> cursorHitList = new();
 
-    Vector3 currentMousePosition;
+    Vector2 cursorScreenPosition;
+    Vector3 cursorWorldPosition;
+
+    public bool is2D = true;
 
     protected override IEnumerator Onconnected(GameManager newManager)
     {
@@ -39,13 +46,27 @@ public class InputManager : ManagerBase
 
         LoadAllActions();
         InitializaAllActions();
-        
+        GameManager.OnUpdateManager -= UpdateEvent; //있으면 빼고, 없으면 아무일도 없고
+        GameManager.OnUpdateManager += UpdateEvent;
         yield return null;
 
     }
 
     protected override void OnDisconnected()
     {
+        GameManager.OnUpdateManager -= UpdateEvent;
+    }
+
+    public void UpdateEvent(float deltaTime)
+    {
+        GameManager.Instance.Camera.GetRaycastResult2D(cursorScreenPosition, cursorHitList);
+    }
+
+    public GameObject GetGameObjectUnderCursor()
+    {
+        if (cursorHitList.Count == 0) return null;
+
+        return cursorHitList[0].gameObject;
     }
 
     void LoadAllActions()
@@ -60,14 +81,20 @@ public class InputManager : ManagerBase
     {
         if (actionDictionary == null || actionDictionary.Count == 0) return;
 
-        if(actionDictionary.TryGetValue("CursorPositionChanged", out InputAction cursorPositionChanged))
-        {
-            cursorPositionChanged.performed += CursorPositionChanged;
-        }
+        InitializeAction("CursorPositionChanged", CursorPositionChanged);
+        InitializeAction("MouseLeftButtonDown", (context) => OnMouseLeftDown?.Invoke(cursorScreenPosition, cursorWorldPosition)) ;
+        InitializeAction("MouseRightButtonDown", (context) => OnMouseRightDown?.Invoke(cursorScreenPosition, cursorWorldPosition));
+        InitializeAction("MouseLeftButtonUp", (context) => OnMouseLeftUp?.Invoke(cursorScreenPosition, cursorWorldPosition));
+        InitializeAction("MouseRightButtonUp", (context) => OnMouseRightUp?.Invoke(cursorScreenPosition, cursorWorldPosition));
+    }
 
-        if(actionDictionary.TryGetValue("MouseLeftButtonDown", out InputAction mouseLeftButtonDown))
+    void InitializeAction(string actionName, Action<InputAction.CallbackContext> actionMethod) 
+    {
+        if (actionDictionary == null) return;
+
+        if (actionDictionary.TryGetValue(actionName, out InputAction cursorPositionChanged))
         {
-            mouseLeftButtonDown.performed += MouseLeftButtonDown;
+            cursorPositionChanged.performed += actionMethod;
         }
     }
 
@@ -88,12 +115,11 @@ public class InputManager : ManagerBase
         {
             worldPosition = Vector3.zero;
         }
-        currentMousePosition = worldPosition;
+        cursorScreenPosition = screenPosition;
+        cursorWorldPosition = worldPosition;
+
         OnMouseMove?.Invoke(screenPosition, worldPosition);
     }
 
-    void MouseLeftButtonDown(InputAction.CallbackContext context)
-    {
-        OnMouseLeftDown?.Invoke(currentMousePosition);
-    }
+    
 }
