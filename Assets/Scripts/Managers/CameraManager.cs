@@ -11,8 +11,8 @@ public class CameraManager : ManagerBase
 
     protected override IEnumerator Onconnected(GameManager newManager)
     {
+        SetMainCamera(Camera.main); 
         yield return null;
-
     }
 
     protected override void OnDisconnected()

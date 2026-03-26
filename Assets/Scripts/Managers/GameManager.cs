@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
 
     UIManager        _ui;
     DataManager      _data;
+    ObjectManager    _objectM;
     SaveManager      _save;
     SettingManager   _setting;
     LanguageManager  _language;
@@ -22,6 +23,7 @@ public class GameManager : MonoBehaviour
 
     public UIManager        UI => _ui;
     public DataManager      Data => _data;
+    public ObjectManager    ObjectM => _objectM;
     public SaveManager      Save => _save;
     public SettingManager   Setting => _setting;
     public LanguageManager  Language => _language;
@@ -89,6 +91,7 @@ public class GameManager : MonoBehaviour
         int totalLoadCount = 0;
         totalLoadCount += CreatManager(ref _ui).LoadCount;
         totalLoadCount += CreatManager(ref _data).LoadCount;
+        totalLoadCount += CreatManager(ref _objectM).LoadCount;
         totalLoadCount += CreatManager(ref _save).LoadCount;
         totalLoadCount += CreatManager(ref _setting).LoadCount;
         totalLoadCount += CreatManager(ref _language).LoadCount;
@@ -102,6 +105,8 @@ public class GameManager : MonoBehaviour
         loadingProgress?.Set(0, totalLoadCount);
 
         yield return _data.Connect(this);
+        loadingProgress?.AddCurrent(1);
+        yield return _objectM.Connect(this);
         loadingProgress?.AddCurrent(1);
         yield return _save.Connect(this);
         loadingProgress?.AddCurrent(1);
@@ -122,21 +127,23 @@ public class GameManager : MonoBehaviour
 
     void DeleteManagers()
     {
-        // 유저 입력 받기 시작
+        // 유저 입력
         Input?.Disconnect();
-        // 사운드 세팅
+        // 오브젝트 제거
+        ObjectM.Disconnect();
+        // 사운드
         Audio?.Disconnect();
-        // 언어도 세팅
+        // 언어 
         Language?.Disconnect();
-        // 설정값을 찾아서 세팅
+        // 설정
         Setting?.Disconnect();
-        // 유저 세이브 불러오기
+        // 유저 세이브
         Save?.Disconnect();
-        // 카메라 초기화
+        // 카메라 
         Camera?.Disconnect();
-        // UI를 만들어서 유저에게 보여줄 수 있는 공간 만들기
+        // UI
         UI?.Disconnect();
-        // 데이터 불러오기
+        // 데이터
         Data?.Disconnect();
     }
 
@@ -162,6 +169,8 @@ public class GameManager : MonoBehaviour
     {
         Instance.isPlaying = true;
     }
+
+
 
     void InvokeInitializeEvent(ref InitializeEvent originEvent)
     {

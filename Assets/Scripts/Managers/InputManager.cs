@@ -3,9 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using System;
-using UnityEditor.Build;
 using UnityEngine.EventSystems;
-using UnityEngine.Rendering.Universal;
 
 //이벤트
 //      대리자
@@ -59,7 +57,20 @@ public class InputManager : ManagerBase
 
     public void UpdateEvent(float deltaTime)
     {
-        GameManager.Instance.Camera.GetRaycastResult2D(cursorScreenPosition, cursorHitList);
+        RefreshGameObjectUnderCursor();
+    }
+
+    void RefreshGameObjectUnderCursor()
+    {
+        cursorHitList.Clear();
+        if (is2D)
+        {
+            GameManager.Instance.Camera.GetRaycastResult2D(cursorScreenPosition, cursorHitList);
+        }
+        else
+        {
+            GameManager.Instance.Camera.GetRaycastResult3D(cursorScreenPosition, cursorHitList);
+        }
     }
 
     public GameObject GetGameObjectUnderCursor()
