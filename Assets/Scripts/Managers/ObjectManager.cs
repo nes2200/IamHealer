@@ -1,11 +1,12 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
 public struct PoolSetting
 {
     public string poolName;
-    public GameObject poolObject;
+    public GameObject target;
     public int countInitial; //처음에 준비할 개수
     public int countAdditional; //부족하면 추가할 개수
 }
@@ -14,8 +15,24 @@ public class ObjectManager : ManagerBase
 {
     [SerializeField] PoolSetting[] testSetting;
 
+    //PoolRequest는 얼마나 자주 추가될까? => 로딩할 떄 즈음?
+    //로딩되는 회수보다 대상에 개수가 부족하면 새로 추가하거나 하는 일
+    List<PoolRequest> loadedPoolRequests = new();
+
+    //해당하는 이름의 대상으로 불러주기 위해서
+    //[이름 - 게임오브젝트] 자료구조
+    Dictionary<string, ObjectPoolModule> poolDictionary = new();
+
     protected override IEnumerator Onconnected(GameManager newManager)
     {
+        RegistrationPool("GlobalCharacterPool");
+        RegistrationPool("GlobalControllerPool");
+        RegistrationPool("GlobalEffectPool");
+        RegistrationPool("GlobalObjectPool");
+        RegistrationPool("GlobalUIPool");
+
+        InitializePool();
+
         yield return null;
     }
 
@@ -155,6 +172,34 @@ public class ObjectManager : ManagerBase
             {
                 current.UnregistrationFunctions();
             }
+        }
+    }
+
+    public void RegistrationPool(string poolName)
+    {
+        PoolRequest currentRequest = DataManager.LoadDataFile<PoolRequest>(poolName);
+        if (currentRequest == null) return;
+        loadedPoolRequests.Add(currentRequest);
+        //애들마다 하나씩
+        //         학생         다음학생    in     3학년4반
+        foreach(PoolSetting currentSetting in currentRequest.settings)
+        {
+            string currentName = currentSetting.poolName;
+            GameObject currentPrefab = currentSetting.target;
+            //다음학생이 오늘 안왔대요! => 다음 학생을 불러야 한다
+            if (currentPrefab == null) continue;
+            //이름에 문제가 있을 수 있음
+            if (poolDictionary.ContainsKey(currentName)) continue;
+            //여기까지 왔으면 추가하기
+            poolDictionary.Add(currentName, new(currentSetting));
+        }
+    }
+
+    public void InitializePool()
+    {
+        foreach(ObjectPoolModule currentPool in poolDictionary.Values)
+        {
+            currentPool?.Initialize();
         }
     }
 }

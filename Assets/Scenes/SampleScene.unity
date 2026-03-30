@@ -1092,11 +1092,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ObjectManager
   testSetting:
   - poolName: "\uC0C1\uC790"
-    poolObject: {fileID: 0}
+    target: {fileID: 0}
     countInitial: 0
     countAdditional: 0
   - poolName: "\uBB34\uAE30"
-    poolObject: {fileID: 0}
+    target: {fileID: 0}
     countInitial: 0
     countAdditional: 0
 --- !u!1 &756393911

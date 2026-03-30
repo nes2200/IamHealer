@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -29,6 +30,7 @@ public class DataManager : ManagerBase
 
         int loaded = 0; 
         int total = LoadCount;
+        string loadString = "Load Data";
 
         //람다. Lambda. => 이름없는 함수. anonymous function
         //함수 안에서 만들어지는 함수 => 변수로 저장할 수 있다
@@ -36,10 +38,14 @@ public class DataManager : ManagerBase
         {
             loaded++;
             progressUI?.AddCurrent(1);
-            statusUI?.SetCurrentStatus($"Loading {loaded}/{total}");
+            statusUI?.SetCurrentStatus($"{loadString} {loaded}/{total}");
         };
 
-        LoadAllFromAssetBundle<GameObject>("Global", ProgressOnLoad);
+        //새로운 타입의 무언가를 추가할 떄 마다 여기다 넣기
+        loadString = "Load Game Objects";
+        yield return LoadAllFromAssetBundle<GameObject>("Global", ProgressOnLoad).WaitForTask();
+        loadString = "Load Pool Requests";
+        yield return LoadAllFromAssetBundle<PoolRequest>("Global", ProgressOnLoad).WaitForTask();
 
  
 
@@ -108,7 +114,7 @@ public class DataManager : ManagerBase
     //Func<float>               => float Fuction()
     //Func<float, int>          => int Fuction(float a)
     //Func<float, string int>   => int Fuction(float a, string b)
-    async void LoadAllFromAssetBundle<T>(string label, System.Action actionForEachLoad) where T : Object
+    public async Task LoadAllFromAssetBundle<T>(string label, System.Action actionForEachLoad) where T : Object
     {
         var finder = Addressables.LoadAssetsAsync<T>(label, (T loaded) => 
         {
@@ -116,6 +122,7 @@ public class DataManager : ManagerBase
             actionForEachLoad(); //할 일 있으면 실행
         });
         await finder.Task;
+        finder.WaitForCompletion();
         finder.Release();
     }
 

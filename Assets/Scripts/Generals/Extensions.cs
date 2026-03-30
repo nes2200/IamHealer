@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
 
 //확장 메소드를 가지고 있을 클래스
@@ -39,5 +41,15 @@ public static class Extensions
     {
         if(target == null) return null;
         else return target.gameObject.TryAddComponent<T>();
+    }
+
+    public static IEnumerator WaitForTask(this Task targetTask)
+    {
+        //WaitWhile : treu인 동안 작동함
+        //WaitUntil : false인 동안 작동함 -> true가 될 떄까지 기다림
+        //                기다린다         타겟 작업 끝나기 전까지
+        yield return new WaitUntil(() => targetTask.IsCompleted);
+        //작업을 제거하다
+        targetTask.Dispose();
     }
 }
