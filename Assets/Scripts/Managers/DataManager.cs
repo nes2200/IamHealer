@@ -119,10 +119,9 @@ public class DataManager : ManagerBase
         var finder = Addressables.LoadAssetsAsync<T>(label, (T loaded) => 
         {
             SaveDataFile(loaded); //로드 됬으니까 저장
-            actionForEachLoad(); //할 일 있으면 실행
+            actionForEachLoad?.Invoke(); //할 일 있으면 실행
         });
         await finder.Task;
-        finder.WaitForCompletion();
         finder.Release();
     }
 

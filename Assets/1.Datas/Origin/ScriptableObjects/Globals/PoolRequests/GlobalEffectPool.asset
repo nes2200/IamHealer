@@ -12,3 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b068027e7132bc4f9fe8b519d724ef2, type: 3}
   m_Name: GlobalEffectPool
   m_EditorClassIdentifier: Assembly-CSharp::PoolRequest
+  settings: []

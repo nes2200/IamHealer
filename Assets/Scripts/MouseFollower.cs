@@ -31,7 +31,7 @@ public class MouseFollower : MonoBehaviour, IFunctionable
     }
     void CreatToMouse(Vector2 screenPosition, Vector3 worldPosition)
     {
-        GameObject inst =  ObjectManager.CreateObject(DataManager.LoadDataFile<GameObject>("Square 7"));
+        GameObject inst =  ObjectManager.CreateObject("NemoMan");
         inst.transform.position = worldPosition;
     }
     void DestroyOnMouse(Vector2 screenPosition, Vector3 worldPosition)

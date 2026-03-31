@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PoolRequest
   settings:
   - poolName: NemoMan
-    poolObject: {fileID: 3622148994223082661, guid: 69961b0717d56584b95a24270322f8cf, type: 3}
+    target: {fileID: 3622148994223082661, guid: 69961b0717d56584b95a24270322f8cf, type: 3}
     countInitial: 5
-    countAdditional: 2
+    countAdditional: 3

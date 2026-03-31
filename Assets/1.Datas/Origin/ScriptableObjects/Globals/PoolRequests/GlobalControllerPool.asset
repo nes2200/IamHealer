@@ -12,8 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b068027e7132bc4f9fe8b519d724ef2, type: 3}
   m_Name: GlobalControllerPool
   m_EditorClassIdentifier: Assembly-CSharp::PoolRequest
-  settings:
-  - poolName: NemoMan
-    poolObject: {fileID: 3622148994223082661, guid: 69961b0717d56584b95a24270322f8cf, type: 3}
-    countInitial: 5
-    countAdditional: 2
+  settings: []

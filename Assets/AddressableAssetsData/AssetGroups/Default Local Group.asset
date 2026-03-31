@@ -28,6 +28,13 @@ MonoBehaviour:
     m_SerializedLabels:
     - Origin
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d4054bb4fa06790458d1725b496a7cb9
+    m_Address: Origin/ScriptableObjects/Globals
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Global
+    - Origin
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 91471df845a91f845ad97c0384eef608, type: 2}
   m_SchemaSet:
