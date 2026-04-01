@@ -4,24 +4,36 @@ using UnityEngine;
 
 public enum UIType
 {
-    None, Loading, Title,
+    None, Loading, Title, Movable,
     _Length
 }
 
+//팝업이 일어나는 이벤트가 발생할 것이다
+//델리게이트 => 스킬을 무한히 배울 수 있음
+//A스킬과 B스킬을 가르쳐 놨다 => 동시에 실행시키면 => 맨 마지막 결과만 알려준다
+public delegate void PopUpEvent(string title, string context, string confirm);
+
 public class UIManager : ManagerBase
 {
+    public static event PopUpEvent OnPopUp;
+
     Canvas _mainCanvas;
     public Canvas MainCanvas => _mainCanvas;
 
     Dictionary<UIType, UIBase> uiDictionary = new();
 
-    protected override IEnumerator Onconnected(GameManager newManager)
+    public IEnumerator Initialize(GameManager newManager)
     {
         _mainCanvas = GetComponentInChildren<Canvas>();
         //GameObject.FindGameObjectsWithTag("MainCavas");
-
         SetUI(UIType.Loading, GetComponentInChildren<UI_LoadingScreen>());
-
+        yield return null;
+    }
+    protected override IEnumerator Onconnected(GameManager newManager)
+    {
+        UIBase movableUI = CreateUI(UIType.Movable, "MovableScreen");
+        yield return null;
+        movableUI.SetChild(ObjectManager.CreateObject("PoPUp"));
         yield return null;
     }
 
@@ -29,6 +41,13 @@ public class UIManager : ManagerBase
     {
     }
 
+
+    protected UIBase CreateUI(UIType wantType, string wantName)
+    {
+        GameObject instance = ObjectManager.CreateObject(wantName, _mainCanvas.transform);
+        UIBase result = instance?.GetComponent<UIBase>();
+        return SetUI(wantType, result);
+    }
     protected UIBase SetUI(UIType wantType, UIBase wantUI)
     {
         //들어온게 없다
@@ -77,5 +96,15 @@ public class UIManager : ManagerBase
         return result;
     }
     public static UIBase ClaimToggleUI(UIType wantType)  => GameManager.Instance?.UI?.ToggleUI(wantType);
+
+    public static void ClaimPopUp(string title, string context, string confirm)
+    {
+        OnPopUp?.Invoke(title, context, confirm);
+    }
+    public static void ClaimErrorMessage(string context)
+    {
+        OnPopUp?.Invoke("Error", context, "Confirm");
+    }
+
 
 }

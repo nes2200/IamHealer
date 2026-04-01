@@ -90,11 +90,12 @@ public class DataManager : ManagerBase
             innerDic = new();
             dataDictionary.Add(typeof(T), innerDic);
         }
-        innerDic.TryAdd(target.name, target);
+        innerDic.TryAdd(target.name.ToLower(), target);
     }
 
     public static T LoadDataFile<T>(string fileName) where T : Object
     {
+        fileName = fileName.ToLower();
         if(dataDictionary.TryGetValue(typeof(T), out Dictionary<string, Object> innerDic))
         {
             if(innerDic.TryGetValue(fileName, out Object result))

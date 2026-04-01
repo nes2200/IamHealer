@@ -45,6 +45,8 @@ public class ObjectManager : ManagerBase
     {
         GameObject result = null; ;
 
+        wantName = wantName.ToLower();
+
         //이 이름으로 된 풀이 등록되어 있다면
         if (poolDictionary.TryGetValue(wantName, out ObjectPoolModule pool))
         {
@@ -299,14 +301,17 @@ public class ObjectManager : ManagerBase
 
     public void RegistrationPool(string poolName)
     {
+        poolName = poolName.ToLower();
+
         PoolRequest currentRequest = DataManager.LoadDataFile<PoolRequest>(poolName);
         if (currentRequest == null) return;
+        if (currentRequest.settings == null) return;
         loadedPoolRequests.Add(currentRequest);
         //애들마다 하나씩
         //         학생         다음학생    in     3학년4반
         foreach(PoolSetting currentSetting in currentRequest.settings)
         {
-            string currentName = currentSetting.poolName;
+            string currentName = currentSetting.poolName.ToLower();
             GameObject currentPrefab = currentSetting.target;
             //다음학생이 오늘 안왔대요! => 다음 학생을 불러야 한다
             if (currentPrefab == null) continue;
