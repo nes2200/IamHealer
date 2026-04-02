@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum UIType
 {
@@ -22,10 +23,14 @@ public class UIManager : ManagerBase
 
     Dictionary<UIType, UIBase> uiDictionary = new();
 
+    GraphicRaycaster _raycaster;
+    public GraphicRaycaster Raycaster => _raycaster;
+
     public IEnumerator Initialize(GameManager newManager)
     {
-        _mainCanvas = GetComponentInChildren<Canvas>();
         //GameObject.FindGameObjectsWithTag("MainCavas");
+        SetMainCanvas(GetComponentInChildren<Canvas>());
+
         SetUI(UIType.Loading, GetComponentInChildren<UI_LoadingScreen>());
         yield return null;
     }
@@ -33,20 +38,38 @@ public class UIManager : ManagerBase
     {
         UIBase movableUI = CreateUI(UIType.Movable, "MovableScreen");
         yield return null;
-        movableUI.SetChild(ObjectManager.CreateObject("PoPUp"));
-        yield return null;
     }
 
     protected override void OnDisconnected()
     {
+        UnsetAllUI();
     }
 
+
+    protected void SetMainCanvas(Canvas newCanvas)
+    {
+        _mainCanvas = newCanvas;
+        if (_mainCanvas)
+        {
+            _raycaster = _mainCanvas.GetComponent<GraphicRaycaster>();
+        }
+        else
+        {
+            _raycaster = null;
+        }
+    }
 
     protected UIBase CreateUI(UIType wantType, string wantName)
     {
         GameObject instance = ObjectManager.CreateObject(wantName, _mainCanvas.transform);
         UIBase result = instance?.GetComponent<UIBase>();
         return SetUI(wantType, result);
+    }
+
+    protected UIBase SetUI(UIBase wantUI)
+    {
+        wantUI.Registration(this);
+        return wantUI;
     }
     protected UIBase SetUI(UIType wantType, UIBase wantUI)
     {
@@ -58,15 +81,44 @@ public class UIManager : ManagerBase
 
         //등록해준다
         uiDictionary.Add(wantType, wantUI);
-        return wantUI;
+        return SetUI(wantUI);
     }
+    public static UIBase ClaimSetUI(UIBase wantUI)                  => GameManager.Instance?.UI?.SetUI(wantUI);
+    public static UIBase ClaimSetUI(GameObject wantObject)          => ClaimSetUI(wantObject.GetComponent<UIBase>());
     public static UIBase ClaimSetUI(UIType wantType, UIBase wantUI) => GameManager.Instance?.UI?.SetUI(wantType, wantUI);
+
+    protected void UnsetUI(UIType wantType)
+    {
+        if(uiDictionary.TryGetValue(wantType, out UIBase found))
+        {
+            UnsetUI(found);
+            uiDictionary.Remove(wantType);
+        }
+    }
+    protected void UnsetUI(UIBase wantUI)
+    {
+        if (!wantUI) return;
+
+        wantUI.Unregistration(this);
+    }
+    public static void ClaimUnsetUI(UIBase wantUI)                  => GameManager.Instance?.UI?.UnsetUI(wantUI);
+    public static void ClaimUnsetUI(GameObject wantObject)          => ClaimUnsetUI(wantObject?.GetComponent<UIBase>());
+    protected void UnsetAllUI()
+    {
+        foreach(UIBase ui in uiDictionary.Values)
+        {
+            UnsetUI(ui); 
+        }
+        uiDictionary.Clear();
+    }
+
+
     protected UIBase GetUI(UIType wantType)
     {
         if (uiDictionary.TryGetValue(wantType, out UIBase result)) return result;
         else return null;
     }
-    public static UIBase ClaimGetUI(UIType wantType)     => GameManager.Instance?.UI?.GetUI(wantType);
+    public static UIBase ClaimGetUI(UIType wantType)                => GameManager.Instance?.UI?.GetUI(wantType);
     protected UIBase OpenUI(UIType wantType)
     {
         UIBase result = GetUI(wantType);
@@ -81,14 +133,14 @@ public class UIManager : ManagerBase
 
         return result;
     }
-    public static UIBase ClaimOpenUI(UIType wantType)    => GameManager.Instance?.UI?.OpenUI(wantType);
+    public static UIBase ClaimOpenUI(UIType wantType)               => GameManager.Instance?.UI?.OpenUI(wantType);
     protected UIBase CloseUI(UIType wantType)
     {
         UIBase result = GetUI(wantType);
         if (result is IOpenable asOpenable) asOpenable.Close();
         return result;
     }
-    public static UIBase ClaimCloseUI(UIType wantType)   => GameManager.Instance?.UI?.CloseUI(wantType);
+    public static UIBase ClaimCloseUI(UIType wantType)              => GameManager.Instance?.UI?.CloseUI(wantType);
     protected UIBase ToggleUI(UIType wantType)
     {
         UIBase result = GetUI(wantType);

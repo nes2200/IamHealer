@@ -55,12 +55,14 @@ public class ObjectManager : ManagerBase
         else
         {
             //풀에 없는 야생의 오브젝트 만들기 => 데이터 있는지 확인해보기
-            GameObject prefab = DataManager.LoadDataFile<GameObject>(wantName);
-            if (prefab)
+            if(DataManager.TryLoadDataFile<GameObject>(wantName, out GameObject prefab)) 
             {
-                result = Instantiate(prefab, parent);
+                if (prefab) result = Instantiate(prefab, parent);
             }
         }
+
+        if (!result) UIManager.ClaimErrorMessage(SystemMessage.ObjectNameNotFound(wantName));
+
         RegistrationObject(result);
         return result;
     }

@@ -93,18 +93,32 @@ public class DataManager : ManagerBase
         innerDic.TryAdd(target.name.ToLower(), target);
     }
 
-    public static T LoadDataFile<T>(string fileName) where T : Object
+    protected static T GetDataFromDictionary<T>(string fileName) where T : Object
     {
+        //1.글자가 없을 때 fileName is null     nullstring
+        //2.글자가 없을 때 fileName.length == 0 emptystring
+        if (string.IsNullOrEmpty(fileName)) return null;
+
         fileName = fileName.ToLower();
-        if(dataDictionary.TryGetValue(typeof(T), out Dictionary<string, Object> innerDic))
+        if (dataDictionary.TryGetValue(typeof(T), out Dictionary<string, Object> innerDic))
         {
-            if(innerDic.TryGetValue(fileName, out Object result))
+            if (innerDic.TryGetValue(fileName, out Object result))
             {
                 return result as T;
             }
         }
-
         return null;
+    }
+    public static T LoadDataFile<T>(string fileName) where T : Object
+    {
+        T result = GetDataFromDictionary<T>(fileName);
+        if(!result) UIManager.ClaimErrorMessage(SystemMessage.FileNameNotFound(fileName));
+        return result;
+    }
+    public static bool TryLoadDataFile<T>(string fileName, out T result) where T : Object
+    {
+        result = GetDataFromDictionary<T>(fileName);
+        return result;
     }
 
 
