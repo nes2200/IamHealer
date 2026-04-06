@@ -59,6 +59,60 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "MouseWheelButtonDown",
+                    "type": "Button",
+                    "id": "beb9aaa0-e480-4433-a769-a52cced4c889",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "MouseWheelButtonUp",
+                    "type": "Button",
+                    "id": "24dfc959-3261-4fda-b254-b34ea918bcaa",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Move",
+                    "type": "Value",
+                    "id": "228bdfeb-e933-4cf6-ab5c-ecc293881bd0",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Cancel",
+                    "type": "Button",
+                    "id": "c0636b81-d09d-40b2-82c4-d9256652d2f7",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ShowStatusButtonDown",
+                    "type": "Button",
+                    "id": "94bc0f2f-da55-4210-bdbe-c83f36c9795e",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ShowStatusButtonUp",
+                    "type": "Button",
+                    "id": "127786ea-3143-4d77-9a9b-fec0b00dd8b2",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -125,6 +179,149 @@
                     "processors": "",
                     "groups": "",
                     "action": "MouseLeftButtonUp",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5a3503a2-315a-40ce-ae45-657acf41870a",
+                    "path": "<Mouse>/middleButton",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MouseWheelButtonDown",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e43af95d-944d-4881-b4fa-e4a5b7f566d5",
+                    "path": "<Mouse>/middleButton",
+                    "interactions": "Press(behavior=1)",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MouseWheelButtonUp",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d45255d3-769a-4f32-9cc9-6cc7696cbeca",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "2D Vector",
+                    "id": "c95a0668-76ff-40b3-aa95-23629e33a7e5",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "f0a0edff-c957-46c8-96b5-b6a06fe8b497",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "c713b536-f011-4cfe-9d65-2b225fa73fbb",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "f171d15f-bb1a-4e02-a080-6f03bef0cf14",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "613ff10f-3734-41fd-a4e3-c6d0cb21c5f1",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "eb6138ed-9f6e-426d-b3b4-166a2f7f0a33",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Cancel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a2ba0e63-c3d8-4486-b27c-ce9f46f14511",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Cancel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "27376078-76ea-4877-86c7-b0bb369f2fe0",
+                    "path": "<Mouse>/backButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Cancel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "060cc278-e426-40eb-84e4-0b812572801d",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ShowStatusButtonDown",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2abcce45-e111-4d98-b8b5-dd8000a9918c",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "Press(behavior=1)",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ShowStatusButtonUp",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

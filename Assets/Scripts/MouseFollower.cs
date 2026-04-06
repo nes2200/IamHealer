@@ -11,30 +11,53 @@ public class MouseFollower : MonoBehaviour, IFunctionable
     private void OnDestroy()
     {
         UnregistrationFunctions();
-    } 
+    }
 
     public void RegistrationFunctions()
     {
-        InputManager.OnMouseLeftUp += CreatToMouse;
-        InputManager.OnMouseRightDown += DestroyOnMouse;
+        InputManager.OnCancel += CancelButton;
+        InputManager.OnShowStatus += StatusButton;
+        InputManager.OnMouseWheelButton += WheelButton;
+        InputManager.OnMove += MoveButton;
     }
 
     public void UnregistrationFunctions()
     {
-        InputManager.OnMouseLeftUp -= CreatToMouse;
-        InputManager.OnMouseRightDown -= DestroyOnMouse;
+        InputManager.OnCancel -= CancelButton;
+        InputManager.OnShowStatus -= StatusButton;
+        InputManager.OnMouseWheelButton -= WheelButton;
+        InputManager.OnMove -= MoveButton;
     }
 
     void MoveToMouse(Vector2 screenPosition, Vector3 worldPosition)
     {
         transform.position = worldPosition;
     }
-    void CreatToMouse(Vector2 screenPosition, Vector3 worldPosition)
+    void CreatToMouse(bool value, Vector2 screenPosition, Vector3 worldPosition)
     {
-        GameObject inst = ObjectManager.CreateObject("NemoMan", worldPosition); 
+        GameObject inst = ObjectManager.CreateObject("NemoMan", worldPosition);
     }
-    void DestroyOnMouse(Vector2 screenPosition, Vector3 worldPosition)
+    void DestroyOnMouse(bool value, Vector2 screenPosition, Vector3 worldPosition)
     {
-        ObjectManager.DestroyObject(GameManager.Instance.Input.GetGameObjectUnderCursor()); 
+        ObjectManager.DestroyObject(GameManager.Instance.Input.GetGameObjectUnderCursor());
+    }
+    void CancelButton(bool value)
+    {
+        UIManager.ClaimPopUp("취소", "ESC", "취소");
+    }
+    void StatusButton(bool value)
+    {
+        UIManager.ClaimPopUp("취소", "Tab", "취소");
+    }
+    void WheelButton(bool value, Vector2 screenPosition, Vector3 worldPosition)
+    {
+        string press = "";
+        press = value ? "Wheel 누름" : "Wheel 뗌";
+
+        UIManager.ClaimPopUp("취소", press, "취소");
+    }
+    void MoveButton(Vector2 value)
+    {
+        Debug.Log(value);
     }
 }

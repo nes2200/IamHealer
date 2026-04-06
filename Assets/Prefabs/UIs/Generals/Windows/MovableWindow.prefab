@@ -162,6 +162,7 @@ GameObject:
   - component: {fileID: 9059385046705738824}
   - component: {fileID: 2304677182313076572}
   - component: {fileID: 8287324418234217562}
+  - component: {fileID: 4439794178343761433}
   m_Layer: 5
   m_Name: TopBar
   m_TagString: Untagged
@@ -228,6 +229,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &4439794178343761433
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3968818303508387530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a35c419c03bf9a042b3940cd4c17f89a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_DraggableWindow
+  rootTransform: {fileID: 454856977240057085}
 --- !u!1 &7276384505690570932
 GameObject:
   m_ObjectHideFlags: 0

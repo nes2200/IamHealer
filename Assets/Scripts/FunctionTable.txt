@@ -1,0 +1,67 @@
+게임매니저 인스턴스로 들어가서
+GameManager.Instance
+GameManager.Instance.Input => 이런식으로 매니저를 각자 찾아줄 수 있음
+
+일시정지 / 해제
+GameManager.Pause()
+GameManager.Unpause()
+
+오브젝트 등록하기
+GameManager.OnInitializeManager;
+GameManager.OnInitializeController;
+GameManager.OnInitializeCharacter;
+GameManager.OnInitializeObject;
+
+업데이트 시켜달라고 하기
+GameManager.OnUpdateManager;
+GameManager.OnUpdateController;
+GameManager.OnUpdateCharacter;
+GameManager.OnUpdateObject;
+
+부숴지는 거 등록하기
+GameManager.OnDestroyManager;
+GameManager.OnDestroyController;
+GameManager.OnDestroyCharacter;
+GameManager.OnDestroyObject;
+
+파일 가져오고 싶다
+DataManager.LoadDataFile<T>(이름)
+DataManager.TryLoadDataFile<T>(이름, out 파일받아갈변수)
+
+게임 중간에 로딩을 추가로 해야할 때
+LoadAllFromAssetBundle<T>(태그, 로드되면할일)
+
+원하는 타입의 UI를
+갖고싶다
+UIManager.ClaimGetUI(타입)                
+열고싶다
+UIManager.ClaimOpenUI(타입)               
+닫고싶다
+UIManager.ClaimCloseUI(타입)              
+여닫고싶다
+UIManager.ClaimToggleUI(타입)  
+팝업창 열렸으면
+UIManager.ClaimPopUp(제목, 내용, 확인버튼)
+에려창 열렸으면
+UIManager.ClaimErrorMessage(내용)
+   
+이름만 쓰면 그 이름에 해당되는 오브젝트를 만들어준다 + 오브젝트 풀이면 풀링도 해줌
+ObjectManager.CreateObject(이름)
+대상을 파괴 + 풀이면 풀에 넣어줌
+ObjectManager.DestroyObject(대상)
+
+게임하느 중간에 로딩이 되어 새로운 풀이 필요하게 된 경우
+ObjectManager.RegistrationPool(이름)
+
+GamaManager.Instance.Camera.SetMainCamera		: 이 카메라로 하겠다
+GamaManager.Instance.Camera.GetRaycastResult2D	: 2D에서 화면이 가리키는 대상 가져오기
+GamaManager.Instance.Camera.GetRaycastResult3D	: 3D에서 화면이 가리키는 대상 가져오기
+
+이런식으로 생긴 입력을 받고싶다
+InputManager.OnMouseLeftDown
+InputManager.OnMouseRightDown
+InputManager.OnMouseLeftUp
+InputManager.OnMouseRightUp
+InputManager.OnMouseMove
+
+GameManager.Instace.Inpute.GetGameObjectUnderCursor() => 커서가 올라가있는 오브젝트 찾기
