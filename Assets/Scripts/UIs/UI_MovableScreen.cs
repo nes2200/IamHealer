@@ -16,6 +16,8 @@ public class UI_MovableScreen : UIBase
         base.Registration(manager);
         InputManager.OnMouseMove -= MouseMove;
         InputManager.OnMouseMove += MouseMove;
+        InputManager.OnMouseLeftButton -= MouseLeft;
+        InputManager.OnMouseLeftButton += MouseLeft;
         UIManager.OnPopUp -= PopUp;
         UIManager.OnPopUp += PopUp;
     }
@@ -23,6 +25,7 @@ public class UI_MovableScreen : UIBase
     {
         base.Unregistration(manager);
         InputManager.OnMouseMove -= MouseMove;
+        InputManager.OnMouseLeftButton -= MouseLeft;
         UIManager.OnPopUp -= PopUp; 
     }
 
@@ -66,6 +69,11 @@ public class UI_MovableScreen : UIBase
         {
             currentDragTarget.SetMouseStartPosition(startPosition);
         }
+    }
+
+    private void MouseLeft(bool value, Vector2 screenPosition, Vector3 position)
+    {
+        if (!value) currentDragTarget = null;
     }
 
     void MouseMove(Vector2 screenPosition, Vector3 worldPosition)

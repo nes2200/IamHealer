@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Threading.Tasks;
+using Unity.Mathematics.Geometry;
 using UnityEngine;
 
 //확장 메소드를 가지고 있을 클래스
@@ -14,7 +15,7 @@ public static class Extensions
     //                            내가 함수를 넣고 싶은 대상에 this
     public static float normalized(this float target)
     {
-        
+
         if (target > 0) return 1f;
         else if (target < 0) return -1f;
         else return 0f;
@@ -36,10 +37,10 @@ public static class Extensions
 
         return result;
     }
-    
+
     public static T TryAddComponent<T>(this Component target) where T : Component
     {
-        if(target == null) return null;
+        if (target == null) return null;
         else return target.gameObject.TryAddComponent<T>();
     }
 
@@ -51,5 +52,67 @@ public static class Extensions
         yield return new WaitUntil(() => targetTask.IsCompleted);
         //작업을 제거하다
         targetTask.Dispose();
+    }
+
+    public static float GetPenetratedDistance(float aHalf, float bHalf, float aPos, float bPos)
+    {
+        float absAHalf = Mathf.Abs(aHalf);
+        float absBHalf = Mathf.Abs(bHalf);
+        //겹쳤다면, 만약에 원래 안 겹쳤을 때에 있을 수 있는 공간
+        float minSpace = absAHalf + absBHalf;
+        //둘 사이의 거리
+        float distance = aPos - bPos;
+        //x최소 거리와 둘 사이의 거리 차이
+        float penetration = minSpace - Mathf.Abs(distance);
+        //어느 방향으로 묻혀있는지 확인
+        return penetration *= Mathf.Sign(distance);
+    }
+
+    //A와 B가 얼마나 깊게 묻혀 있는지 확인
+    public static Vector2 AABB(this Rect A, Rect B)
+    {
+        Vector2 result = Vector2.zero;
+        Vector2 aMin = A.min;
+        Vector2 aMax = A.max;
+        Vector2 aHalf = A.size * 0.5f;
+        Vector2 bMin = B.min;
+        Vector2 bMax = B.max;
+        Vector2 bHalf = B.size * 0.5f;
+
+        //한 쪽의 최대 위치가 다른 쪽의 최소 위치보다 높아야 함
+        if (aMax.x > bMin.x && bMax.x > aMin.x)
+        {
+            result.x = GetPenetratedDistance(aHalf.x, bHalf.x, A.position.x, B.position.x);
+        }
+        if (aMax.y > bMin.y && bMax.y > aMin.y)
+        {
+            result.y = GetPenetratedDistance(aHalf.y, bHalf.y, A.position.y, B.position.y);
+        }
+        return result;
+    }
+
+    public static float GetOutBoundDistance(float inMin, float outMin, float inMax, float outMax)
+    {
+        float result = 0f;
+
+        //전체 맵보다 카메라가 클 경우
+        bool leftOut = inMin < outMin;
+        bool rightOut = inMax > outMax;
+
+        if (leftOut ^ rightOut)
+        {
+            if(leftOut) result = outMin - inMin;
+            if(rightOut) result = outMax - inMax;
+        }
+        return result;
+    }
+
+    //삐져 나온 양을 체크하는 방법
+    public static Vector2 InversedAABB(this Rect target, Rect bound)
+    {
+        Vector2 result = Vector2.zero;
+        result.x = GetOutBoundDistance(target.xMin, bound.xMin, target.xMax, bound.xMax);
+        result.y = GetOutBoundDistance(target.yMin, bound.yMin, target.yMax, bound.yMax);
+        return result;
     }
 }

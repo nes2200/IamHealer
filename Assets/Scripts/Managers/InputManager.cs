@@ -122,10 +122,12 @@ public class InputManager : ManagerBase
         }
     }
 
-    Vector2 GetVector2Value(InputAction.CallbackContext context)
+    Vector2 GetVector2Value(InputAction.CallbackContext context) => GetInputValue<Vector2>(context);
+
+    T GetInputValue<T>(InputAction.CallbackContext context) where T : struct
     {
-        if(context.valueType != typeof(Vector2)) return Vector2.zero;
-        return context.ReadValue<Vector2>();
+        if (context.valueType != typeof(T)) return default;
+        return context.ReadValue<T>();
     }
 
     void CursorPositionChanged(Vector2 screenPosition)
