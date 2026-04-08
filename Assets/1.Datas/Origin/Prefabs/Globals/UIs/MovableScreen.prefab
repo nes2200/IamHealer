@@ -48,3 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8838ef1b3993f0247bfb3702f8b5d7c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_MovableScreen
+  requiredUI:
+  - prefabName: MenuWindow
+    uiType: 4
+  popupList: []

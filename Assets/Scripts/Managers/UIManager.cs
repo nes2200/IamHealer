@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public enum UIType
 {
-    None, Loading, Title, Movable,
+    None, Loading, Title, Movable, Menu, Info,
     _Length
 }
 
@@ -62,7 +62,9 @@ public class UIManager : ManagerBase
             if(MainCanvas.transform is RectTransform mainRectTransform)
             {
                 _uiScale = mainRectTransform.lossyScale.x;
-                _uiBoundary = mainRectTransform.rect;
+                _uiBoundary = mainRectTransform.rect;  
+                //_uiBoundary.size *= _uiScale;
+                //_uiBoundary.position *= _uiScale / 1.0f;
             }
         }
         else
@@ -77,6 +79,7 @@ public class UIManager : ManagerBase
         UIBase result = instance?.GetComponent<UIBase>();
         return SetUI(wantType, result);
     }
+    public static UIBase ClaimCreateUI(UIType wantType, string wantName) => GameManager.Instance?.UI?.CreateUI(wantType, wantName);
 
     protected UIBase SetUI(UIBase wantUI)
     {

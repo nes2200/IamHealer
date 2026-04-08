@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UI_MovableScreen : UIBase
+public class UI_MovableScreen : UI_ScreenBase
 {
     [SerializeField] List<UIBase> popupList = new();
     Vector3 popupPosition = Vector3.zero;
@@ -14,6 +14,7 @@ public class UI_MovableScreen : UIBase
     public override void Registration(UIManager manager)
     {
         base.Registration(manager);
+        InputManager.OnCancel += (value) => UIManager.ClaimToggleUI(UIType.Menu);
         InputManager.OnMouseMove -= MouseMove;
         InputManager.OnMouseMove += MouseMove;
         InputManager.OnMouseLeftButton -= MouseLeft;
