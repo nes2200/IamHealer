@@ -102,6 +102,7 @@ GameObject:
   - component: {fileID: 8485668662892061973}
   - component: {fileID: 5542851908472870936}
   - component: {fileID: 7747696511939246149}
+  - component: {fileID: 8974714400344792683}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -210,7 +211,32 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5542851908472870936}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 8974714400344792683}
+        m_TargetAssemblyTypeName: UI_Button_CloseWindow, Assembly-CSharp
+        m_MethodName: Close
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &8974714400344792683
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1532029540338116131}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 745cc6bbb3762bd4696ab35d6a3f81b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_Button_CloseWindow
+  wantType: 5
 --- !u!1 &1745693666117806052
 GameObject:
   m_ObjectHideFlags: 0
@@ -276,7 +302,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uAC8C\uC784 \uC7AC\uAC8C"
+  m_text: "\uB3CC\uC544\uAC00\uAE30"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8e0e9f844e438b142bb154f0fb10701d, type: 2}
   m_sharedMaterial: {fileID: 7730239384480465101, guid: 8e0e9f844e438b142bb154f0fb10701d, type: 2}
@@ -980,9 +1006,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd830f9df1530f94183c4573f7943168, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_ScreenBase
-  requiredUI:
-  - prefabName: 
-    uiType: 0
+  requiredUI: []
 --- !u!1 &4488530086675529216
 GameObject:
   m_ObjectHideFlags: 0
@@ -1406,6 +1430,7 @@ GameObject:
   - component: {fileID: 6117834669335439189}
   - component: {fileID: 3253779202771662253}
   - component: {fileID: 8437161921689544616}
+  - component: {fileID: 7464616534788634752}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -1514,7 +1539,33 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3253779202771662253}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7464616534788634752}
+        m_TargetAssemblyTypeName: UI_Button_OpenScreen, Assembly-CSharp
+        m_MethodName: OpenScreenCloseMenu
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &7464616534788634752
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5813281645261137873}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7667f2eaf22cee64a986410a61e060dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_Button_OpenScreen
+  myType: 5
+  wantType: 2
 --- !u!1 &6239524621387370915
 GameObject:
   m_ObjectHideFlags: 0
@@ -1527,6 +1578,7 @@ GameObject:
   - component: {fileID: 5651394217562365310}
   - component: {fileID: 6395465579927036201}
   - component: {fileID: 5822251792646408162}
+  - component: {fileID: 6887012602428683167}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -1635,7 +1687,33 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6395465579927036201}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6887012602428683167}
+        m_TargetAssemblyTypeName: UI_Button_OpenScreen, Assembly-CSharp
+        m_MethodName: OpenScreenCloseMenu
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &6887012602428683167
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6239524621387370915}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7667f2eaf22cee64a986410a61e060dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_Button_OpenScreen
+  myType: 5
+  wantType: 3
 --- !u!1 &8652110705624420041
 GameObject:
   m_ObjectHideFlags: 0

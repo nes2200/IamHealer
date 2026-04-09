@@ -1,23 +1,15 @@
 using UnityEditor;
 using UnityEngine;
 
-public class UI_LoadingScreen : UI_ScreenBase, IOpenable, IProgress<int>, IStatus<string>
+public class UI_LoadingScreen : UI_ScreenBase, IProgress<int>, IStatus<string>
 {
-    public bool IsOpen => gameObject.activeSelf;
-
     public int Current { get; protected set; }
     public int Max { get; protected set; }
     public float Progress => (Max != 0) ? (float)Current / (float)Max : 0.0f;
 
-
     public int AddCurrent(int value) => Set(Current + value);
 
     public int AddMax(int value) => Set(Current, Max + value);
-    
-
-    public void Close() => gameObject.SetActive(false);
-
-    public void Open() => gameObject.SetActive(true);
 
     public UnityEngine.UI.Slider progressBar;
     public TMPro.TextMeshProUGUI progressText;
@@ -42,9 +34,4 @@ public class UI_LoadingScreen : UI_ScreenBase, IOpenable, IProgress<int>, IStatu
         Max = newMax;
         return Set(newCurrent);
     }
-
-    public void Toggle() => gameObject.SetActive(!IsOpen);
-
-
-    
 }

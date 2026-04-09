@@ -100,7 +100,7 @@ public class GameManager : MonoBehaviour
         totalLoadCount += CreatManager(ref _input).LoadCount;
 
         yield return UI.Initialize(this); 
-        UIBase loadingUI =  UIManager.ClaimOpenUI(UIType.Loading); //UI가 연결됬으니 기능 실행해보기
+        UIBase loadingUI =  UIManager.ClaimOpenScreen(UIType.Loading); //UI가 연결됬으니 기능 실행해보기
         IProgress<int> loadingProgress = loadingUI as IProgress<int>;
         loadingProgress?.Set(0, totalLoadCount);
 
@@ -123,8 +123,9 @@ public class GameManager : MonoBehaviour
         loadingProgress?.AddCurrent(1);
         yield return Input.Connect(this);
         loadingProgress?.AddCurrent(1);
-        yield return new WaitForSeconds(1f);
-        UIManager.ClaimCloseUI(UIType.Loading);
+        yield return null;
+        
+        UIManager.ClaimOpenScreen(UIType.Title);
         isLoading = false;
     }
 
