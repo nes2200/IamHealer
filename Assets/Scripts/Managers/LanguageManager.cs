@@ -11,5 +11,6 @@ public class LanguageManager : ManagerBase
 
     protected override void OnDisconnected()
     {
+
     }
 }

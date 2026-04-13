@@ -920,7 +920,7 @@ RectTransform:
   m_GameObject: {fileID: 4247759779004277987}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.71684587, y: 0.71684587, z: 0.71684587}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6342139324236432724}
@@ -1564,7 +1564,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7667f2eaf22cee64a986410a61e060dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_Button_OpenScreen
-  myType: 5
   wantType: 2
 --- !u!1 &6239524621387370915
 GameObject:
@@ -1712,7 +1711,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7667f2eaf22cee64a986410a61e060dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_Button_OpenScreen
-  myType: 5
   wantType: 3
 --- !u!1 &8652110705624420041
 GameObject:

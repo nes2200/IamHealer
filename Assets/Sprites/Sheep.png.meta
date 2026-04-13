@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 9f6c47d0c7e246047bac25f1cd25f41a
+guid: 7be67ac35ccf2b54ca59e730ccb48767
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5146170040052004630
-    second: Gemini_Generated_Image_ywfpzoywfpzoywfp-Photoroom_0
+      213: 3184159518366690391
+    second: Sheep_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Gemini_Generated_Image_ywfpzoywfpzoywfp-Photoroom_0
+      name: Sheep_0
       rect:
         serializedVersion: 2
-        x: 476
-        y: 134
-        width: 340
-        height: 437
+        x: 0
+        y: 0
+        width: 1120
+        height: 928
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 617be07c26eda6740800000000000000
-      internalID: 5146170040052004630
+      spriteID: 75cec682638603c20800000000000000
+      internalID: 3184159518366690391
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Gemini_Generated_Image_ywfpzoywfpzoywfp-Photoroom_0: 5146170040052004630
+      Sheep_0: 3184159518366690391
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
