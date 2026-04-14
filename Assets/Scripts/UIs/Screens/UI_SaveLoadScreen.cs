@@ -1,16 +1,15 @@
 using TMPro;
 using UnityEngine;
 
-public class UI_SaveLoadScreen : UIBase, IOpenable
+public class UI_SaveLoadScreen : UI_ScreenBase
 {
     public UI_SaveSlot saveSlot;
 
-    public bool IsOpen => gameObject.activeSelf;
-    public void Open()
+  
+    public override void Open()
     {
         gameObject.SetActive(true);
         saveSlot.ChangeText();
     }
-    public void Close() => gameObject.SetActive(false);
-    public void Toggle() => gameObject.SetActive(!IsOpen);
+   
 }

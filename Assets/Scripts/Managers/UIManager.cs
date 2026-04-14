@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro.EditorUtilities;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public enum UIType
 {
-    None, Loading, Title, Option, Movable, Menu, Info, SaveSlot,
+    None, Loading, Title, Option, Movable, Menu, Info, SaveSlot, Battle, GameQuit,
     _Length
 }
 
@@ -18,10 +20,20 @@ public class UIManager : ManagerBase
 {
     public static event PopUpEvent OnPopUp;
 
+    readonly KeyValuePair<UIType, string>[] globalScreenArray =
+    {
+        new(UIType.Title, "TitleScreen"),
+        new(UIType.Option, "OptionScreen"),
+        new(UIType.SaveSlot, "SaveLoadScreen"),
+        new(UIType.Battle, "BattleScreen")
+    };
+
     Canvas _mainCanvas;
     public Canvas MainCanvas => _mainCanvas;
 
     UIBase _movableScreen;
+    RectTransform switcherTransform;
+    RectTransform createdTransfrom;
 
     GraphicRaycaster _raycaster;
     public GraphicRaycaster Raycaster => _raycaster;
@@ -46,30 +58,49 @@ public class UIManager : ManagerBase
         SetUI(UIType.Loading, GetComponentInChildren<UI_LoadingScreen>());
         yield return null;
     }
+
+    public RectTransform CreateFullScreen(string wantName)
+    {
+        GameObject instance = new GameObject(wantName);
+        RectTransform result = instance.AddComponent<RectTransform>();
+        result.SetParent(MainCanvas.transform);
+        //맨 위로 올리기
+        result.SetAsFirstSibling();
+        //anchor를 stretch - stretch로 만들고
+        result.anchorMin = Vector3.zero;
+        result.anchorMax = Vector3.one;
+        //여백을 0,0,0,0
+        result.offsetMin = Vector3.zero;
+        result.offsetMax = Vector3.zero;
+        //스케일을 1,1,1로
+        result.localScale = Vector3.one;
+
+        return result;
+    }
+
     protected override IEnumerator Onconnected(GameManager newManager)
     {
-        _movableScreen = CreateUI(UIType.Movable, "MovableScreen");
-        GameObject screenSwitcher = new GameObject("ScreenSwitcher");
-        RectTransform switcherTransform = screenSwitcher.AddComponent<RectTransform>();
-        switcherTransform.SetParent(MainCanvas.transform);
-        //맨 위로 올리기
-        switcherTransform.SetAsFirstSibling();
-        //anchor를 stretch - stretch로 만들고
-        switcherTransform.anchorMin = Vector3.zero;
-        switcherTransform.anchorMax = Vector3.one;
-        //여백을 0,0,0,0
-        switcherTransform.offsetMin = Vector3.zero;
-        switcherTransform.offsetMax = Vector3.zero;
-        //스케일을 1,1,1로
-        switcherTransform.localScale = Vector3.one;
+        createdTransfrom = CreateFullScreen("CreatedUI");
+        _movableScreen = CreateUI(UIType.Movable, "MovableScreen", MainCanvas?.transform);
 
-        CreateUI(UIType.Title, "TitleScreen", switcherTransform);
-        CreateUI(UIType.Option, "OptionScreen", switcherTransform);
-        CreateUI(UIType.SaveSlot, "SaveLoadScreen", switcherTransform);
+        switcherTransform = CreateFullScreen("ScreenSwitcher");
 
-        foreach(Transform currentTransform in switcherTransform)
+        foreach(var currentPair in globalScreenArray)
         {
-            currentTransform.gameObject.SetActive(false);
+            UIBase created = CreateUI(currentPair.Key, currentPair.Value, switcherTransform);
+
+            if (created is IOpenable asOpenable) asOpenable.Close();
+        }
+
+        RectTransform changerTransform = CreateFullScreen("ScreenChanger");
+        changerTransform.SetAsLastSibling();
+
+        GameObject instance = ObjectManager.CreateObject("ScreenChanger", changerTransform);
+        if(instance.TryGetComponent(out UI_ScreenChanger asChanger))
+        {
+            asChanger.ChangeStart();
+            yield return new WaitForSeconds(3f);
+            asChanger.ChangeEnd();
         }
 
         yield return null;
@@ -79,7 +110,6 @@ public class UIManager : ManagerBase
     {
         UnsetAllUI();
     }
-
 
     protected void SetMainCanvas(Canvas newCanvas)
     {
@@ -109,7 +139,7 @@ public class UIManager : ManagerBase
     }
     protected UIBase CreateUI(UIType wantType, string wantName)
     {
-        UIBase result = CreateUI(wantType, wantName, MainCanvas?.transform);
+        UIBase result = CreateUI(wantType, wantName, createdTransfrom ?? MainCanvas?.transform);
         if (result?.GetComponentInChildren<UI_DraggableWindow>())
         {
             _movableScreen?.SetChild(result.gameObject);
@@ -180,11 +210,11 @@ public class UIManager : ManagerBase
         //result는 IOpenable인 opener인가? 그렇다면 Open()을 실행하라
         if(result is IOpenable asOpenable) asOpenable.Open();
 
+        if (result) EventSystem.current.SetSelectedGameObject(result.gameObject);
+
         //위랑 아래랑 같은 의미
         //IOpenable opener = result as IOpenable;
         //if (opener != null) opener.Open();
-
-
         return result;
     }
     public static UIBase ClaimOpenUI(UIType wantType)               => GameManager.Instance?.UI?.OpenUI(wantType);

@@ -165,6 +165,21 @@ public class GameManager : MonoBehaviour
         return targetVariable;
     }
 
+    public static void QuitGame()
+    {
+        //게임을 끈다는 것은? -> 윈도우에게 해당 프로그램을 실행 목록에서 제거해달라고 하기
+        //프로그램이라고 부르는 것은 실제로 윈도우가 뭐라고 알고 있을까? -> exe -> Executable application
+        //그냥 끄면? -> 유니티 에디터가 꺼진다!
+        //에디터에서 할 일과 실제 빌드에서 해야하는 일이 다르다
+        //그러면 코드를 실제로 컴파일 하기 전에 구분을 해줄 수 있어야 함
+        //미리 처리해놓기 -> 전처리기 -> #으로 시작하는 코드
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
+    }
+
     public static void Pause()
     {
         Instance.isPlaying = false;
