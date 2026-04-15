@@ -149,6 +149,7 @@ GameObject:
   - component: {fileID: 6010467567496597842}
   - component: {fileID: 7985654539902496138}
   - component: {fileID: 2120403096894280479}
+  - component: {fileID: 2311340979439138896}
   m_Layer: 5
   m_Name: LoadingScreen
   m_TagString: Untagged
@@ -231,6 +232,28 @@ MonoBehaviour:
   progressBar: {fileID: 7485712897231764595}
   progressText: {fileID: 8112458566009610934}
   loadingText: {fileID: 1656778828853936252}
+--- !u!95 &2311340979439138896
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1550925833221635020}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: bfb67d577c8e6dc4db3248a297981b83, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1867995065212846057
 GameObject:
   m_ObjectHideFlags: 0
@@ -477,7 +500,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 425.00006, y: 0}
+  m_AnchoredPosition: {x: 524, y: 0.000030518}
   m_SizeDelta: {x: 850, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1285140044725180260
@@ -553,7 +576,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 0
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}

@@ -384,7 +384,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.006881568, y: 1, z: 1}
+  m_LocalScale: {x: 0.01, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 746185300}
@@ -589,7 +589,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -999
   m_MaskInteraction: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 0.5943396, g: 0.5878517, b: 0.56350124, a: 1}
@@ -906,39 +906,6 @@ PrefabInstance:
     - target: {fileID: 4023954335261018326, guid: fb3520a40bb850b45b45c25496f4e330, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4172465632755300510, guid: fb3520a40bb850b45b45c25496f4e330, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 850
-      objectReference: {fileID: 0}
-    - target: {fileID: 4172465632755300510, guid: fb3520a40bb850b45b45c25496f4e330, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 80
-      objectReference: {fileID: 0}
-    - target: {fileID: 4172465632755300510, guid: fb3520a40bb850b45b45c25496f4e330, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 524
-      objectReference: {fileID: 0}
-    - target: {fileID: 4172465632755300510, guid: fb3520a40bb850b45b45c25496f4e330, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0.000030518
-      objectReference: {fileID: 0}
-    - target: {fileID: 5260399021578241020, guid: fb3520a40bb850b45b45c25496f4e330, type: 3}
-      propertyPath: m_text
-      value: "\uAC12\uC774 \uC2FC \uC720\uB2DB\uB4E4\uC740 \uC2FC \uC774\uC720\uAC00
-        \uC788\uC2B5\uB2C8\uB2E4!"
-      objectReference: {fileID: 0}
-    - target: {fileID: 5260399021578241020, guid: fb3520a40bb850b45b45c25496f4e330, type: 3}
-      propertyPath: m_fontSize
-      value: 50
-      objectReference: {fileID: 0}
-    - target: {fileID: 5260399021578241020, guid: fb3520a40bb850b45b45c25496f4e330, type: 3}
-      propertyPath: m_fontSizeBase
-      value: 50
-      objectReference: {fileID: 0}
-    - target: {fileID: 5260399021578241020, guid: fb3520a40bb850b45b45c25496f4e330, type: 3}
-      propertyPath: m_TextWrappingMode
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

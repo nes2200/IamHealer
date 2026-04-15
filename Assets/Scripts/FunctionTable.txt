@@ -44,6 +44,11 @@ UIManager.ClaimToggleUI(타입)
 UIManager.ClaimPopUp(제목, 내용, 확인버튼)
 에려창 열렸으면
 UIManager.ClaimErrorMessage(내용)
+스크린 전환 효과가 필요하다
+UIManager.ScreenChangeEffectStart(타입)
+스크린 전환 효과가 필요 없다
+UIManager.ScreenChangeEffectEnd()
+
    
 이름만 쓰면 그 이름에 해당되는 오브젝트를 만들어준다 + 오브젝트 풀이면 풀링도 해줌
 ObjectManager.CreateObject(이름)
