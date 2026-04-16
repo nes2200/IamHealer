@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6108823247962556602}
   - component: {fileID: 1797286888311149429}
   m_Layer: 5
-  m_Name: Button
+  m_Name: BackButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -35,10 +35,10 @@ RectTransform:
   - {fileID: 9214587933564992697}
   m_Father: {fileID: 2754310282718151002}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 160, y: 30}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 0, y: 150}
+  m_SizeDelta: {x: 300, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7560778191819659338
 CanvasRenderer:
@@ -147,6 +147,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_Button_OpenScreen
   wantType: 2
+  changeType: 1
 --- !u!1 &4958922971278997234
 GameObject:
   m_ObjectHideFlags: 0
@@ -371,7 +372,7 @@ GameObject:
   - component: {fileID: 1515499163721376649}
   - component: {fileID: 5065970671719912760}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: BackButtonText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -424,10 +425,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: "\uB3CC\uC544\uAC00\uAE30"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8e0e9f844e438b142bb154f0fb10701d, type: 2}
+  m_sharedMaterial: {fileID: 7730239384480465101, guid: 8e0e9f844e438b142bb154f0fb10701d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -547,3 +548,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36be998b557d7834d8ceeb44de6c6cdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_OptionScreen
+  requiredUI: []

@@ -7,8 +7,11 @@ public interface IProgress<T>
 
     public float Progress { get; }
 
+    public void SetComplete();
+
     public T Set(T newCurrent);
     public T Set(T newCurrent, T newMax);
+
     public T AddCurrent(T value);
     public T AddMax(T value);
 }

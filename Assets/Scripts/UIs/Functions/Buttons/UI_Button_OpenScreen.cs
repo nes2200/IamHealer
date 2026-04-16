@@ -3,9 +3,10 @@ using UnityEngine;
 public class UI_Button_OpenScreen : MonoBehaviour
 {
     [SerializeField] UIType wantType;
+    [SerializeField] ScreenChangeType changeType;
     public void OpenScreen()
     {
-        UIManager.ClaimOpenScreen(wantType);
+        UIManager.ClaimOpenScreen(wantType, changeType);
     }
     public void OpenScreenCloseMenu()
     {

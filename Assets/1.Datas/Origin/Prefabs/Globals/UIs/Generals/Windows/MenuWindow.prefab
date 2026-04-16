@@ -1394,6 +1394,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_Button_OpenScreen
   wantType: 3
+  changeType: 2
 --- !u!1 &8504176889320771873
 GameObject:
   m_ObjectHideFlags: 0
@@ -1541,6 +1542,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_Button_OpenScreen
   wantType: 2
+  changeType: 2
 --- !u!1 &8507435277948803336
 GameObject:
   m_ObjectHideFlags: 0
@@ -1665,7 +1667,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 7431859918650211077}
         m_TargetAssemblyTypeName: UI_Button_OpenUI, Assembly-CSharp
-        m_MethodName: Open
+        m_MethodName: Close
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

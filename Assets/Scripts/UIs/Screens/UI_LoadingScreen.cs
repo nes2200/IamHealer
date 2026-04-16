@@ -15,11 +15,20 @@ public class UI_LoadingScreen : UI_ScreenBase, IProgress<int>, IStatus<string>
     public TMPro.TextMeshProUGUI progressText;
     public TMPro.TextMeshProUGUI loadingText;
 
+    public GameObject layoutOnComplete;
+    public GameObject layoutOnLoading;
+
     // IStatus<T>
     public string SetCurrentStatus(string newText)
     {
         loadingText.SetText(newText);
         return newText;
+    }
+
+    public void SetComplete()
+    {
+        layoutOnComplete.SetActive(true);
+        layoutOnLoading.SetActive(false);
     }
 
     public int Set(int newCurrent) 
@@ -31,6 +40,8 @@ public class UI_LoadingScreen : UI_ScreenBase, IProgress<int>, IStatus<string>
     }
     public int Set(int newCurrent, int newMax)
     {
+        layoutOnComplete.SetActive(false);
+        layoutOnLoading.SetActive(true);
         Max = newMax;
         return Set(newCurrent);
     }

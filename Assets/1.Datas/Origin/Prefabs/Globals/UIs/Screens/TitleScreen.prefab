@@ -713,6 +713,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_Button_OpenScreen
   wantType: 10
+  changeType: 1
 --- !u!1 &4940164195117281587
 GameObject:
   m_ObjectHideFlags: 0
@@ -1077,6 +1078,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_Button_OpenScreen
   wantType: 7
+  changeType: 1
 --- !u!1 &5926394449266159750
 GameObject:
   m_ObjectHideFlags: 0
@@ -1436,6 +1438,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_Button_OpenScreen
   wantType: 3
+  changeType: 1
 --- !u!1 &7433882745912391559
 GameObject:
   m_ObjectHideFlags: 0
@@ -1932,3 +1935,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_Button_OpenScreen
   wantType: 7
+  changeType: 1

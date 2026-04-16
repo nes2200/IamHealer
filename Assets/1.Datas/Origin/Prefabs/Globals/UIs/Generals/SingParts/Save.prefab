@@ -262,7 +262,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2696133563343690338}
         m_TargetAssemblyTypeName: UI_Button_Save, Assembly-CSharp
-        m_MethodName: OpenBattleScreen
+        m_MethodName: OpenStageScreen
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

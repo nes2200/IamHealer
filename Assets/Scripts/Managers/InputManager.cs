@@ -31,6 +31,8 @@ public class InputManager : ManagerBase
     public static event ButtonEvent      OnCancel;
     public static event ButtonEvent      OnShowStatus;
     public static event VectorEvent      OnMove;
+    public static event Action           OnAnyKey;
+
 
     PlayerInput targetInput;
     Dictionary<string, InputAction> actionDictionary = new();
@@ -109,7 +111,9 @@ public class InputManager : ManagerBase
         InitializeAction("ShowStatusButtonUp",   (context) => OnShowStatus      ?.Invoke(false));   
 
         InitializeAction("MouseWheelButtonDown", (context) => OnMouseWheelButton?.Invoke(true, cursorScreenPosition, cursorWorldPosition));   
-        InitializeAction("MouseWheelButtonUp",   (context) => OnMouseWheelButton?.Invoke(false, cursorScreenPosition, cursorWorldPosition));   
+        InitializeAction("MouseWheelButtonUp",   (context) => OnMouseWheelButton?.Invoke(false, cursorScreenPosition, cursorWorldPosition));
+
+        InitializeAction("AnyKey",               (context) => OnAnyKey          ?.Invoke());
     }
 
     void InitializeAction(string actionName, Action<InputAction.CallbackContext> actionMethod) 

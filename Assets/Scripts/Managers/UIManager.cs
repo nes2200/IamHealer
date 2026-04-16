@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro.EditorUtilities;
@@ -7,13 +8,13 @@ using UnityEngine.UI;
 
 public enum UIType
 {
-    None, Loading, Title, Option, Movable, Menu, Info, SaveSlot, Battle, GameQuit, Sandbox,
+    None, Loading, Title, Option, Movable, Menu, Info, SaveSlot, Stage, GameQuit, Sandbox, BattleResult,
     _Length
 }
 
 public enum ScreenChangeType
 {
-    None, ScreenChanger,
+    None, ScreenChanger, SlideChanger,
     _Length
 }
 
@@ -32,7 +33,7 @@ public class UIManager : ManagerBase
         new(UIType.Option, "OptionScreen"),
         new(UIType.SaveSlot, "SaveLoadScreen"),
         new(UIType.Sandbox, "SandboxScreen"),
-        new(UIType.Battle, "BattleScreen")
+        new(UIType.Stage, "StageScreen")
     };
 
     Canvas _mainCanvas;
@@ -253,19 +254,38 @@ public class UIManager : ManagerBase
         return OpenUI(wantType); //¿­±â
     }
     public static UIBase ClaimOpenScreen(UIType wantType)           => GameManager.Instance?.UI?.OpenScreen(wantType);
-
-    protected void ScreenChangeEffectStart(ScreenChangeType wantType)
+    protected void OpenScreen(UIType wantScreen, ScreenChangeType changeType)
     {
+        ClaimScreenChangeEffect(changeType, () => OpenScreen(wantScreen));
+    }
+    public static void ClaimOpenScreen(UIType wantScreen, ScreenChangeType changeType)
+        => GameManager.Instance?.UI?.OpenScreen(wantScreen, changeType);
+
+    protected void ScreenChangeEffectStart(ScreenChangeType wantType, Action endFunction = null)
+    {
+        if (currentScreenChanger) return;
+
         if(screenChangerDictionary.TryGetValue(wantType, out UI_ScreenChanger result))
         {
-            if(!result) return;
+            if(!result)
+            {
+                endFunction?.Invoke();
+                return;
+            }
 
             result.gameObject.SetActive(true);
-            result.ChangeStart(ScreenChangeEffectEnd);
+            result.ChangeStart(endFunction);
             currentScreenChanger = result;
         }
+        else
+        {
+            endFunction?.Invoke();
+        }
     }
-    public static void ClaimScreenChangeEffectStart(ScreenChangeType wantType) => GameManager.Instance?.UI?.ScreenChangeEffectStart(wantType);
+    public static void ClaimScreenChangeEffectStart(ScreenChangeType wantType, Action endFunction = null) 
+        => GameManager.Instance?.UI?.ScreenChangeEffectStart(wantType, endFunction);
+    public static void ClaimScreenChangeEffect(ScreenChangeType wantType, Action endFunction = null)
+        => GameManager.Instance?.UI?.ScreenChangeEffectStart(wantType, endFunction + ClaimScreenChangeEffectEnd);
     protected void ScreenChangeEffectEnd()
     {
         if (!currentScreenChanger) return;
@@ -273,7 +293,7 @@ public class UIManager : ManagerBase
         currentScreenChanger.ChangeEnd(() => targetObject.SetActive(false));
         currentScreenChanger = null;
     }
-    public static void ClaimScreenChangeEffectEnd()                            => GameManager.Instance?.UI?.ScreenChangeEffectEnd();
+    public static void ClaimScreenChangeEffectEnd()                 => GameManager.Instance?.UI?.ScreenChangeEffectEnd();
 
     public static void ClaimPopUp(string title, string context, string confirm)
     {

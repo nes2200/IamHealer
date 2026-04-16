@@ -125,10 +125,17 @@ public class GameManager : MonoBehaviour
         loadingProgress?.AddCurrent(1);
         yield return null;
 
-        UIManager.ClaimScreenChangeEffectStart(ScreenChangeType.ScreenChanger);
-        yield return new WaitForSeconds(0.5f);
-        UIManager.ClaimOpenScreen(UIType.Title);
-        UIManager.ClaimScreenChangeEffectEnd();
+        Pause();
+
+        InputManager.OnAnyKey -= UnPause;
+        InputManager.OnAnyKey += UnPause;
+
+        loadingProgress.SetComplete();
+
+        yield return new WaitUntil(() => isPlaying);
+        UIManager.ClaimOpenScreen(UIType.Title, ScreenChangeType.ScreenChanger);
+        InputManager.OnAnyKey -= UnPause;
+
         isLoading = false;
     }
 

@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class UI_Button_Save : MonoBehaviour
 {
-    public void OpenBattleScreen()
+    public void OpenStageScreen()
     {
-        UIManager.ClaimOpenScreen(UIType.Battle);
+        UIManager.ClaimOpenScreen(UIType.Stage, ScreenChangeType.ScreenChanger);
     }
 }
