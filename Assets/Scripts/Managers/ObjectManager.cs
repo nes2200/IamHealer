@@ -45,7 +45,7 @@ public class ObjectManager : ManagerBase
     {
         GameObject result = null; ;
 
-        wantName = wantName.ToLower();
+        //wantName = wantName.ToLower();
 
         //이 이름으로 된 풀이 등록되어 있다면
         if (poolDictionary.TryGetValue(wantName, out ObjectPoolModule pool))

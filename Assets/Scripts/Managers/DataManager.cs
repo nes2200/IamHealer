@@ -8,6 +8,8 @@ public class DataManager : ManagerBase
 {
     static Dictionary<System.Type, Dictionary<string, Object>> dataDictionary = new();
 
+    public bool IsLoadingFinished { get; private set; } = false;
+
     public override int LoadCount
     {
         get
@@ -22,6 +24,8 @@ public class DataManager : ManagerBase
 
     protected override IEnumerator Onconnected(GameManager newManager)
     {
+        IsLoadingFinished = false;
+
         // 로딩 진해율 => 최대 몇개를 로딩해야 하는지, 몇개까지 했는지
         //                현재 / 최대
         UIBase loading = UIManager.ClaimGetUI(UIType.Loading);
@@ -55,9 +59,8 @@ public class DataManager : ManagerBase
         //if (TryGetFildFromResources("Prefabs/Square", out Sprite trash)) Debug.Log(trash);
 
         // Interface : 어떤 기능이 있을거란 약속.
-
-        
             
+        IsLoadingFinished = true;
         yield return null;
     }
 
@@ -90,7 +93,8 @@ public class DataManager : ManagerBase
             innerDic = new();
             dataDictionary.Add(typeof(T), innerDic);
         }
-        innerDic.TryAdd(target.name.ToLower(), target);
+        //innerDic.TryAdd(target.name.ToLower(), target);
+        innerDic.TryAdd(target.name, target);
     }
 
     protected static T GetDataFromDictionary<T>(string fileName) where T : Object
@@ -99,7 +103,7 @@ public class DataManager : ManagerBase
         //2.글자가 없을 때 fileName.length == 0 emptystring
         if (string.IsNullOrEmpty(fileName)) return null;
 
-        fileName = fileName.ToLower();
+        //fileName = fileName.ToLower();
         if (dataDictionary.TryGetValue(typeof(T), out Dictionary<string, Object> innerDic))
         {
             if (innerDic.TryGetValue(fileName, out Object result))

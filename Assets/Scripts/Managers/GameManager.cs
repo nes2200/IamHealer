@@ -105,6 +105,9 @@ public class GameManager : MonoBehaviour
         loadingProgress?.Set(0, totalLoadCount);
 
         yield return Data.Connect(this);
+
+        yield return new WaitUntil(() => Data.IsLoadingFinished);
+
         loadingProgress?.AddCurrent(1);
         yield return ObjectM.Connect(this);
         loadingProgress?.AddCurrent(1);
