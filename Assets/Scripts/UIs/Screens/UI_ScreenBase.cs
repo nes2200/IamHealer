@@ -31,7 +31,7 @@ public struct UIClaim
 public class UI_ScreenBase : OpenableUIBase
 {
     [SerializeField] UIClaim[] requiredUI;
-
+    [SerializeField] protected UIType[] closeWithScreen; 
  
 
     public override void Registration(UIManager manager)
@@ -44,4 +44,16 @@ public class UI_ScreenBase : OpenableUIBase
             currentClaim.Execute();
         }
     }
+
+    public override void Close()
+    {
+        base.Close();
+
+        if (closeWithScreen != null) 
+        {
+            foreach(UIType currentUI in closeWithScreen) UIManager.ClaimCloseUI(currentUI);
+        }
+    }
+
+    public virtual bool CloseInnerUI() => UIManager.ClaimCloseUI(closeWithScreen);
 }

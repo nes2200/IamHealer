@@ -44,6 +44,9 @@ public class InputManager : ManagerBase
 
     public bool is2D = true;
 
+    bool canInput = true;
+    public bool CanInput { get { return canInput; } set { CanInput = value; } }
+
     protected override IEnumerator Onconnected(GameManager newManager)
     {
         targetInput = GetComponent<PlayerInput>();
@@ -156,5 +159,9 @@ public class InputManager : ManagerBase
         OnMouseMove?.Invoke(screenPosition, worldPosition);
     }
 
-    
+    public void SetInputState(bool isEnabled)
+    {
+        if (isEnabled) targetInput.enabled = true;
+        else targetInput.enabled = false;
+    }
 }

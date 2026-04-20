@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class DataManager : ManagerBase
 {
     static Dictionary<System.Type, Dictionary<string, Object>> dataDictionary = new();
+
+    event System.Action DisconnectEvent;
 
     public bool IsLoadingFinished { get; private set; } = false;
 
@@ -66,6 +69,8 @@ public class DataManager : ManagerBase
 
     protected override void OnDisconnected()
     {
+        DisconnectEvent?.Invoke();
+        DisconnectEvent = null;
     }
 
     //Resources => 유니티에서 Resources라는 폴더를 만들면 사용 가능
@@ -140,8 +145,10 @@ public class DataManager : ManagerBase
             SaveDataFile(loaded); //로드 됬으니까 저장
             actionForEachLoad?.Invoke(); //할 일 있으면 실행
         });
-        await finder.Task;
-        finder.Release();
+        Task result = finder.Task;
+        await result;
+        //만약 데이터 매니저가 끝난다면 이걸 릴리즈 해달라
+        DisconnectEvent += () => finder.Release();
     }
 
     async void LoadFileFromAssetBundle<T>(string address)  where T : Object

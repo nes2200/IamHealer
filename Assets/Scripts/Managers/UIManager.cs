@@ -216,6 +216,37 @@ public class UIManager : ManagerBase
         else return null;
     }
     public static UIBase ClaimGetUI(UIType wantType)                => GameManager.Instance?.UI?.GetUI(wantType);
+
+    protected bool IsOpen(UIType wantType, out IOpenable resultOpenable)
+    {
+        resultOpenable = default;
+        UIBase target = GetUI(wantType);
+
+        if (!target) return false;
+        resultOpenable = target as IOpenable;
+        if (resultOpenable is not null) return resultOpenable.IsOpen;
+        return target.gameObject.activeSelf;
+    }
+    protected bool CloseUI(params UIType[] wantTypes)
+    {
+        foreach (UIType wantType in wantTypes)
+        {
+            if (IsOpen(wantType, out IOpenable resultOpenable))
+            {
+                if (resultOpenable is null) continue;
+                resultOpenable.Close();
+                return true;
+            }
+        }
+        return false;
+    }
+    public static bool ClaimCloseUI(params UIType[] wantTypes)      => GameManager.Instance?.UI?.CloseUI(wantTypes) ?? false;
+
+    public static bool ClaimCheckOpen(UIType wantType, out IOpenable resultOpenable)
+    {
+        resultOpenable = default;
+        return GameManager.Instance?.UI?.IsOpen(wantType, out resultOpenable) ?? false;
+    }
     protected UIBase OpenUI(UIType wantType)
     {
         UIBase result = GetUI(wantType);
@@ -262,6 +293,9 @@ public class UIManager : ManagerBase
 
     protected void ScreenChangeEffectStart(ScreenChangeType wantType, Action endFunction = null)
     {
+        //EventSystem.current.enabled = false;
+        GameManager.Instance.Input.SetInputState(false);
+
         if (currentScreenChanger) return;
 
         if(screenChangerDictionary.TryGetValue(wantType, out UI_ScreenChanger result))
@@ -272,9 +306,9 @@ public class UIManager : ManagerBase
                 return;
             }
 
+            currentScreenChanger = result;
             result.gameObject.SetActive(true);
             result.ChangeStart(endFunction);
-            currentScreenChanger = result;
         }
         else
         {
@@ -289,8 +323,14 @@ public class UIManager : ManagerBase
     {
         if (!currentScreenChanger) return;
         GameObject targetObject = currentScreenChanger.gameObject;
-        currentScreenChanger.ChangeEnd(() => targetObject.SetActive(false));
+        currentScreenChanger.ChangeEnd(() =>
+        {
+            targetObject.SetActive(false);
+            GameManager.Instance.Input.SetInputState(true);
+        });
         currentScreenChanger = null;
+
+        //EventSystem.current.enabled = true;
     }
     public static void ClaimScreenChangeEffectEnd()                 => GameManager.Instance?.UI?.ScreenChangeEffectEnd();
 

@@ -11,6 +11,7 @@ public class UI_ScreenChanger : OpenableUIBase
         AnimEndFunction = newFunction;
         if (anim) anim.SetTrigger("Out");
         else OnAnimEnd();
+
     }
     public void ChangeEnd(Action newFunction = null)
     {
