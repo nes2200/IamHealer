@@ -10,7 +10,7 @@ using UnityEngine.EventSystems;
 //플레이어가 할 일을 대신 해주고, 열려있는 창이 있다면 그 친구의 기능도 수행하고
 //내가 신호주면 열결되어 있는 모든 애들이 한번에 기능을 수행하고 간다
 public delegate void MouseMoveEvent(Vector2 screenPosition, Vector3 worldPosition);
-public delegate void MouseButtonEvent(bool value, Vector2 screenPosition, Vector3 position);
+public delegate void MouseButtonEvent(bool value, Vector2 screenPosition, Vector3 worldPosition);
 public delegate void ButtonEvent(bool value);
 public delegate void VectorEvent(Vector2 value);
 public delegate void AxisEvent(float value);
