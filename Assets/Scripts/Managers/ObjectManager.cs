@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-
 public class ObjectManager : ManagerBase
 {
     //이제 새로운 global 파일을 추가할 때 글자 추가만 하면 됨
@@ -31,6 +29,7 @@ public class ObjectManager : ManagerBase
 
     protected override IEnumerator Onconnected(GameManager newManager)
     {
+        RegistrationInHierarchy();
         RegistrationPool(globalPoolSettings);
         InitializePool();
 
@@ -297,6 +296,17 @@ public class ObjectManager : ManagerBase
             foreach (var current in target.GetComponentsInChildren<IFunctionable>())
             {
                 current.UnregistrationFunctions();
+            }
+        }
+    }
+
+    public void RegistrationInHierarchy()
+    {
+        foreach(MonoBehaviour current in FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Exclude, FindObjectsSortMode.None))
+        {
+            if(current is IFunctionable currentFunctionable)
+            {
+                currentFunctionable.RegistrationFunctions();
             }
         }
     }

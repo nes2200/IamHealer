@@ -25,7 +25,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "MouseLeftButtonDown",
+                    "name": "MouseLeftButton",
                     "type": "Button",
                     "id": "9b42e183-4c50-4484-b48c-370ae5f4b09f",
                     "expectedControlType": "",
@@ -34,7 +34,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "MouseRightButtonDown",
+                    "name": "MouseRightButton",
                     "type": "Button",
                     "id": "e8e3e910-1f5f-4db3-9caf-e735ade8197e",
                     "expectedControlType": "",
@@ -43,36 +43,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "MouseLeftButtonUp",
-                    "type": "Button",
-                    "id": "4066b692-3d05-4fd3-b9ec-2fc57b612197",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "MouseRightButtonUp",
-                    "type": "Button",
-                    "id": "09329b2f-146c-4f87-b193-8ee81e9822c6",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "MouseWheelButtonDown",
+                    "name": "MouseWheelButton",
                     "type": "Button",
                     "id": "beb9aaa0-e480-4433-a769-a52cced4c889",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "MouseWheelButtonUp",
-                    "type": "Button",
-                    "id": "24dfc959-3261-4fda-b254-b34ea918bcaa",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -97,18 +70,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "ShowStatusButtonDown",
+                    "name": "ShowStatusButton",
                     "type": "Button",
                     "id": "94bc0f2f-da55-4210-bdbe-c83f36c9795e",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "ShowStatusButtonUp",
-                    "type": "Button",
-                    "id": "127786ea-3143-4d77-9a9b-fec0b00dd8b2",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -151,10 +115,10 @@
                     "name": "",
                     "id": "dcb7ed21-1ab3-43d4-948b-e5c988bc856c",
                     "path": "<Mouse>/leftButton",
-                    "interactions": "Press",
+                    "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "MouseLeftButtonDown",
+                    "action": "MouseLeftButton",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -162,32 +126,10 @@
                     "name": "",
                     "id": "1fbcc2ee-94e6-40ec-b838-523c13db6578",
                     "path": "<Mouse>/rightButton",
-                    "interactions": "Press",
+                    "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "MouseRightButtonDown",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "ac0dcad8-9740-44ea-bf16-9cf6bbc8daef",
-                    "path": "<Mouse>/rightButton",
-                    "interactions": "Press(behavior=1)",
-                    "processors": "",
-                    "groups": "",
-                    "action": "MouseRightButtonUp",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "51615173-e902-40e2-942d-9b7aa80366df",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "Press(behavior=1)",
-                    "processors": "",
-                    "groups": "",
-                    "action": "MouseLeftButtonUp",
+                    "action": "MouseRightButton",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -195,21 +137,10 @@
                     "name": "",
                     "id": "5a3503a2-315a-40ce-ae45-657acf41870a",
                     "path": "<Mouse>/middleButton",
-                    "interactions": "Press",
+                    "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "MouseWheelButtonDown",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "e43af95d-944d-4881-b4fa-e4a5b7f566d5",
-                    "path": "<Mouse>/middleButton",
-                    "interactions": "Press(behavior=1)",
-                    "processors": "",
-                    "groups": "",
-                    "action": "MouseWheelButtonUp",
+                    "action": "MouseWheelButton",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -225,7 +156,7 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "2D Vector",
+                    "name": "WASD",
                     "id": "c95a0668-76ff-40b3-aa95-23629e33a7e5",
                     "path": "2DVector",
                     "interactions": "",
@@ -247,9 +178,31 @@
                     "isPartOfComposite": true
                 },
                 {
+                    "name": "up",
+                    "id": "3b46fc33-5cc3-4ec1-8902-a4597ccbdccc",
+                    "path": "<Keyboard>/upArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
                     "name": "down",
                     "id": "c713b536-f011-4cfe-9d65-2b225fa73fbb",
                     "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "ca171d00-b556-41e9-b834-63564703a221",
+                    "path": "<Keyboard>/downArrow",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -269,9 +222,31 @@
                     "isPartOfComposite": true
                 },
                 {
+                    "name": "left",
+                    "id": "35bd9d1d-b168-4487-9257-40d62327e371",
+                    "path": "<Keyboard>/leftArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
                     "name": "right",
                     "id": "613ff10f-3734-41fd-a4e3-c6d0cb21c5f1",
                     "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "cdea4555-4f79-4917-9c54-541b19865051",
+                    "path": "<Keyboard>/rightArrow",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -316,21 +291,10 @@
                     "name": "",
                     "id": "060cc278-e426-40eb-84e4-0b812572801d",
                     "path": "<Keyboard>/tab",
-                    "interactions": "Press",
+                    "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "ShowStatusButtonDown",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "2abcce45-e111-4d98-b8b5-dd8000a9918c",
-                    "path": "<Keyboard>/tab",
-                    "interactions": "Press(behavior=1)",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ShowStatusButtonUp",
+                    "action": "ShowStatusButton",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

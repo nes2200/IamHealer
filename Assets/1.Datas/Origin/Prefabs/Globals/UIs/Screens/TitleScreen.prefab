@@ -772,6 +772,7 @@ MonoBehaviour:
   - prefabName: QuitConfirm
     uiType: 9
     isOpen: 0
+  closeWithScreen: 
 --- !u!95 &5002377203322431696
 Animator:
   serializedVersion: 7

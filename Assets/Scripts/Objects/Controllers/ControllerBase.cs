@@ -5,11 +5,6 @@ public class ControllerBase : MonoBehaviour, IFunctionable
     CharacterBase _character;
     public CharacterBase Character => _character;
 
-    private void Start()
-    {
-        GameManager.OnInitializeController += RegistrationFunctions;
-    }
-
     public virtual void RegistrationFunctions()
     {
         Possess(GetComponent<CharacterBase>());

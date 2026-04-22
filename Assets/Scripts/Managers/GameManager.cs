@@ -51,6 +51,8 @@ public class GameManager : MonoBehaviour
     public static event DestroyEvent    OnDestroyCharacter;
     public static event DestroyEvent    OnDestroyObject;
 
+    [SerializeField] UIType startScreen;
+
     bool isLoading = true;
     bool isPlaying = true;
 
@@ -141,7 +143,7 @@ public class GameManager : MonoBehaviour
         loadingProgress.SetComplete();
 
         yield return new WaitUntil(() => isPlaying);
-        UIManager.ClaimOpenScreen(UIType.Title, ScreenChangeType.ScreenChanger);
+        UIManager.ClaimOpenScreen(startScreen, ScreenChangeType.ScreenChanger);
         InputManager.OnAnyKey -= UnPause;
 
         isLoading = false;

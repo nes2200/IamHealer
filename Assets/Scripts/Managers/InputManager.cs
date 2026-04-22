@@ -102,30 +102,37 @@ public class InputManager : ManagerBase
         if (actionDictionary == null || actionDictionary.Count == 0) return;
 
         InitializeAction("CursorPositionChanged",(context) => CursorPositionChanged(GetVector2Value(context)));
-        InitializeAction("Move",                 (context) => OnMove            ?.Invoke(GetVector2Value(context)));
+        InitializeAction("Move"                 ,(context) => OnMove            ?.Invoke(GetVector2Value(context))
+                                                ,(context) => OnMove            ?.Invoke(Vector2.zero));
 
-        InitializeAction("MouseLeftButtonDown",  (context) => OnMouseLeftButton ?.Invoke(true, cursorScreenPosition, cursorWorldPosition)) ;
-        InitializeAction("MouseRightButtonDown", (context) => OnMouseRightButton?.Invoke(true, cursorScreenPosition, cursorWorldPosition));
-        InitializeAction("MouseLeftButtonUp",    (context) => OnMouseLeftButton ?.Invoke(false, cursorScreenPosition, cursorWorldPosition));
-        InitializeAction("MouseRightButtonUp",   (context) => OnMouseRightButton?.Invoke(false, cursorScreenPosition, cursorWorldPosition));
+        InitializeAction("MouseLeftButton"      ,(context) => OnMouseLeftButton ?.Invoke(true, cursorScreenPosition, cursorWorldPosition)
+                                                ,(context) => OnMouseLeftButton ?.Invoke(false, cursorScreenPosition, cursorWorldPosition));
+
+        InitializeAction("MouseRightButton"     ,(context) => OnMouseRightButton?.Invoke(true, cursorScreenPosition, cursorWorldPosition)
+                                                ,(context) => OnMouseRightButton?.Invoke(false, cursorScreenPosition, cursorWorldPosition));
         
+        InitializeAction("ShowStatusButton"     , (context) => OnShowStatus      ?.Invoke(true)
+                                                ,(context) => OnShowStatus       ?.Invoke(false));   
+
+        InitializeAction("MouseWheelButton"     ,(context) => OnMouseWheelButton?.Invoke(true, cursorScreenPosition, cursorWorldPosition)
+                                                ,(context) => OnMouseWheelButton?.Invoke(false, cursorScreenPosition, cursorWorldPosition));
+
         InitializeAction("Cancel",               (context) => OnCancel          ?.Invoke(true));
-        InitializeAction("ShowStatusButtonDown", (context) => OnShowStatus      ?.Invoke(true));
-        InitializeAction("ShowStatusButtonUp",   (context) => OnShowStatus      ?.Invoke(false));   
-
-        InitializeAction("MouseWheelButtonDown", (context) => OnMouseWheelButton?.Invoke(true, cursorScreenPosition, cursorWorldPosition));   
-        InitializeAction("MouseWheelButtonUp",   (context) => OnMouseWheelButton?.Invoke(false, cursorScreenPosition, cursorWorldPosition));
-
         InitializeAction("AnyKey",               (context) => OnAnyKey          ?.Invoke());
     }
 
-    void InitializeAction(string actionName, Action<InputAction.CallbackContext> actionMethod) 
+    void InitializeAction(string actionName, Action<InputAction.CallbackContext> actionMethod, Action<InputAction.CallbackContext> cancelMethod = null) 
     {
         if (actionDictionary == null) return;
 
-        if (actionDictionary.TryGetValue(actionName, out InputAction cursorPositionChanged))
+        if (actionDictionary.TryGetValue(actionName, out InputAction currentInput))
         {
-            cursorPositionChanged.performed += actionMethod;
+            //발동될 때 할일
+            if(actionMethod is not null)currentInput.performed += actionMethod;
+            //취소될 때 할일
+            if(cancelMethod is not null)currentInput.canceled += cancelMethod;
+            //키가 눌렸을 때
+            //currentInput.started
         }
     }
 
