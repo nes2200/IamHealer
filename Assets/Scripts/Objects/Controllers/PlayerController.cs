@@ -22,7 +22,7 @@ public class PlayerController : ControllerBase
 
     public void MoveToMousePosition(bool value, Vector2 screenPosition, Vector3 worldPosition)
     {
-        if(value) CommandMoveToDestination(worldPosition, 0.0f);
+        if(value) CommandMoveToDestination(worldPosition, 0.1f);
     }
     private void MoveToDirection(Vector2 value)
     {
