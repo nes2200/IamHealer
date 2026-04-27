@@ -249,7 +249,7 @@ public class GameManager : MonoBehaviour
 
 
         if (isPlaying)
-        {
+         {
             float deltaTime = Time.deltaTime;
             //매니저를 업데이트
             OnUpdateManager?.Invoke(deltaTime);

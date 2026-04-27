@@ -1,7 +1,22 @@
+using System.Collections.Generic;
 using UnityEngine;
+
+public delegate void MovementEvent(Vector3 move);
+public delegate void LookAtEvent(Vector3 direction);
+//                              실제 데미지를 제공한 사물     데미지를 주라고 시킨놈
+public delegate void DamageEvent(GameObject damageCauser, ControllerBase instigator, float damage);
 
 public class CharacterBase : MonoBehaviour
 {
+    public event MovementEvent OnMovement;
+    public void MovementNotify(Vector3 move) => OnMovement?.Invoke(move);
+    public event LookAtEvent   OnLookAt;
+    public void LookAtNotify(Vector3 direction) => OnLookAt?.Invoke(direction);
+    public event DamageEvent   OnDamage;
+    public void DamageNotify(GameObject damageCauser, ControllerBase instigator, float damage)
+        => OnDamage?.Invoke(damageCauser, instigator, damage);
+
+
     ControllerBase _controller;
     public ControllerBase Controller => _controller;
 
@@ -10,12 +25,56 @@ public class CharacterBase : MonoBehaviour
 
     public virtual string DisplayName => "Character";
 
+    //모듈 저장하기
+    //List : 추가/제거가 쉽다 <-> 메모리 효율이 낮고, 전체 순환이 느리다
+    //Array : 추가/제거 어렵다 <-> 메모리 효율 높고, 전체 순환이 빠르다
+    Dictionary<System.Type, CharacterModule> moduleDictionary = new();
+    //추가 / 제거 / 검색
+    public void AddModule(System.Type wantType, CharacterModule wantModule)
+    {
+        if(moduleDictionary.TryAdd(wantType, wantModule))
+        {
+            wantModule.OnRegistration(this);
+        }
+    }
+    public void AddAllModuleFromObject(GameObject target)
+    {
+        if (!target) return;
+
+        foreach(CharacterModule currentModule in target.GetComponentsInChildren<CharacterModule>())
+        {
+            AddModule(currentModule.RegistrationType, currentModule);
+        }
+    }
+    public void RemoveModule(System.Type wantType)
+    {
+        if(moduleDictionary.ContainsKey(wantType)) 
+        {
+            moduleDictionary[wantType].OnUnregistration(this);
+            moduleDictionary.Remove(wantType);
+        }
+    }
+    public void RemoveAllModule()
+    {
+        foreach(CharacterModule currentModule in moduleDictionary.Values)
+        {
+            currentModule.OnUnregistration(this);
+        }
+        moduleDictionary.Clear();
+    }
+    public T GetModule<T>() where T : CharacterModule
+    {
+        moduleDictionary.TryGetValue(typeof(T), out CharacterModule result);
+        return result as T;
+    }
+
     public virtual void OnPossessed(ControllerBase newController) {}
     public ControllerBase Possessed(ControllerBase from)
     {
         if (Controller) Unpossessed();
 
         _controller = from;
+        AddAllModuleFromObject(gameObject);
         OnPossessed(Controller);
         return Controller;
     }
@@ -24,6 +83,7 @@ public class CharacterBase : MonoBehaviour
     public void Unpossessed()
     {
         if(Controller) OnUnpossessed(Controller);
+        RemoveAllModule();
         _controller = null;
     }
     public bool Unpossessed(ControllerBase oldController)
