@@ -4,6 +4,7 @@ public class MovementModule : CharacterModule, IRunnable
 {
     protected Vector3? targetDirection = null;
     protected Vector3? targetDestination = null;
+    protected Vector3? targetTurnDirection = null;
     protected float targetTolerance;
 
     //이런 거대한 모듈을 만들 때에 한 번 "대분류"로 분류하기
@@ -34,7 +35,7 @@ public class MovementModule : CharacterModule, IRunnable
         UpdateToDestination(deltaTime);
     }
 
-    public virtual float GetMoveSpeed() => 5.0f;
+    public virtual float GetMoveSpeed() => 2.0f;
     public virtual float GetMoveSpeed(float deltaTime) => GetMoveSpeed() * deltaTime;
 
     public virtual void Translate(Vector3 delta)
@@ -46,8 +47,10 @@ public class MovementModule : CharacterModule, IRunnable
     {
         if (targetDirection is null) return;
 
+        Vector3 localDirection = transform.TransformDirection(targetDirection.Value).normalized;
+
         float currentMoveSpeed = GetMoveSpeed(deltaTime);
-        Translate(currentMoveSpeed * targetDirection.Value);
+        Translate(currentMoveSpeed * localDirection);
     }
     public void UpdateToDestination(float deltaTime)
     {

@@ -17,7 +17,8 @@ public abstract class AIController : ControllerBase
         return _focusTarget;
     }
     protected virtual bool IsFocussable(GameObject target) => target != FocusTarget;
-    protected virtual void OnFocusTargetChanged(GameObject oldTarget ,GameObject newTarget)
+    protected virtual void OnFocusTargetChanged(GameObject oldTarget, GameObject newTarget)
     {
+
     }
 }

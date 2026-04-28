@@ -56,7 +56,6 @@ public class InputManager : ManagerBase
         GameManager.OnUpdateManager -= UpdateEvent; //있으면 빼고, 없으면 아무일도 없고
         GameManager.OnUpdateManager += UpdateEvent;
         yield return null;
-
     }
 
     protected override void OnDisconnected()
@@ -111,7 +110,7 @@ public class InputManager : ManagerBase
         InitializeAction("MouseRightButton"     ,(context) => OnMouseRightButton?.Invoke(true, cursorScreenPosition, cursorWorldPosition)
                                                 ,(context) => OnMouseRightButton?.Invoke(false, cursorScreenPosition, cursorWorldPosition));
         
-        InitializeAction("ShowStatusButton"     , (context) => OnShowStatus      ?.Invoke(true)
+        InitializeAction("ShowStatusButton"     ,(context) => OnShowStatus      ?.Invoke(true)
                                                 ,(context) => OnShowStatus       ?.Invoke(false));   
 
         InitializeAction("MouseWheelButton"     ,(context) => OnMouseWheelButton?.Invoke(true, cursorScreenPosition, cursorWorldPosition)
