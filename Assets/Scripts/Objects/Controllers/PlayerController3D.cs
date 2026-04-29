@@ -7,12 +7,16 @@ public class PlayerController3D : ControllerBase
         base.OnPossess(newCharacter);
         InputManager.OnMove -= MoveToDirection;
         InputManager.OnMove += MoveToDirection;
+
+        InputManager.OnRotate -= RotateToDirection;
+        InputManager.OnRotate += RotateToDirection;
     }
 
     protected override void OnUnpossess(CharacterBase oldCharacter)
     {
         base.OnUnpossess(oldCharacter);
         InputManager.OnMove -= MoveToDirection;
+        InputManager.OnRotate -= RotateToDirection;
     }
 
     private void MoveToDirection(Vector2 value)
@@ -20,6 +24,10 @@ public class PlayerController3D : ControllerBase
         Vector3 direction = new Vector3(value.x, 0f, value.y);
 
         CommandMoveToDirection(direction);
+    }
+    private void RotateToDirection(Vector2 value)
+    {
+        CommandRotateToDirection(value);
     }
 
     //È¸Àü?

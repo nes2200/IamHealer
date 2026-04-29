@@ -31,6 +31,7 @@ public class InputManager : ManagerBase
     public static event ButtonEvent      OnCancel;
     public static event ButtonEvent      OnShowStatus;
     public static event VectorEvent      OnMove;
+    public static event VectorEvent      OnRotate;
     public static event Action           OnAnyKey;
 
 
@@ -103,6 +104,8 @@ public class InputManager : ManagerBase
         InitializeAction("CursorPositionChanged",(context) => CursorPositionChanged(GetVector2Value(context)));
         InitializeAction("Move"                 ,(context) => OnMove            ?.Invoke(GetVector2Value(context))
                                                 ,(context) => OnMove            ?.Invoke(Vector2.zero));
+        InitializeAction("Rotate"               ,(context) => OnRotate          ?.Invoke(GetVector2Value(context))
+                                                ,(context) => OnRotate          ?.Invoke(Vector2.zero));
 
         InitializeAction("MouseLeftButton"      ,(context) => OnMouseLeftButton ?.Invoke(true, cursorScreenPosition, cursorWorldPosition)
                                                 ,(context) => OnMouseLeftButton ?.Invoke(false, cursorScreenPosition, cursorWorldPosition));

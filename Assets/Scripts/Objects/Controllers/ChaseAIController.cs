@@ -15,7 +15,6 @@ public class ChaseAIController : AIController
     protected override void Think(float deltaTime)
     {
         if (!FocusTarget) return;
-        CommandMoveToDestination(FocusTarget.transform.position, 0.1f);
+        CommandMoveToDestination(FocusTarget.transform.position, 0.75f);
     }
-
 }

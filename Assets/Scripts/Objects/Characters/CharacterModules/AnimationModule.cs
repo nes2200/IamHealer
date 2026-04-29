@@ -33,11 +33,14 @@ public class AnimationModule : CharacterModule
     public void AnimationByMovement(Vector3 moveDelta)
     {
         if (!anim) return;
-        if(isRotationByMovement && moveDelta.sqrMagnitude > 0)
+        if (isRotationByMovement && moveDelta.sqrMagnitude > 0)
         {
             AnimationByLookRotation(moveDelta);
         }
         anim.SetFloat("MoveSpeed", moveDelta.magnitude / Time.fixedDeltaTime);
     }
-    
+    public void AnimationByRotation(Vector3 rotation)
+    {
+
+    }
 }

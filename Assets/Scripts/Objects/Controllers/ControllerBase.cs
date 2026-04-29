@@ -47,6 +47,10 @@ public class ControllerBase : MonoBehaviour, IFunctionable
     {
         if (Character && Character.GetModule<MovementModule>() is IRunnable target) target.MoveToDestination(destination, tolerance);
     }
+    public void CommandRotateToDirection(Vector3 direction)
+    {
+        if (Character && Character.GetModule<MovementModule>() is IRunnable target) target.Rotate(direction);
+    }
     public void CommandStop()
     {
         if (Character && Character.GetModule<MovementModule>() is IRunnable target) target.StopMovement();
