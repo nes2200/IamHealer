@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ChaseAIController : AIController 
+public class HostileAIController : AIController 
 {
     protected override void OnPossess(CharacterBase newCharacter)
     {

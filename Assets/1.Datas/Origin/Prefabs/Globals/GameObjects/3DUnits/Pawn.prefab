@@ -177,6 +177,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eaaf98f20f6f42b48815b5c1aff96967, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterBase
+  _status: {fileID: 11400000, guid: 0958da964e2e02943959bc2e0595d3d7, type: 2}
 --- !u!114 &6321743010092666124
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -232,6 +233,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AnimationModule
   anim: {fileID: 3303386446510088992}
   isRotationByMovement: 1
+  mainCollider: {fileID: 0}
+  mainRigid: {fileID: 0}
 --- !u!114 &1470336696091570844
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,9 +1,14 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class AnimationModule : CharacterModule
 {
     [SerializeField] Animator anim;
     [SerializeField] bool isRotationByMovement;
+
+    [SerializeField] CapsuleCollider mainCollider;
+    [SerializeField] Rigidbody mainRigid;
+    Rigidbody[] ragdollRigidbodies;
 
     public sealed override System.Type RegistrationType => typeof(AnimationModule);
 
@@ -14,6 +19,10 @@ public class AnimationModule : CharacterModule
         newOwner.OnLookAt += AnimationByLookRotation;
         newOwner.OnMovement -= AnimationByMovement;
         newOwner.OnMovement += AnimationByMovement;
+
+        //모든 rigid를 가져와 isKineatic을 true로 바꾼다
+        GetAllRigidbody();
+        SetRigidbodyAndCollier();
     }
     public override void OnUnregistration(CharacterBase oldOwner)
     {
@@ -39,8 +48,34 @@ public class AnimationModule : CharacterModule
         }
         anim.SetFloat("MoveSpeed", moveDelta.magnitude / Time.fixedDeltaTime);
     }
-    public void AnimationByRotation(Vector3 rotation)
+    
+    //모든 하위 rigidbody 가져오기
+    public void GetAllRigidbody()
     {
-
+        ragdollRigidbodies = GetComponentsInChildren<Rigidbody>();
     }
+    //rigidbody와 collider 세팅하기
+    public void SetRigidbodyAndCollier()
+    {
+        if (ragdollRigidbodies == null || !mainCollider) return;
+
+        //각 파츠의 rigidbody의 isKinematic을 true로 바꾸는 작업.
+        foreach (Rigidbody rigid in ragdollRigidbodies) { rigid.isKinematic = true; }
+        //메인 콜라이더가 꺼져있다면 켜주기
+        mainCollider.enabled = true;
+        //메인 rigidbody의 isKinematic이 켜져있다면 꺼주기
+        mainRigid.isKinematic = false;
+    }
+
+    //hp가 0이 되면 실행해야 할 기능
+    public void AnimationByFaint()
+    {
+        if (!anim) return;
+
+        anim.enabled = false;
+        mainCollider.enabled = false;
+        foreach (Rigidbody rigid in ragdollRigidbodies) { rigid.isKinematic = false; }
+        mainRigid.isKinematic = true;
+    }
+
 }

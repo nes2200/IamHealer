@@ -19,11 +19,16 @@ public class MovementModule : CharacterModule, IRunnable
         base.OnRegistration(newOwner);
         GameManager.OnPhysicsCharacter -= MovementUpdate;
         GameManager.OnPhysicsCharacter += MovementUpdate;
+
+        newOwner.OnFaint -= StopAllMovementByFaint;
+        newOwner.OnFaint += StopAllMovementByFaint;
     }
     public override void OnUnregistration(CharacterBase oldOwner)
     {
         base.OnUnregistration(oldOwner);
         GameManager.OnPhysicsCharacter -= MovementUpdate;
+
+        oldOwner.OnFaint -= StopAllMovementByFaint;
     }
 
     public void MovementUpdate(float deltaTime)
@@ -37,10 +42,7 @@ public class MovementModule : CharacterModule, IRunnable
         //PhysicsUpdate(deltaTime);
         //Owner.MovementNotify(moveDelta.Value.normalized);
     }
-    public void RotationUpdate(float deltaTime)
-    {
-
-    }
+    
     public void PhysicsUpdate(float deltaTime)
     {
         //UpdateToDirection(deltaTime);
@@ -142,6 +144,12 @@ public class MovementModule : CharacterModule, IRunnable
     {
         targetDirection = direction;
     }
+
+    public void StopAllMovementByFaint()
+    {
+        StopMovement();
+        GameManager.OnPhysicsCharacter -= MovementUpdate;
+    }
 }
 
 //MovementModule의 기능을 새로 만들기 -> 현재는 2D를 베이스로 하는 이동방식. 3D에서 XZ축을 이용한 이동방식을 새로 구현해야 한다. Y는 회전용
@@ -155,4 +163,3 @@ public class MovementModule : CharacterModule, IRunnable
 //input에서 move를 ws로 두고, rotation을 새로 만들어서 ad를 받기
 //irunnable에서 Rotate를 만들기 -> 하려니까 모든 상속 스크립트에서 만들어야함.
 //기존 코드를 수정해서 쓸까>?
-

@@ -230,6 +230,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_LoadingScreen
   requiredUI: []
+  closeWithScreen: 
   progressBar: {fileID: 7485712897231764595}
   progressText: {fileID: 8112458566009610934}
   loadingText: {fileID: 1656778828853936252}

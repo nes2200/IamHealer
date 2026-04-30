@@ -1,5 +1,4 @@
 using System;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public struct DamageStruct
@@ -19,7 +18,7 @@ public struct RestoreStruct
 
 public class HitPointModule : CharacterModule
 {
-    protected FillValue fill = new FillValue(20, 20);
+    protected FillValue fill; /*= new FillValue(20, 20);*/
     public override Type RegistrationType => typeof(HitPointModule);
 
     public int Max => fill.Max;
@@ -30,10 +29,19 @@ public class HitPointModule : CharacterModule
     public override void OnRegistration(CharacterBase newOwner)
     {
         base.OnRegistration(newOwner);
+        fill.OnChanged -= FaintCheck;
+        fill.OnChanged += FaintCheck;
+
+        SetFillValue(Owner.Status);
     }
     public override void OnUnregistration(CharacterBase oldOwner)
     {
         base.OnUnregistration(oldOwner);
+        fill.OnChanged -= FaintCheck;
+    }
+    protected void SetFillValue(UnitStatus unitstatus)
+    {
+        fill = new FillValue(unitstatus.maxHP, unitstatus.maxHP);
     }
 
     public int TakeDamage(in DamageStruct damageInfo)
@@ -45,5 +53,14 @@ public class HitPointModule : CharacterModule
     {
         fill.IncreaseCurrent(restoreInfo.restoreAmount);
         return restoreInfo.restoreAmount;
+    }
+
+    public void FaintCheck()
+    {
+        if(IsEmpty)
+        {
+            Owner.GetModule<AnimationModule>()?.AnimationByFaint();
+            Owner.FaintNotify();
+        }
     }
 }

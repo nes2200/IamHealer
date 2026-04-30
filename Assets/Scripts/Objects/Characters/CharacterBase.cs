@@ -6,21 +6,24 @@ public delegate void LookAtEvent    (Vector3 direction);
 //                              실제 데미지를 제공한 사물     데미지를 주라고 시킨놈
 public delegate void DamageEvent(in DamageStruct info);
 public delegate void RestoreEvent(in RestoreStruct info);
+public delegate void FaintEvent();
 
 public class CharacterBase : MonoBehaviour
 {
     public event MovementEvent OnMovement;
-    public void MovementNotify(Vector3 move) => OnMovement?.Invoke(move);
+    public void MovementNotify(Vector3 move)         => OnMovement?.Invoke(move);
 
     public event LookAtEvent   OnLookAt;
-    public void LookAtNotify(Vector3 direction) => OnLookAt?.Invoke(direction);
+    public void LookAtNotify(Vector3 direction)      => OnLookAt?.Invoke(direction);
 
     public event DamageEvent   OnDamage;
-    public void DamageNotify(in DamageStruct info) => OnDamage?.Invoke(info);
+    public void DamageNotify(in DamageStruct info)   => OnDamage?.Invoke(info);
 
     public event RestoreEvent OnRestore;
     public void RestoreNotify(in RestoreStruct info) => OnRestore?.Invoke(info);
 
+    public event FaintEvent OnFaint;
+    public void FaintNotify()                        => OnFaint?.Invoke();
 
     ControllerBase _controller;
     public ControllerBase Controller => _controller;
@@ -28,7 +31,10 @@ public class CharacterBase : MonoBehaviour
     protected Vector3 _lookRotation;
     public Vector3 LookRotation => _lookRotation;
 
-    public virtual string DisplayName => "Character";
+    [SerializeField] UnitStatus _status;
+    public UnitStatus Status => _status;
+
+    public virtual string DisplayName => Status.unitName;
 
     //모듈 저장하기
     //List : 추가/제거가 쉽다 <-> 메모리 효율이 낮고, 전체 순환이 느리다
