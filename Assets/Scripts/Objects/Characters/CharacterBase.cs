@@ -31,6 +31,7 @@ public class CharacterBase : MonoBehaviour
     protected Vector3 _lookRotation;
     public Vector3 LookRotation => _lookRotation;
 
+    //유닛 스테이터스가 담인 스크립터블 오브젝트
     [SerializeField] UnitStatus _status;
     public UnitStatus Status => _status;
 

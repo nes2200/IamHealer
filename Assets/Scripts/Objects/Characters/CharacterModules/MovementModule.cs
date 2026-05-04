@@ -7,6 +7,7 @@ public class MovementModule : CharacterModule, IRunnable
     protected Vector3? targetDestination = null;
     protected Vector3? targetRotation = null;
     protected float targetTolerance;
+    protected float mainColliderRadius;
 
     [SerializeField]float moveSpeed = 2.0f;
     [SerializeField]float rotateSpeed = 2.0f;
@@ -22,6 +23,9 @@ public class MovementModule : CharacterModule, IRunnable
 
         newOwner.OnFaint -= StopAllMovementByFaint;
         newOwner.OnFaint += StopAllMovementByFaint;
+
+        //내 Collider의 반지름
+        SetMainColliderRadius();
     }
     public override void OnUnregistration(CharacterBase oldOwner)
     {
@@ -149,6 +153,15 @@ public class MovementModule : CharacterModule, IRunnable
     {
         StopMovement();
         GameManager.OnPhysicsCharacter -= MovementUpdate;
+    }
+
+    protected void SetMainColliderRadius()
+    {
+        mainColliderRadius = Owner.GetModule<AnimationModule>().MainCollider.radius;
+    }
+    public float GetMainColliderRadius()
+    {
+         return mainColliderRadius;
     }
 }
 

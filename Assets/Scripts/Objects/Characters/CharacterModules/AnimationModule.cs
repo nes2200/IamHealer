@@ -7,6 +7,7 @@ public class AnimationModule : CharacterModule
     [SerializeField] bool isRotationByMovement;
 
     [SerializeField] CapsuleCollider mainCollider;
+    public CapsuleCollider MainCollider => mainCollider;
     [SerializeField] Rigidbody mainRigid;
     Rigidbody[] ragdollRigidbodies;
 
@@ -19,6 +20,8 @@ public class AnimationModule : CharacterModule
         newOwner.OnLookAt += AnimationByLookRotation;
         newOwner.OnMovement -= AnimationByMovement;
         newOwner.OnMovement += AnimationByMovement;
+        newOwner.OnFaint -= AnimationByFaint;
+        newOwner.OnFaint += AnimationByFaint;
 
         //모든 rigid를 가져와 isKineatic을 true로 바꾼다
         GetAllRigidbody();
@@ -29,6 +32,7 @@ public class AnimationModule : CharacterModule
         base.OnUnregistration(oldOwner);
         oldOwner.OnLookAt -= AnimationByLookRotation;
         oldOwner.OnMovement -= AnimationByMovement;
+        oldOwner.OnFaint -= AnimationByFaint;
     }
 
     public void AnimationByLookRotation(Vector3 lookRotation)
@@ -77,5 +81,4 @@ public class AnimationModule : CharacterModule
         foreach (Rigidbody rigid in ragdollRigidbodies) { rigid.isKinematic = false; }
         mainRigid.isKinematic = true;
     }
-
 }

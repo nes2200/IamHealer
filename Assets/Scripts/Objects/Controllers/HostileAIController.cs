@@ -15,6 +15,17 @@ public class HostileAIController : AIController
     protected override void Think(float deltaTime)
     {
         if (!FocusTarget) return;
-        CommandMoveToDestination(FocusTarget.transform.position, 0.75f);
+        CommandMoveToDestination(FocusTarget.transform.position, 0.5f);
+    }
+
+    public void Attack()
+    {
+        AttackModule atkModule = Character.GetModule<AttackModule>();
+        atkModule.AttackTarget(new AttackInfo
+        {
+            target = FocusTarget,
+            instigator = this,
+            damageAmount = Character.Status.damage
+        });
     }
 }

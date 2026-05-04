@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 
 public struct DamageStruct
@@ -29,10 +30,9 @@ public class HitPointModule : CharacterModule
     public override void OnRegistration(CharacterBase newOwner)
     {
         base.OnRegistration(newOwner);
+        SetFillValue(Owner.Status);
         fill.OnChanged -= FaintCheck;
         fill.OnChanged += FaintCheck;
-
-        SetFillValue(Owner.Status);
     }
     public override void OnUnregistration(CharacterBase oldOwner)
     {
@@ -59,7 +59,6 @@ public class HitPointModule : CharacterModule
     {
         if(IsEmpty)
         {
-            Owner.GetModule<AnimationModule>()?.AnimationByFaint();
             Owner.FaintNotify();
         }
     }

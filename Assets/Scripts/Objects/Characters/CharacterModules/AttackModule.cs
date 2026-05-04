@@ -12,6 +12,10 @@ public struct AttackInfo
 //hit과 같은 '맞는 역할'은 HitPointModule이 담당한다.
 public class AttackModule : CharacterModule
 {
+    bool isAttackCooldown = false;
+    public bool IsAttackCooldown => isAttackCooldown;
+    float attackCooldownCurrent;
+
     public override Type RegistrationType => typeof(AttackModule);
 
     public override void OnRegistration(CharacterBase newOwner)
@@ -21,5 +25,46 @@ public class AttackModule : CharacterModule
     public override void OnUnregistration(CharacterBase oldOwner)
     {
         base.OnUnregistration(oldOwner);
+    }
+
+    public void AttackTarget(in AttackInfo attackInfo)
+    {
+        if (isAttackCooldown)
+        {
+            AttackCooldownUpdate(Time.deltaTime);
+            return;
+        }
+
+        HitPointModule targetHPModule = attackInfo.target.GetComponent<HitPointModule>();
+        if (!targetHPModule) return;
+        targetHPModule.TakeDamage(new DamageStruct
+        {
+            from = Owner.gameObject,
+            instigator = attackInfo.instigator,
+            damageAmount = attackInfo.damageAmount
+        });
+        AttackCooldownStart();
+    }
+
+    public void AttackCooldownStart()
+    {
+        GameManager.OnUpdateCharacter -= AttackCooldownUpdate;
+        GameManager.OnUpdateCharacter += AttackCooldownUpdate;
+        isAttackCooldown = true;
+    }
+    public void AttackCooldownEnd()
+    {
+        GameManager.OnUpdateCharacter -= AttackCooldownUpdate;
+    }
+
+    void AttackCooldownUpdate(float deltaTime)
+    {
+        attackCooldownCurrent += deltaTime;
+        if(attackCooldownCurrent >= Owner.Status.attackSpeed)
+        {
+            attackCooldownCurrent = 0f;
+            isAttackCooldown = false;
+            AttackCooldownEnd();
+        }
     }
 }
