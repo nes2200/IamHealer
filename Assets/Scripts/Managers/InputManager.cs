@@ -40,10 +40,9 @@ public class InputManager : ManagerBase
 
     List<RaycastResult> cursorHitList = new();
 
+    GameObject cursorHoverObject;
     Vector2 cursorScreenPosition;
     Vector3 cursorWorldPosition;
-
-    public bool is2D = true;
 
     bool canInput = true;
     public bool CanInput { get { return canInput; } set { CanInput = value; } }
@@ -66,20 +65,75 @@ public class InputManager : ManagerBase
 
     public void UpdateEvent(float deltaTime)
     {
-        RefreshGameObjectUnderCursor();
+        RefreshGameObjectUnderCursor(cursorScreenPosition);
     }
 
-    void RefreshGameObjectUnderCursor()
+    void RefreshGameObjectUnderCursor(Vector2 screenPosition)
     {
         cursorHitList.Clear();
-        if (is2D)
+        GameManager.Instance.Camera.GetRaycastResult(screenPosition, cursorHitList);
+
+        //마우스의 화면상 실제 픽셀 위치
+        //화면과 유티니간의 좌표가 다르다 -> 바꿔줘야 한다. -> 기준점이 필요
+        //카메라를 기준으로 세상을 본다
+        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
+        GameObject closestObject = null;
+
+        //마우스에 닿을 수 있는 물체는 뭐가 있을까
+        //UI 2D 3D
+        //맨 첫번째에 있는 친구가 보통 UI일 가능성이 높다
+        //제일 첫번째 친구가 GraphicRaycaster에 의해서 선별될 경우 -> 첫번째 친구가 UI구나
+        if(cursorHitList.Count > 0 && cursorHitList[0].element != null)
         {
-            GameManager.Instance.Camera.GetRaycastResult2D(cursorScreenPosition, cursorHitList);
+            closestObject = cursorHitList[0].gameObject;
+        }
+        if (GameManager.is2D)
+        {
+            worldPosition.z = 0f;
+
+            //Order in Layer는 2byte 자료형
+            //-32768 ~ 32767 까지만 저장이 가능
+            //Layer를 100000배 해버리고 Order를 더하주면
+            //Layer가 1일때 67232 ~ 132767 사이의 값이 무조건 나오기 때문에
+            //밑이나 위의 레이어, 그러니까 0이나 2의 레이어는 침범할 가능성이 없다
+            float GetValue(RaycastResult target)
+            {
+                return target.sortingOrder + target.sortingLayer * 100000;
+            }
+            RaycastResult nearest = cursorHitList.GetMaximum<RaycastResult>(GetValue);
+            closestObject = nearest.gameObject;
+            worldPosition = nearest.worldPosition;
         }
         else
         {
-            GameManager.Instance.Camera.GetRaycastResult3D(cursorScreenPosition, cursorHitList);
+            //함수 내부에서 함수 만들기
+            float GetDistance(RaycastResult target)
+            {
+                return target.distance;
+            }
+
+            //cursorHitList.GetMinimum<RaycastResult>((target) => target.distance);
+            RaycastResult nearest = cursorHitList.GetMinimum<RaycastResult>(GetDistance);
+            closestObject = nearest.gameObject;
+            worldPosition = nearest.worldPosition;
         }
+
+            //마우스가 닿은 대상의 표면 위치 중에서 가장 화면에서 가까운 대상 찾기
+        float minDistance = float.MaxValue;
+        Vector3 contactPosition = worldPosition;
+        foreach (RaycastResult currentResult in cursorHitList)
+        {
+            float currentDistance = currentResult.distance;
+            if (currentDistance < minDistance)
+            {
+                minDistance = currentDistance;
+                closestObject = currentResult.gameObject;
+                contactPosition = currentResult.worldPosition;
+            }
+        }
+
+        cursorScreenPosition = screenPosition;
+        cursorWorldPosition = worldPosition;
     }
 
     public GameObject GetGameObjectUnderCursor()
@@ -148,24 +202,9 @@ public class InputManager : ManagerBase
 
     void CursorPositionChanged(Vector2 screenPosition)
     {
-        //마우스의 화면상 실제 픽셀 위치
-        //화면과 유티니간의 좌표가 다르다 -> 바꿔줘야 한다. -> 기준점이 필요
-        //카메라를 기준으로 세상을 본다
-        Vector3 worldPosition;
+        RefreshGameObjectUnderCursor(screenPosition); //새로고침
 
-        if(is2D)
-        {
-            worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
-            worldPosition.z = 0f;
-        }
-        else
-        {
-            worldPosition = Vector3.zero;
-        }
-        cursorScreenPosition = screenPosition;
-        cursorWorldPosition = worldPosition;
-
-        OnMouseMove?.Invoke(screenPosition, worldPosition);
+        OnMouseMove?.Invoke(cursorScreenPosition, cursorWorldPosition);
     }
 
     public void SetInputState(bool isEnabled)

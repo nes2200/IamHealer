@@ -2,6 +2,7 @@ using System.Collections;
 using System.Threading.Tasks;
 using Unity.Mathematics.Geometry;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 //확장 메소드를 가지고 있을 클래스
 //객체화가 필요할까?
@@ -43,6 +44,34 @@ public static class Extensions
         if (target == null) return null;
         else return target.gameObject.TryAddComponent<T>();
     }
+
+    //Action : 반환값이 없는 함수
+    //Func : 반환값이 있는 함수
+    //왼쪽 오른쪽 친구를 가지고 비교를 해서 그 결과가 bool로 나오는 형태의 함수를 Comparison이라고 한다
+    public static T GetExtreme<T>(this IEnumerable targetList, float defaultScore,
+     System.Func<T, float> Evaluator,
+     System.Func<float, float, bool> Comparison)
+    {
+        T result = default;
+        float extremeScore = defaultScore;
+
+        //foreach에 in 역할을 넣을 수 있는 모든 것을 담을 수 있어야 한다. Array, List, Dictionary 등등
+        foreach (T currentTarget in targetList)
+        {
+            float currentScore = Evaluator(currentTarget);
+
+            if (Comparison(currentScore, extremeScore))
+            {
+                extremeScore = currentScore;
+                result = currentTarget;
+            }
+        }
+        return result;
+    }
+    public static T GetMaximum<T>(this IEnumerable targetList, System.Func<T, float> Evaluator)
+     => GetExtreme(targetList, float.MinValue, Evaluator, (a,b) => a > b);
+    public static T GetMinimum<T>(this IEnumerable targetList, System.Func<T, float> Evaluator)
+      => GetExtreme(targetList, float.MaxValue, Evaluator, (a,b) => a < b);
 
     public static IEnumerator WaitForTask(this Task targetTask)
     {

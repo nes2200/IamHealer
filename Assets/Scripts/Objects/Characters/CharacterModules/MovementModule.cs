@@ -23,9 +23,6 @@ public class MovementModule : CharacterModule, IRunnable
 
         newOwner.OnFaint -= StopAllMovementByFaint;
         newOwner.OnFaint += StopAllMovementByFaint;
-
-        //내 Collider의 반지름
-        SetMainColliderRadius();
     }
     public override void OnUnregistration(CharacterBase oldOwner)
     {
