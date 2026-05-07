@@ -59,7 +59,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -149,6 +149,10 @@ PrefabInstance:
       propertyPath: costLimitText
       value: 
       objectReference: {fileID: 1903212935634521604}
+    - target: {fileID: 2914885590680737981, guid: 06a2b5500fc1aa2479029266b44dd430, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3073125387342917737, guid: 06a2b5500fc1aa2479029266b44dd430, type: 3}
       propertyPath: m_Name
       value: CostStarBattle
@@ -231,6 +235,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4834666509538913843, guid: 06a2b5500fc1aa2479029266b44dd430, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8775163169602035670, guid: 06a2b5500fc1aa2479029266b44dd430, type: 3}
+      propertyPath: m_RaycastTarget
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

@@ -11,6 +11,7 @@ using UnityEngine.EventSystems;
 //내가 신호주면 열결되어 있는 모든 애들이 한번에 기능을 수행하고 간다
 public delegate void MouseMoveEvent(Vector2 screenPosition, Vector3 worldPosition);
 public delegate void MouseButtonEvent(bool value, Vector2 screenPosition, Vector3 worldPosition);
+public delegate void MouseHoverEvent(GameObject newTarget, GameObject oldTarget);
 public delegate void ButtonEvent(bool value);
 public delegate void VectorEvent(Vector2 value);
 public delegate void AxisEvent(float value);
@@ -27,11 +28,16 @@ public class InputManager : ManagerBase
     public static event MouseButtonEvent OnMouseLeftButton;
     public static event MouseButtonEvent OnMouseRightButton;
     public static event MouseButtonEvent OnMouseWheelButton;
+
     public static event MouseMoveEvent   OnMouseMove;
+    public static event MouseHoverEvent  OnMouseHover;
+
     public static event ButtonEvent      OnCancel;
     public static event ButtonEvent      OnShowStatus;
+
     public static event VectorEvent      OnMove;
     public static event VectorEvent      OnRotate;
+
     public static event Action           OnAnyKey;
 
 
@@ -77,7 +83,7 @@ public class InputManager : ManagerBase
         //화면과 유티니간의 좌표가 다르다 -> 바꿔줘야 한다. -> 기준점이 필요
         //카메라를 기준으로 세상을 본다
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
-        GameObject closestObject = null;
+        GameObject firstObject = null;
 
         //마우스에 닿을 수 있는 물체는 뭐가 있을까
         //UI 2D 3D
@@ -85,7 +91,7 @@ public class InputManager : ManagerBase
         //제일 첫번째 친구가 GraphicRaycaster에 의해서 선별될 경우 -> 첫번째 친구가 UI구나
         if(cursorHitList.Count > 0 && cursorHitList[0].element != null)
         {
-            closestObject = cursorHitList[0].gameObject;
+            firstObject = cursorHitList[0].gameObject;
         }
         if (GameManager.is2D)
         {
@@ -101,8 +107,7 @@ public class InputManager : ManagerBase
                 return target.sortingOrder + target.sortingLayer * 100000;
             }
             RaycastResult nearest = cursorHitList.GetMaximum<RaycastResult>(GetValue);
-            closestObject = nearest.gameObject;
-            worldPosition = nearest.worldPosition;
+            firstObject = nearest.gameObject;
         }
         else
         {
@@ -114,26 +119,20 @@ public class InputManager : ManagerBase
 
             //cursorHitList.GetMinimum<RaycastResult>((target) => target.distance);
             RaycastResult nearest = cursorHitList.GetMinimum<RaycastResult>(GetDistance);
-            closestObject = nearest.gameObject;
+            firstObject = nearest.gameObject;
             worldPosition = nearest.worldPosition;
         }
 
-            //마우스가 닿은 대상의 표면 위치 중에서 가장 화면에서 가까운 대상 찾기
-        float minDistance = float.MaxValue;
-        Vector3 contactPosition = worldPosition;
-        foreach (RaycastResult currentResult in cursorHitList)
-        {
-            float currentDistance = currentResult.distance;
-            if (currentDistance < minDistance)
-            {
-                minDistance = currentDistance;
-                closestObject = currentResult.gameObject;
-                contactPosition = currentResult.worldPosition;
-            }
-        }
-
+        GameObject lastHoverObject = cursorHoverObject;
         cursorScreenPosition = screenPosition;
         cursorWorldPosition = worldPosition;
+        cursorHoverObject = firstObject;
+
+        if (lastHoverObject != firstObject)
+        {
+            //마우스 호버 변경됨 알림
+            OnMouseHover?.Invoke(firstObject, lastHoverObject);
+        }
     }
 
     public GameObject GetGameObjectUnderCursor()

@@ -7,7 +7,8 @@ using UnityEngine.UI;
 
 public enum UIType
 {
-    None, Loading, Title, Option, Movable, Menu, Info, SaveSlot, Stage, GameQuit, Sandbox, BattleResult,
+    None, 
+    Loading, Title, Option, Movable, Menu, Info, SaveSlot, Stage, GameQuit, Sandbox, BattleResult, TargetHoverInfo,
     _Length
 }
 
