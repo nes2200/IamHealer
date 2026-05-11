@@ -13,4 +13,15 @@ public class UI_StageScreen : UI_ScreenBase
         InputManager.OnCancel -= ToggleMenu;
     }
     void ToggleMenu(bool value) => UIManager.ClaimToggleUI(UIType.Menu);
+
+    public override void Open()
+    {
+        base.Open();
+        GameManager.Instance.Camera.AddCameraController();
+    }
+    public override void Close()
+    {
+        base.Close();
+        GameManager.Instance.Camera.RemoveCameraController();
+    }
 }

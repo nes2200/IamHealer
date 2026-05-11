@@ -38,12 +38,14 @@ public class GameManager : MonoBehaviour
     public static event InitializeEvent OnInitializeCharacter;
     public static event InitializeEvent OnInitializeObject;
     public static event InitializeEvent OnInitializeUI;
+    public static event InitializeEvent OnInitializeCamera;
 
     public static event UpdateEvent     OnUpdateManager;
     public static event UpdateEvent     OnUpdateController;
     public static event UpdateEvent     OnUpdateCharacter;
     public static event UpdateEvent     OnUpdateObject;
     public static event UpdateEvent     OnUpdateUI;
+    public static event UpdateEvent     OnUpdateCamera;
 
     public static event UpdateEvent     OnPhysicsCharacter;
     public static event UpdateEvent     OnPhysicsObject;
@@ -53,6 +55,7 @@ public class GameManager : MonoBehaviour
     public static event DestroyEvent    OnDestroyCharacter;
     public static event DestroyEvent    OnDestroyObject;
     public static event DestroyEvent    OnDestroyUI;
+    public static event DestroyEvent    OnDestroyCamera;
 
     [SerializeField] UIType startScreen;
 
@@ -252,10 +255,12 @@ public class GameManager : MonoBehaviour
         InvokeInitializeEvent(ref OnInitializeObject);
         //UI를 초기화
         InvokeInitializeEvent(ref OnInitializeUI);
+        //카메라를 초기화
+        InvokeInitializeEvent(ref OnInitializeCamera);
 
 
         if (isPlaying)
-         {
+        {
             float deltaTime = Time.deltaTime;
             //매니저를 업데이트
             OnUpdateManager?.Invoke(deltaTime);
@@ -267,6 +272,8 @@ public class GameManager : MonoBehaviour
             OnUpdateObject?.Invoke(deltaTime);
             //UI를 업데이트
             OnUpdateUI?.Invoke(deltaTime);
+            //카메라를 업데이트
+            OnUpdateCamera?.Invoke(deltaTime);
         }
 
         //오브젝트를 제거
@@ -279,6 +286,8 @@ public class GameManager : MonoBehaviour
         InvokeDestroyEvent(ref OnDestroyManager);
         //UI를 제거
         InvokeDestroyEvent(ref OnDestroyUI);
+        //카메라를 제거
+        InvokeDestroyEvent(ref OnDestroyCamera);
     }
     private void FixedUpdate()
     {

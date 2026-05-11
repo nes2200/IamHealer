@@ -32,7 +32,6 @@ public class UI_ScreenBase : OpenableUIBase
 {
     [SerializeField] UIClaim[] requiredUI;
     [SerializeField] protected UIType[] closeWithScreen; 
- 
 
     public override void Registration(UIManager manager)
     {

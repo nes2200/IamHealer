@@ -37,6 +37,7 @@ public class InputManager : ManagerBase
 
     public static event VectorEvent      OnMove;
     public static event VectorEvent      OnRotate;
+    public static event VectorEvent      OnCameraMove;
 
     public static event Action           OnAnyKey;
 
@@ -154,26 +155,28 @@ public class InputManager : ManagerBase
     {
         if (actionDictionary == null || actionDictionary.Count == 0) return;
 
-        InitializeAction("CursorPositionChanged",(context) => CursorPositionChanged(GetVector2Value(context)));
-        InitializeAction("Move"                 ,(context) => OnMove            ?.Invoke(GetVector2Value(context))
-                                                ,(context) => OnMove            ?.Invoke(Vector2.zero));
-        InitializeAction("Rotate"               ,(context) => OnRotate          ?.Invoke(GetVector2Value(context))
-                                                ,(context) => OnRotate          ?.Invoke(Vector2.zero));
+        InitializeAction("CursorPositionChanged", (context) => CursorPositionChanged(GetVector2Value(context)));
+        InitializeAction("Move"                 , (context) => OnMove            ?.Invoke(GetVector2Value(context))
+                                                , (context) => OnMove            ?.Invoke(Vector2.zero));
+        InitializeAction("Rotate"               , (context) => OnRotate          ?.Invoke(GetVector2Value(context))
+                                                , (context) => OnRotate          ?.Invoke(Vector2.zero));
+        InitializeAction("CameraMove"           , (context) => OnCameraMove      ?.Invoke(GetVector2Value(context))
+                                                , (context) => OnCameraMove      ?.Invoke(Vector2.zero));
+                                                  
+        InitializeAction("MouseLeftButton"      , (context) => OnMouseLeftButton ?.Invoke(true, cursorScreenPosition, cursorWorldPosition)
+                                                , (context) => OnMouseLeftButton ?.Invoke(false, cursorScreenPosition, cursorWorldPosition));
+                                                  
+        InitializeAction("MouseRightButton"     , (context) => OnMouseRightButton?.Invoke(true, cursorScreenPosition, cursorWorldPosition)
+                                                , (context) => OnMouseRightButton?.Invoke(false, cursorScreenPosition, cursorWorldPosition));
+                                                  
+        InitializeAction("ShowStatusButton"     , (context) => OnShowStatus      ?.Invoke(true)
+                                                , (context) => OnShowStatus      ?.Invoke(false));   
+                                                  
+        InitializeAction("MouseWheelButton"     , (context) => OnMouseWheelButton?.Invoke(true, cursorScreenPosition, cursorWorldPosition)
+                                                , (context) => OnMouseWheelButton?.Invoke(false, cursorScreenPosition, cursorWorldPosition));
 
-        InitializeAction("MouseLeftButton"      ,(context) => OnMouseLeftButton ?.Invoke(true, cursorScreenPosition, cursorWorldPosition)
-                                                ,(context) => OnMouseLeftButton ?.Invoke(false, cursorScreenPosition, cursorWorldPosition));
-
-        InitializeAction("MouseRightButton"     ,(context) => OnMouseRightButton?.Invoke(true, cursorScreenPosition, cursorWorldPosition)
-                                                ,(context) => OnMouseRightButton?.Invoke(false, cursorScreenPosition, cursorWorldPosition));
-        
-        InitializeAction("ShowStatusButton"     ,(context) => OnShowStatus      ?.Invoke(true)
-                                                ,(context) => OnShowStatus       ?.Invoke(false));   
-
-        InitializeAction("MouseWheelButton"     ,(context) => OnMouseWheelButton?.Invoke(true, cursorScreenPosition, cursorWorldPosition)
-                                                ,(context) => OnMouseWheelButton?.Invoke(false, cursorScreenPosition, cursorWorldPosition));
-
-        InitializeAction("Cancel",               (context) => OnCancel          ?.Invoke(true));
-        InitializeAction("AnyKey",               (context) => OnAnyKey          ?.Invoke());
+        InitializeAction("Cancel"               , (context) => OnCancel          ?.Invoke(true));
+        InitializeAction("AnyKey"               , (context) => OnAnyKey          ?.Invoke());
     }
 
     void InitializeAction(string actionName, Action<InputAction.CallbackContext> actionMethod, Action<InputAction.CallbackContext> cancelMethod = null) 
