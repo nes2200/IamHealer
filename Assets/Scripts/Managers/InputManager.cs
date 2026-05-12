@@ -38,6 +38,7 @@ public class InputManager : ManagerBase
     public static event VectorEvent      OnMove;
     public static event VectorEvent      OnRotate;
     public static event VectorEvent      OnCameraMove;
+    public static event VectorEvent      OnCameraRotate;
 
     public static event Action           OnAnyKey;
 
@@ -52,7 +53,7 @@ public class InputManager : ManagerBase
     Vector3 cursorWorldPosition;
 
     bool canInput = true;
-    public bool CanInput { get { return canInput; } set { CanInput = value; } }
+    public bool CanInput { get { return canInput; } set { canInput = value; } }
 
     protected override IEnumerator Onconnected(GameManager newManager)
     {
@@ -162,7 +163,9 @@ public class InputManager : ManagerBase
                                                 , (context) => OnRotate          ?.Invoke(Vector2.zero));
         InitializeAction("CameraMove"           , (context) => OnCameraMove      ?.Invoke(GetVector2Value(context))
                                                 , (context) => OnCameraMove      ?.Invoke(Vector2.zero));
-                                                  
+        InitializeAction("CursorDeltaChange"    , (context) => OnCameraRotate    ?.Invoke(GetVector2Value(context))
+                                                , (context) => OnCameraRotate    ?.Invoke(Vector2.zero));
+
         InitializeAction("MouseLeftButton"      , (context) => OnMouseLeftButton ?.Invoke(true, cursorScreenPosition, cursorWorldPosition)
                                                 , (context) => OnMouseLeftButton ?.Invoke(false, cursorScreenPosition, cursorWorldPosition));
                                                   
@@ -170,8 +173,10 @@ public class InputManager : ManagerBase
                                                 , (context) => OnMouseRightButton?.Invoke(false, cursorScreenPosition, cursorWorldPosition));
                                                   
         InitializeAction("ShowStatusButton"     , (context) => OnShowStatus      ?.Invoke(true)
-                                                , (context) => OnShowStatus      ?.Invoke(false));   
-                                                  
+                                                , (context) => OnShowStatus      ?.Invoke(false));
+
+    
+
         InitializeAction("MouseWheelButton"     , (context) => OnMouseWheelButton?.Invoke(true, cursorScreenPosition, cursorWorldPosition)
                                                 , (context) => OnMouseWheelButton?.Invoke(false, cursorScreenPosition, cursorWorldPosition));
 
@@ -195,6 +200,7 @@ public class InputManager : ManagerBase
     }
 
     Vector2 GetVector2Value(InputAction.CallbackContext context) => GetInputValue<Vector2>(context);
+    
 
     T GetInputValue<T>(InputAction.CallbackContext context) where T : struct
     {
