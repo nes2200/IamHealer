@@ -4,11 +4,11 @@ public class CameraMover : MonoBehaviour
 {
     Vector2 moveDirection;
 
-    float moveSpeed = 2f;
+    float moveSpeed = 5f;
     float rotateSpeed = 2f;
 
     public void SetCameraMover()
-    {z`
+    {
         GameManager.OnUpdateCamera -= MovementUpdate;
         GameManager.OnUpdateCamera += MovementUpdate;
     }
@@ -22,8 +22,8 @@ public class CameraMover : MonoBehaviour
     {
         if(moveDirection == Vector2.zero) return;
 
-        Vector2 localDirection = transform.InverseTransformDirection(moveDirection);
-        transform.position += (Vector3)localDirection * deltaTime * moveSpeed;
+        Vector3 localDirection = new Vector3(moveDirection.x, 0f, moveDirection.y);
+        transform.Translate(localDirection * moveSpeed * deltaTime);
     }
 
     public void SetMoveDireciton(Vector2 direction)
