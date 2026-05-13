@@ -19,12 +19,11 @@ public class CameraController : MonoBehaviour
         InputManager.OnCameraMove -= CameraMove;
         InputManager.OnCameraMove += CameraMove;
 
-        InputManager.OnMouseRightButton -= IsCameraRotating; 
-        InputManager.OnMouseRightButton += IsCameraRotating;
+        InputManager.OnMouseRightButton -= CameraRotatingCheck; 
+        InputManager.OnMouseRightButton += CameraRotatingCheck;
 
         InputManager.OnCameraRotate -= CameraRotate;
         InputManager.OnCameraRotate += CameraRotate;
-
     }
 
     public void UnsetCameraController()
@@ -36,9 +35,8 @@ public class CameraController : MonoBehaviour
         _cameraMover = null;
 
         InputManager.OnCameraMove -= CameraMove;
-        InputManager.OnMouseRightButton -= IsCameraRotating;
+        InputManager.OnMouseRightButton -= CameraRotatingCheck;
         InputManager.OnCameraRotate -= CameraRotate;
-
     }
 
     public void CameraMove(Vector2 direction)
@@ -47,9 +45,9 @@ public class CameraController : MonoBehaviour
     }
     private void CameraRotate(Vector2 value)
     {
-
+        CameraMover.SetRotateDirection(value);
     }
-    private void IsCameraRotating(bool value, Vector2 screenPosition, Vector3 worldPosition)
+    private void CameraRotatingCheck(bool value, Vector2 screenPosition, Vector3 worldPosition)
     {
         CameraMover.IsRotating = value;
     }

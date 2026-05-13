@@ -2,10 +2,12 @@ using UnityEngine;
 
 public abstract class AIController : ControllerBase
 {
-    [SerializeField]GameObject _focusTarget = null;
+    GameObject _focusTarget = null;
     public GameObject FocusTarget => _focusTarget;
 
     protected abstract void Think(float deltaTime);
+
+    protected abstract void SearchFocusTarget();
 
     public GameObject SetFocusTarget(GameObject newTarget)
     {

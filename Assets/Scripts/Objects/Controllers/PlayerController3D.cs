@@ -30,6 +30,8 @@ public class PlayerController3D : ControllerBase
         CommandRotateToDirection(value);
     }
 
+    
+
     //회전?
     //WS -> 앞뒤로 이동
     //AD -> 좌우 회전

@@ -55,6 +55,8 @@ public class AttackModule : CharacterModule
     public void AttackCooldownEnd()
     {
         GameManager.OnUpdateCharacter -= AttackCooldownUpdate;
+        attackCooldownCurrent = 0f;
+        isAttackCooldown = false;
     }
 
     void AttackCooldownUpdate(float deltaTime)
@@ -62,8 +64,6 @@ public class AttackModule : CharacterModule
         attackCooldownCurrent += deltaTime;
         if(attackCooldownCurrent >= Owner.Status.attackSpeed)
         {
-            attackCooldownCurrent = 0f;
-            isAttackCooldown = false;
             AttackCooldownEnd();
         }
     }
