@@ -88,15 +88,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "AnyKey",
-                    "type": "Button",
-                    "id": "9c3ee72f-d8aa-42c5-b14a-568c54a66bee",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "CameraMove",
                     "type": "Value",
                     "id": "657c318f-714c-43c9-a9a1-08208b980326",
@@ -113,6 +104,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "AnyKey",
+                    "type": "Button",
+                    "id": "9c3ee72f-d8aa-42c5-b14a-568c54a66bee",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -120,6 +120,17 @@
                     "name": "",
                     "id": "2f39b889-8c30-4e30-93b8-8bf4506eab60",
                     "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CursorPositionChanged",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1edb255b-962c-4e52-9a41-db3970695c39",
+                    "path": "<Touchscreen>/position",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -140,8 +151,30 @@
                 },
                 {
                     "name": "",
+                    "id": "4c34fa4d-9a15-4fb5-9099-b0a4e6da7244",
+                    "path": "<Touchscreen>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CursorDeltaChange",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "dcb7ed21-1ab3-43d4-948b-e5c988bc856c",
                     "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MouseLeftButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "dda16066-274b-40f7-b7e6-5d766e111e7f",
+                    "path": "<Touchscreen>/touch0/tap",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -307,6 +340,17 @@
                     "name": "",
                     "id": "1f5629d6-3163-482d-bee9-d3a8a61fe825",
                     "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "AnyKey",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "dad3a283-8715-4f2b-b6d0-617709fdda7d",
+                    "path": "<Touchscreen>/Press",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

@@ -7,7 +7,10 @@ public abstract class AIController : ControllerBase
 
     protected abstract void Think(float deltaTime);
 
-    protected abstract void SearchFocusTarget();
+    protected virtual void SearchFocusTarget()
+    {
+
+    }
 
     public GameObject SetFocusTarget(GameObject newTarget)
     {
