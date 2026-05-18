@@ -78,7 +78,10 @@ public class AnimationModule : CharacterModule
 
         anim.enabled = false;
         mainCollider.enabled = false;
-        foreach (Rigidbody rigid in ragdollRigidbodies) { rigid.isKinematic = false; }
+        foreach (Rigidbody rigid in ragdollRigidbodies) 
+        { 
+            rigid.isKinematic = false; 
+        }
         mainRigid.isKinematic = true;
     }
 }

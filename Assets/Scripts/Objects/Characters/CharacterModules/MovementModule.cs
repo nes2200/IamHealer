@@ -161,15 +161,3 @@ public class MovementModule : CharacterModule, IRunnable
          return mainColliderRadius;
     }
 }
-
-//MovementModule의 기능을 새로 만들기 -> 현재는 2D를 베이스로 하는 이동방식. 3D에서 XZ축을 이용한 이동방식을 새로 구현해야 한다. Y는 회전용
-//Move() -> 이동은 앞뒤로 하게될 것
-//Rotate() -> 회전
-//이때, 두 개의 함수에서 이동량과 회전량을 받아 애니메이션 실행
-
-//이동하기 -> 앞뒤로만. move에는 ws만 쓴다
-//회전하기 -> 좌우로만. rotation에는 ad만 쓴다
-
-//input에서 move를 ws로 두고, rotation을 새로 만들어서 ad를 받기
-//irunnable에서 Rotate를 만들기 -> 하려니까 모든 상속 스크립트에서 만들어야함.
-//기존 코드를 수정해서 쓸까>?

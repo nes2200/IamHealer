@@ -59,6 +59,7 @@ public class HitPointModule : CharacterModule
     {
         if(IsEmpty)
         {
+            Owner.SetAlive(false);
             Owner.FaintNotify();
         }
     }

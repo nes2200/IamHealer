@@ -1,4 +1,6 @@
+using Mono.Cecil;
 using System;
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -6,6 +8,7 @@ public class TargetingModule : CharacterModule
 {
     [SerializeField] Transform _hostileGroupParent;
     public Transform HostileGroupParent => _hostileGroupParent;
+    private List<CharacterBase> hostileCharacters = new List<CharacterBase>(100);
 
     float scanCooltime; //스캔 쿨타임
     float scanInterval = 0.5f; //스캔 인터벌. 한번에 모든 유닛이 스캔하지 않도록 하기 위해서
@@ -20,13 +23,30 @@ public class TargetingModule : CharacterModule
 
         //초기 쿨타임 세팅
         scanCooltime = UnityEngine.Random.Range(0.1f, scanInterval);
+        CacheHostileCharacters();
     }
     public override void OnUnregistration(CharacterBase oldOwner)
     {
         base.OnUnregistration(oldOwner);
     }
 
-    //스캔 시도하고 아니면
+    private void CacheHostileCharacters()
+    {
+        hostileCharacters.Clear();
+
+        if (!HostileGroupParent) return;
+
+        foreach(Transform target in HostileGroupParent)
+        {
+            CharacterBase targetCharacter = target.GetComponent<CharacterBase>();
+            if (targetCharacter)
+            {
+                hostileCharacters.Add(targetCharacter);
+            }
+        }
+    }
+
+    //스캔 시도하기
     public bool TryGetNewTarget(float deltaTime, out GameObject newTarget)
     {
         newTarget = null;
@@ -53,21 +73,26 @@ public class TargetingModule : CharacterModule
     public GameObject ScanClosestTarget()
     {
         //안전장치
-        if (!HostileGroupParent || HostileGroupParent.childCount == 0)
+        if (hostileCharacters.Count == 0)
         {
             return null;
         }
 
         float closestDistance = Mathf.Infinity;
-        Transform closestTarget = null;
+        CharacterBase closestTarget = null;
         Vector3 currentPosition = transform.position;
 
-        foreach (Transform target in HostileGroupParent)
+        for(int i = 0; i < hostileCharacters.Count; i++)
         {
-            //나중에 여기다가 target이 죽었는지 살았는지 체크하는 과정 넣어야 함!!!
-            //개발중이라 아직 없지만 꼭 넣어라!!!!!!!!!!!!!!!!!!!!!
+            CharacterBase target = hostileCharacters[i];
 
-            float distance = (target.position - currentPosition).sqrMagnitude;
+            //죽은 상태면 continue
+            if (!target.IsAlive)
+            {
+                continue;
+            }
+
+            float distance = (target.transform.position - currentPosition).sqrMagnitude;
 
             if (distance < closestDistance)
             {
@@ -75,6 +100,7 @@ public class TargetingModule : CharacterModule
                 closestTarget = target;
             }
         }
+
         _canScan = false;
         return closestTarget?.gameObject;
     }
@@ -90,5 +116,11 @@ public class TargetingModule : CharacterModule
             //모든 유닛이 한번에 스캔하여 갑자기 렉걸리는 사태를 막기위해
             scanCooltime = UnityEngine.Random.Range(0.1f, scanInterval);
         }
+    }
+
+    public void ForceScanReady()
+    {
+        _canScan = true;
+        scanCooltime = 0f;
     }
 }

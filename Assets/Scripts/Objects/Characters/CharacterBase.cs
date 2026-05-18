@@ -35,6 +35,9 @@ public class CharacterBase : MonoBehaviour
     [SerializeField] UnitStatus _status;
     public UnitStatus Status => _status;
 
+    bool _isAlive = true;
+    public bool IsAlive => _isAlive;
+
     public virtual string DisplayName => Status.unitName;
 
     //모듈 저장하기
@@ -104,5 +107,10 @@ public class CharacterBase : MonoBehaviour
 
         Unpossessed();
         return true;
+    }
+
+    public void SetAlive(bool value)
+    {
+        _isAlive = value;
     }
 }
