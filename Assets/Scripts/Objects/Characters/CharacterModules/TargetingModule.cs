@@ -30,6 +30,7 @@ public class TargetingModule : CharacterModule
         base.OnUnregistration(oldOwner);
     }
 
+    //미리 적 유닛들의 CharacterBase를 캐싱하는 함수. 매 프레임마다 GetComponent하는 것을 방지.
     private void CacheHostileCharacters()
     {
         hostileCharacters.Clear();
@@ -44,6 +45,14 @@ public class TargetingModule : CharacterModule
                 hostileCharacters.Add(targetCharacter);
             }
         }
+    }
+
+    //적 유닛들의 부모가 바뀌었을 때, 혹은 새로 등록할 때
+    public void SetHostileGroupPanrets(Transform newHostileParent)
+    {
+        //부모 바꿔주고 새로 캐싱하기
+        _hostileGroupParent = newHostileParent;
+        CacheHostileCharacters();
     }
 
     //스캔 시도하기

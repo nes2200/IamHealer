@@ -78,10 +78,22 @@ public class ObjectManager : ManagerBase
         GameObject result = CreateObject(wantName);
         if (result) result.transform.position = position;
         return result;
-    } 
+    }
     public static GameObject CreateObject(GameObject prefab, Vector3 position)
     {
         GameObject result = CreateObject(prefab);
+        if (result) result.transform.position = position;
+        return result;
+    }
+    public static GameObject CreateObject(string wantName, Vector3 position, Transform parent = null)
+    {
+        GameObject result = CreateObject(wantName, parent);
+        if (result) result.transform.position = position;
+        return result;
+    }
+    public static GameObject CreateObject(GameObject prefab, Vector3 position, Transform parent = null)
+    {
+        GameObject result = CreateObject(prefab, parent);
         if (result) result.transform.position = position;
         return result;
     }
@@ -202,7 +214,7 @@ public class ObjectManager : ManagerBase
         }
         return result;
     }
-    public static GameObject CreateObject(string wantName, Transform parent, Vector3 position, Quaternion rotation, Vector3 scale,Space space = Space.Self)
+    public static GameObject CreateObject(string wantName, Transform parent, Vector3 position, Quaternion rotation, Vector3 scale, Space space = Space.Self)
     {
         GameObject result = CreateObject(wantName, parent);
         if (result)
@@ -231,7 +243,7 @@ public class ObjectManager : ManagerBase
         }
         return result;
     }
-    public static GameObject CreateObject(GameObject prefab, Transform parent, Vector3 position, Quaternion rotation, Vector3 scale,Space space = Space.Self)
+    public static GameObject CreateObject(GameObject prefab, Transform parent, Vector3 position, Quaternion rotation, Vector3 scale, Space space = Space.Self)
     {
         GameObject result = CreateObject(prefab, parent);
         if (result)

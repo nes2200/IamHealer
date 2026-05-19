@@ -1,4 +1,3 @@
-using TMPro;
 using UnityEngine;
 
 public class UI_StageScreen : UI_ScreenBase
@@ -12,8 +11,22 @@ public class UI_StageScreen : UI_ScreenBase
     {
         InputManager.OnCancel -= ToggleMenu;
     }
-    void ToggleMenu(bool value) => UIManager.ClaimToggleUI(UIType.Menu);
 
+    public void ToggleMenu(bool value)
+    {
+        UIManager.ClaimToggleUI(UIType.Menu);
+
+        bool isMenuOpen = UIManager.ClaimCheckOpen(UIType.Menu, out _);
+        if (isMenuOpen)
+        {
+            GameManager.Pause();
+        }
+        else
+        {
+            GameManager.UnPause();
+        }
+    }
+        
     public override void Open()
     {
         base.Open();

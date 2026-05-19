@@ -4,6 +4,11 @@ public class UI_Button_BattleStart : MonoBehaviour
 {
     [SerializeField] CostChecker costChecker;
 
+    public void BattleStart()
+    {
+        GameManager.StartBattle();
+    }
+
     public void BattleResultWindowOpen()
     {
         UIBase instance = UIManager.ClaimOpenUI(UIType.BattleResult);

@@ -57,12 +57,15 @@ public class GameManager : MonoBehaviour
     public static event DestroyEvent    OnDestroyUI;
     public static event DestroyEvent    OnDestroyCamera;
 
+
+
     [SerializeField] UIType startScreen;
 
     public static bool is2D = false;
     bool isLoading = true;
     bool isPlaying = true;
-
+    bool _isBattleStart = false;
+    public bool IsBattleStart => _isBattleStart;
     //Awake     : 시작할 때 (아침에 눈을 뜸)
     //OnEnabled : 시작할 때 (정신 차림)
     //OnDisabled: 기절
@@ -209,14 +212,26 @@ public class GameManager : MonoBehaviour
 
     public static void Pause()
     {
+        if (!Instance) return;
         Instance.isPlaying = false;
+        Time.timeScale = 0f;
     }
     public static void UnPause()
     {
+        if (!Instance) return;
         Instance.isPlaying = true;
+        Time.timeScale = 1f;
     }
-
-
+    public static void StartBattle()
+    {
+        if (!Instance) return;
+        Instance._isBattleStart = true;
+    }
+    public static void EndBattle()
+    {
+        if (!Instance) return;
+        Instance._isBattleStart = false;
+    }
 
     void InvokeInitializeEvent(ref InitializeEvent originEvent)
     {
@@ -259,22 +274,30 @@ public class GameManager : MonoBehaviour
         InvokeInitializeEvent(ref OnInitializeCamera);
 
 
+        float deltaTime = Time.deltaTime;
         if (isPlaying)
         {
-            float deltaTime = Time.deltaTime;
             //매니저를 업데이트
             OnUpdateManager?.Invoke(deltaTime);
-            //컨트롤러를 업데이트
-            OnUpdateController?.Invoke(deltaTime);
-            //캐릭터를 업데이트
-            OnUpdateCharacter?.Invoke(deltaTime);
-            //오브젝트를 업데이트
-            OnUpdateObject?.Invoke(deltaTime);
-            //UI를 업데이트
-            OnUpdateUI?.Invoke(deltaTime);
-            //카메라를 업데이트
-            OnUpdateCamera?.Invoke(deltaTime);
+
+            //전투 시작시에만 업데이트 해야하는 것들
+            if (_isBattleStart)
+            {
+                //컨트롤러를 업데이트
+                OnUpdateController?.Invoke(deltaTime);
+                //캐릭터를 업데이트
+                OnUpdateCharacter?.Invoke(deltaTime);
+                //오브젝트를 업데이트
+                OnUpdateObject?.Invoke(deltaTime);
+            }
         }
+        //이 두개만 뺀 이유
+        //게임을 플레이 중 일시정지를 하더라도 카메라는 움직여야 하고, 메뉴를 누를 수 있는 UI 요소는 살아 있어야 하기 때문
+        //UI를 업데이트
+        OnUpdateUI?.Invoke(deltaTime);
+        //카메라를 업데이트
+        OnUpdateCamera?.Invoke(deltaTime);
+
 
         //오브젝트를 제거
         InvokeDestroyEvent(ref OnDestroyObject);
@@ -292,7 +315,7 @@ public class GameManager : MonoBehaviour
     private void FixedUpdate()
     {
         //물리 작용을 하지 않는 타이밍
-        if (isLoading || !isPlaying) return;
+        if (isLoading || !isPlaying || !_isBattleStart) return;
 
         float deltaTime = Time.fixedDeltaTime;
 

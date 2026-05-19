@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class AnimationModule : CharacterModule
@@ -26,6 +25,7 @@ public class AnimationModule : CharacterModule
         //모든 rigid를 가져와 isKineatic을 true로 바꾼다
         GetAllRigidbody();
         SetRigidbodyAndCollier();
+        
     }
     public override void OnUnregistration(CharacterBase oldOwner)
     {
@@ -52,7 +52,7 @@ public class AnimationModule : CharacterModule
         }
         anim.SetFloat("MoveSpeed", moveDelta.magnitude / Time.fixedDeltaTime);
     }
-    
+
     //모든 하위 rigidbody 가져오기
     public void GetAllRigidbody()
     {
