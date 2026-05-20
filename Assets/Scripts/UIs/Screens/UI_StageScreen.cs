@@ -2,10 +2,14 @@ using UnityEngine;
 
 public class UI_StageScreen : UI_ScreenBase
 {
+    [SerializeField] GameObject placementController;
+
     private void OnEnable()
     {
         InputManager.OnCancel -= ToggleMenu;
         InputManager.OnCancel += ToggleMenu;
+
+        placementController.SetActive(true);
     }
     private void OnDisable()
     {

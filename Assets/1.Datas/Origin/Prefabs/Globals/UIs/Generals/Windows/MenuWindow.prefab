@@ -1170,6 +1170,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_ScreenBase
   requiredUI: []
+  closeWithScreen: 
 --- !u!1 &5132281456111509198
 GameObject:
   m_ObjectHideFlags: 0
@@ -1836,6 +1837,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2591068060404676065}
     m_Modifications:
+    - target: {fileID: 3900776316890261290, guid: 25156911efb2c744b9ebb2fa0d685c1f, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 599621232652471858}
+    - target: {fileID: 3900776316890261290, guid: 25156911efb2c744b9ebb2fa0d685c1f, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: CloseMenuWindow
+      objectReference: {fileID: 0}
+    - target: {fileID: 3900776316890261290, guid: 25156911efb2c744b9ebb2fa0d685c1f, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UI_Button_MenuWindowBackground, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 4187430698695385591, guid: 25156911efb2c744b9ebb2fa0d685c1f, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1927,10 +1940,30 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6503902865273836130, guid: 25156911efb2c744b9ebb2fa0d685c1f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 599621232652471858}
   m_SourcePrefab: {fileID: 100100000, guid: 25156911efb2c744b9ebb2fa0d685c1f, type: 3}
 --- !u!224 &4184768548791145437 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4187430698695385591, guid: 25156911efb2c744b9ebb2fa0d685c1f, type: 3}
   m_PrefabInstance: {fileID: 4493541160104490}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &6506988876931489864 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6503902865273836130, guid: 25156911efb2c744b9ebb2fa0d685c1f, type: 3}
+  m_PrefabInstance: {fileID: 4493541160104490}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &599621232652471858
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6506988876931489864}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57f0c6ea0ff00204086f005b544cfe90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_Button_MenuWindowBackground

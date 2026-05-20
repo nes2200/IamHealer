@@ -66,6 +66,7 @@ public class GameManager : MonoBehaviour
     bool isPlaying = true;
     bool _isBattleStart = false;
     public bool IsBattleStart => _isBattleStart;
+
     //Awake     : 시작할 때 (아침에 눈을 뜸)
     //OnEnabled : 시작할 때 (정신 차림)
     //OnDisabled: 기절
@@ -129,7 +130,6 @@ public class GameManager : MonoBehaviour
         yield return ObjectM.Connect(this);
         loadingProgress?.AddCurrent(1);
         yield return UI.Connect(this);
-
 
         yield return Save.Connect(this);
         loadingProgress?.AddCurrent(1);
@@ -281,7 +281,7 @@ public class GameManager : MonoBehaviour
             OnUpdateManager?.Invoke(deltaTime);
 
             //전투 시작시에만 업데이트 해야하는 것들
-            if (_isBattleStart)
+            if (IsBattleStart)
             {
                 //컨트롤러를 업데이트
                 OnUpdateController?.Invoke(deltaTime);
@@ -315,7 +315,7 @@ public class GameManager : MonoBehaviour
     private void FixedUpdate()
     {
         //물리 작용을 하지 않는 타이밍
-        if (isLoading || !isPlaying || !_isBattleStart) return;
+        if (isLoading || !isPlaying || !IsBattleStart) return;
 
         float deltaTime = Time.fixedDeltaTime;
 

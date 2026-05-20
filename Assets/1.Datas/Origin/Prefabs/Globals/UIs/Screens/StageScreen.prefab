@@ -278,6 +278,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 6545873604999209463}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &3405028503471454813
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -875,7 +887,6 @@ GameObject:
   - component: {fileID: 8617779802404436005}
   - component: {fileID: 2748659620656458189}
   - component: {fileID: 1879054342554363279}
-  - component: {fileID: 8348434921585344134}
   m_Layer: 5
   m_Name: MenuButton
   m_TagString: Untagged
@@ -996,20 +1007,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &8348434921585344134
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5348825294737502356}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 85f16dd8e0ff60347b2fe511dcda18d6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UI_Button_OpenUI
-  wantType: 5
-  wantToggle: 0
 --- !u!1 &5425807782437185517
 GameObject:
   m_ObjectHideFlags: 0
@@ -1936,6 +1933,7 @@ MonoBehaviour:
     uiType: 12
     isOpen: 0
   closeWithScreen: 
+  placementController: {fileID: 6545873604999209463}
 --- !u!1 &8018898681241340894
 GameObject:
   m_ObjectHideFlags: 0
