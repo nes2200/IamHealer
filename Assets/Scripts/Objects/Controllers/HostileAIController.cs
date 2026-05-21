@@ -7,6 +7,8 @@ public class HostileAIController : AIController
     HitPointModule targetHPModule;
     float targetRadius;
 
+    TeamEliminateNotifier teamEliminateNotifier;
+
     protected override void OnPossess(CharacterBase newCharacter)
     {
         GameManager.OnUpdateController -= Think;
@@ -17,6 +19,7 @@ public class HostileAIController : AIController
 
         targetingModule = Character.GetModule<TargetingModule>();
         atkModule = Character.GetModule<AttackModule>();
+        teamEliminateNotifier = GetComponentInParent<TeamEliminateNotifier>();
     }
     protected override void OnUnpossess(CharacterBase oldCharacter)
     {
@@ -69,7 +72,7 @@ public class HostileAIController : AIController
             CommandStop();
             return;
         }
-        
+
         //때리던지 움직이든지 해라
         AttackOrMove();
     }

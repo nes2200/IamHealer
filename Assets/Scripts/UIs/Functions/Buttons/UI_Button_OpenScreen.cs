@@ -12,6 +12,10 @@ public class UI_Button_OpenScreen : MonoBehaviour
     {
         OpenScreen();
         UIManager.ClaimCloseUI(UIType.Menu);
+        if(wantType != UIType.Stage)
+        {
+            GameManager.UnPause();
+        }
     }
     public void OpenSaveScreen()
     {

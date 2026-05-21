@@ -54,18 +54,23 @@ public class PlacementController : MonoBehaviour
         if(mouseOverObj.layer != LayerMask.NameToLayer("Floor")) return;
 
         //바닥에 맞았으면 유닛 생성
-        GameObject newUnit = ObjectManager.CreateObject("Unit", worldPosition, teamA_Parent);
+        GameObject newUnit = ObjectManager.CreateObject("Unit", worldPosition);
 
         //생성됬으면 등록하기
         if (newUnit)
         {
+            Transform unitParent = SetTeamBySpawnPosition(worldPosition);
+            //유닛의 부모 설정으로 팀 배정
+            newUnit.transform.SetParent(unitParent);
+
             //생성한놈 등록하기
             ObjectManager.RegistrationObject(newUnit);
             //추적할 적 유닛 등록하기
             TargetingModule targetModule = newUnit.GetComponent<TargetingModule>();
             if (targetModule)
             {
-                targetModule.SetHostileGroupPanrets(teamB_Parent);
+                //부모가 A면 적은 B, 부모가 B면 적은 A
+                targetModule.SetHostileGroupParents((unitParent == teamA_Parent) ? teamB_Parent : teamA_Parent);
             }
         }
 
@@ -84,5 +89,17 @@ public class PlacementController : MonoBehaviour
         //{
 
         //}
+    }
+
+    private Transform SetTeamBySpawnPosition(Vector3 worldPosition)
+    {
+        if(worldPosition.x < 0)
+        {
+            return teamA_Parent;
+        }
+        else
+        {
+            return teamB_Parent;
+        }
     }
 }

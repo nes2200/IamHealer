@@ -1,7 +1,5 @@
-using Mono.Cecil;
 using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class TargetingModule : CharacterModule
@@ -23,11 +21,16 @@ public class TargetingModule : CharacterModule
 
         //초기 쿨타임 세팅
         scanCooltime = UnityEngine.Random.Range(0.1f, scanInterval);
-        CacheHostileCharacters();
+
+        StageController.OnStageStateChange -= OnBattleStart;
+        StageController.OnStageStateChange += OnBattleStart;
     }
     public override void OnUnregistration(CharacterBase oldOwner)
     {
         base.OnUnregistration(oldOwner);
+
+        StageController.OnStageStateChange -= OnBattleStart;
+
     }
 
     //미리 적 유닛들의 CharacterBase를 캐싱하는 함수. 매 프레임마다 GetComponent하는 것을 방지.
@@ -48,7 +51,7 @@ public class TargetingModule : CharacterModule
     }
 
     //적 유닛들의 부모가 바뀌었을 때, 혹은 새로 등록할 때
-    public void SetHostileGroupPanrets(Transform newHostileParent)
+    public void SetHostileGroupParents(Transform newHostileParent)
     {
         //부모 바꿔주고 새로 캐싱하기
         _hostileGroupParent = newHostileParent;
@@ -79,6 +82,7 @@ public class TargetingModule : CharacterModule
         return false;
     }
 
+    //가장 가까운 타겟 스캔하기
     public GameObject ScanClosestTarget()
     {
         //안전장치
@@ -131,5 +135,14 @@ public class TargetingModule : CharacterModule
     {
         _canScan = true;
         scanCooltime = 0f;
+    }
+
+    //변화했는데 Battle이 시작됬다? -> 그럼 적 유닛 캐싱해
+    private void OnBattleStart(StageState oldState, StageState newState)
+    {
+        if (newState == StageState.Battle)
+        {
+            CacheHostileCharacters();
+        }
     }
 }
