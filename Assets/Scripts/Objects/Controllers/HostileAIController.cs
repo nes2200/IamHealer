@@ -79,7 +79,7 @@ public class HostileAIController : AIController
 
     protected bool IsTargetAlive()
     {
-        if (!FocusTarget || !targetHPModule || targetHPModule.IsEmpty)
+        if (!FocusTarget || targetHPModule?.IsEmpty == true)
         {
             return false;
         }

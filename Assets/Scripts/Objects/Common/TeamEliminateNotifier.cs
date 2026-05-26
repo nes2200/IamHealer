@@ -37,11 +37,11 @@ public class TeamEliminateNotifier : MonoBehaviour
             if (teamCharacters[i].IsAlive) return;
         }
 
-
+        TeamEliminated();
     }
 
     private void TeamEliminated()
     {
-
+        stageController.EndBattle();
     }
 }
