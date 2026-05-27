@@ -18,6 +18,19 @@ public class Inventory : MonoBehaviour
     {
         //행, 열 순서로 움직이는 형태가 많다
         slots = new ItemSlot[rows, columns];
+        for (int r = 0; r < rows; r++)
+        {
+            for (int c = 0; c < columns; c++)
+            {
+                slots[r, c] = new ItemSlot();
+            }
+        }
+    }
+
+    public void AxePluse()
+    {
+        ItemContainer axe = DataManager.LoadDataFile<ItemContainer>("Axe");
+        AddItem(axe);
     }
 
     public void Sort(System.Comparison<ItemContainer> Method)
@@ -56,6 +69,24 @@ public class Inventory : MonoBehaviour
         returnSlots = default;
         return default;
     }
+    public ItemSlot[] GetAllSlot()
+    {
+        ItemSlot[] result = new ItemSlot[slots.Length];
+
+        int height = slots.GetLength(0);
+        int width = slots.GetLength(1);
+        Debug.Log($"높이 : {height}");
+        Debug.Log($"길이 : {width}");
+
+        for(int r = 0; r < height; r++)
+        {
+            for(int c = 0; c < width; c++)
+            {
+                result[width * r + c] = slots[r,c];
+            }
+        }
+        return result;
+    }
     public ItemSlot FindItem(ItemContainer target)
     {
         return default;
@@ -70,7 +101,11 @@ public class Inventory : MonoBehaviour
     }
     public ItemSlot FindItem(int wantRow, int wantColumn)
     {
-        return default;
+        if (wantRow < 0 || wantColumn < 0)      return null;
+        if (wantRow     >= slots.GetLength(0))  return null;
+        if (wantColumn  >= slots.GetLength(1))  return null;
+
+        return slots[wantRow, wantColumn];
     }
     public ItemSlot FindFirstEmptySlot()
     {
@@ -92,6 +127,7 @@ public class Inventory : MonoBehaviour
     //그 추가하지 못한 개수를 리턴할 것
     public int AddItem(ItemContainer wantItem, int amount = 1)
     {
+        slots[0, 0].AddItem(wantItem, amount);
         return default;
     }
     public int AddItemOnExistSlots(ItemContainer wantItem, int amount)

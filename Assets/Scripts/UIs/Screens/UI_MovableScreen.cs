@@ -11,8 +11,6 @@ public class UI_MovableScreen : UI_ScreenBase
 
     UI_DraggableWindow currentDragTarget = null;
 
-    
-
     public override void Registration(UIManager manager)
     {
         base.Registration(manager);
@@ -133,6 +131,4 @@ public class UI_MovableScreen : UI_ScreenBase
         }
         return bestScore + popupShift;
     }
-
-
 }

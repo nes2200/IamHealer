@@ -1096,7 +1096,6 @@ GameObject:
   - component: {fileID: 4574692044141781173}
   - component: {fileID: 3803797041327962943}
   - component: {fileID: -8411582557679578653}
-  - component: {fileID: 743075874426566666}
   m_Layer: 5
   m_Name: MenuWindow
   m_TagString: Untagged
@@ -1157,20 +1156,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98b6faea6ffcb8f4ebdf387a6d3f786b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_MenuWindow
---- !u!114 &743075874426566666
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4247759779004277987}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd830f9df1530f94183c4573f7943168, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UI_ScreenBase
-  requiredUI: []
-  closeWithScreen: 
 --- !u!1 &5132281456111509198
 GameObject:
   m_ObjectHideFlags: 0

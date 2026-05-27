@@ -10,7 +10,6 @@ public enum StageState
 
 public delegate void StageStateChangeEvent(StageState oldState, StageState newState);
 
-
 public class StageController : MonoBehaviour
 {
     public static event StageStateChangeEvent OnStageStateChange;

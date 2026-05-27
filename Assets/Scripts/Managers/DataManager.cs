@@ -53,8 +53,8 @@ public class DataManager : ManagerBase
         yield return LoadAllFromAssetBundle<GameObject>("Global", ProgressOnLoad).WaitForTask();
         loadString = "Load Pool Requests";
         yield return LoadAllFromAssetBundle<PoolRequest>("Global", ProgressOnLoad).WaitForTask();
-
- 
+        loadString = "Load Items";
+        yield return LoadAllFromAssetBundle<ItemContainer>("Global", ProgressOnLoad).WaitForTask();
 
         //그냥 함수를 실행하는 것이 아닌, 이 작업 시작을 지시해야 한다.
         //LoadFileFromAssetBundle<GameObject>("Origin/Prefabs/Square.prefab");
