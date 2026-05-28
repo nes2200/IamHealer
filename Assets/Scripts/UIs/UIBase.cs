@@ -2,12 +2,9 @@ using UnityEngine;
 
 public class UIBase : MonoBehaviour
 {
-    bool isRegistrated = false;
 
     public virtual void Registration(UIManager manager)
     {
-        if (isRegistrated) return;
-        isRegistrated = true;
     }
     public virtual void Unregistration(UIManager manager)
     {

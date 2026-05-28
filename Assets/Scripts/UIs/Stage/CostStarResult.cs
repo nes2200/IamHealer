@@ -3,8 +3,6 @@ using UnityEngine;
 
 public class CostStarResult : MonoBehaviour
 {
-    bool isLimitOver;
-
     [SerializeField] GameObject fullStar;
 
     public void CostLimitOverCheck(bool isCostOver)

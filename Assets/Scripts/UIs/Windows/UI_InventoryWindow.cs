@@ -9,11 +9,17 @@ public class UI_InventoryWindow : OpenableUIBase
     [SerializeField] LayoutGroup layout;
     [SerializeField] string itemSlotPrefabName;
 
+    bool isRegistrated = false;
+
     public override void Registration(UIManager manager)
     {
+        if (isRegistrated) return;
+
         base.Registration(manager);
         targetInventory?.Initialize();
         ConnectInventory(targetInventory);
+        isRegistrated = true;
+
     }
     public override void Unregistration(UIManager manager)
     {
@@ -32,9 +38,8 @@ public class UI_InventoryWindow : OpenableUIBase
         {
             asGridLayout.constraintCount = targetInventory.columns;
         }
-
-        ItemSlot[] inventorySlots = newInventory.GetAllSlot();
-        foreach(ItemSlot currentSlot in inventorySlots)
+        
+        foreach(ItemSlot currentSlot in newInventory.GetAllSlot())
         {
             if (currentSlot is null) continue;
 
