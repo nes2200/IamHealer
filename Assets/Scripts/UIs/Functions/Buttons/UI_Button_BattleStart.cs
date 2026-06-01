@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class UI_Button_BattleStart : MonoBehaviour
 {
-    StageController stage;
+    StageManager stage;
 
     private void OnEnable()
     {
-        stage = GameObject.Find("BattleManager").GetComponent<StageController>();
+        stage = GameObject.Find("StageManager").GetComponent<StageManager>();
     }
 
     public void BattleStart()

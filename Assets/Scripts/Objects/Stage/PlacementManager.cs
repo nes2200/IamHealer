@@ -1,8 +1,11 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class PlacementController : MonoBehaviour
+public class PlacementManager : MonoBehaviour
 {
+    [Header("스테이지 매니저")]
+    [SerializeField] StageManager stageManager;
+
     [Header("유닛 생성 세팅")]
     [SerializeField] GameObject unitPrefab;
     [SerializeField] LayerMask floorLayer;
@@ -15,12 +18,16 @@ public class PlacementController : MonoBehaviour
         InputManager.OnMouseLeftButton -= TryUnitSpawn;
         InputManager.OnMouseLeftButton += TryUnitSpawn;
 
+        InputManager.OnMouseRightButton -= TryUnitDespawn;
+        InputManager.OnMouseRightButton += TryUnitDespawn;
+
         SetUnitsParent(ref teamA_Parent, "TeamA");
         SetUnitsParent(ref teamB_Parent, "TeamB");
     }
     private void OnDisable()
     {
         InputManager.OnMouseLeftButton -= TryUnitSpawn;
+        InputManager.OnMouseRightButton -= TryUnitDespawn;
     }
 
     private void SetUnitsParent(ref Transform parent, string name)
@@ -72,23 +79,31 @@ public class PlacementController : MonoBehaviour
                 //부모가 A면 적은 B, 부모가 B면 적은 A
                 targetModule.SetHostileGroupParents((unitParent == teamA_Parent) ? teamB_Parent : teamA_Parent);
             }
+
+            CharacterBase targetCharacter = newUnit.GetComponent<CharacterBase>();
+            if (targetCharacter)
+            {
+                int unitCost = targetCharacter.Status.cost;
+                stageManager.CostIncreasByUnitSpawn(unitCost);
+            }
         }
+    }
 
-        ////UI 위에서는 유닛 생성 안함
-        //if (EventSystem.current.IsPointerOverGameObject())
-        //{
-        //    return;
-        //}
+    private void TryUnitDespawn(bool value, Vector2 screenPosition, Vector3 worldPosition)
+    {
+        if (!value) return;
 
-        ////빔 쏘기
-        //Ray ray = GameManager.Instance.Camera.MainCamera.ScreenPointToRay(screenPosition);
-        //RaycastHit hit;
+        GameObject mouseOverObj = GameManager.Instance.Input.CursorHoverObject;
 
-        ////빔 쏜게 바닥에 맞았는지 체크
-        //if(Physics.Raycast(ray, out hit, float.MaxValue, floorLayer))
-        //{
+        if (mouseOverObj.layer != LayerMask.NameToLayer("Character")) return;
 
-        //}
+        CharacterBase targetCharacter = mouseOverObj.GetComponent<CharacterBase>();
+        if (targetCharacter)
+        {
+            int unitCost = targetCharacter.Status.cost;
+            stageManager.CostDecreaseByUnitDespawn(unitCost);
+        }
+        Destroy(mouseOverObj);
     }
 
     private Transform SetTeamBySpawnPosition(Vector3 worldPosition)

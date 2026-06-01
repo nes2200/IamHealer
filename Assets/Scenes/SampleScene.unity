@@ -649,10 +649,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 746648328}
-  - component: {fileID: 746648327}
+  - component: {fileID: 746648329}
   - component: {fileID: 746648326}
+  - component: {fileID: 746648330}
   m_Layer: 0
-  m_Name: BattleManager
+  m_Name: StageManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -670,24 +671,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3241d82a7944c13489f60c8192be2e7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlacementController
+  stageManager: {fileID: 746648329}
   unitPrefab: {fileID: 6554844596053527657, guid: 7ee29d08994eefc409bf44c4732939cc, type: 3}
   floorLayer:
     serializedVersion: 2
     m_Bits: 256
---- !u!114 &746648327
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 746648325}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 022ea639616509c4c91094c12f56220e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::StageController
-  teamA: {fileID: 1085028039}
-  teamB: {fileID: 1600630153}
 --- !u!4 &746648328
 Transform:
   m_ObjectHideFlags: 0
@@ -703,6 +691,36 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &746648329
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 746648325}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89892e7fc071e42408d2f19b72983cdc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StageManager
+  teamA: {fileID: 1085028039}
+  teamB: {fileID: 1600630153}
+  placementManager: {fileID: 746648326}
+  costTracker: {fileID: 746648330}
+--- !u!114 &746648330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 746648325}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2e327fa65616c940ac408c13a21aa6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CostTracker
+  stageManager: {fileID: 746648329}
+  costLimits: 320000003c00000046000000
 --- !u!1 &756393911
 GameObject:
   m_ObjectHideFlags: 0
@@ -1116,7 +1134,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e9a549d9cf6f954eae2b6b5257e7d91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TeamEliminateNotifier
-  stageController: {fileID: 746648327}
+  stageController: {fileID: 746648329}
 --- !u!1 &1556335164
 GameObject:
   m_ObjectHideFlags: 0
@@ -1265,7 +1283,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e9a549d9cf6f954eae2b6b5257e7d91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TeamEliminateNotifier
-  stageController: {fileID: 746648327}
+  stageController: {fileID: 746648329}
 --- !u!1001 &1812591962
 PrefabInstance:
   m_ObjectHideFlags: 0

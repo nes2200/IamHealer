@@ -3,22 +3,27 @@ using UnityEngine;
 
 public class UI_StageScreen : UI_ScreenBase
 {
-    [Header("UI 구성 요소")]
-    [SerializeField] CostChecker costChecker;
+    StageManager stageManager;
+
+    [Header("별 그룹")]
+    [SerializeField] UI_CostStarController starController;
 
     private void OnEnable()
     {
+        stageManager = GameObject.Find("StageManager").GetComponent<StageManager>();
+        SetCostLimitText(stageManager.GetCostLimits());
+
         InputManager.OnCancel -= ToggleMenu;
         InputManager.OnCancel += ToggleMenu;
 
-        StageController.OnStageStateChange -= OpenBattleResult;
-        StageController.OnStageStateChange += OpenBattleResult;
+        StageManager.OnStageStateChange -= OpenBattleResult;
+        StageManager.OnStageStateChange += OpenBattleResult;
     }
 
     private void OnDisable()
     {
         InputManager.OnCancel -= ToggleMenu;
-        StageController.OnStageStateChange -= OpenBattleResult;
+        StageManager.OnStageStateChange -= OpenBattleResult;
     }
 
     public override void Open()
@@ -47,14 +52,19 @@ public class UI_StageScreen : UI_ScreenBase
         }
     }
 
+    private void SetCostLimitText(int[] costLimits)
+    {
+        starController.SetAllCostLimitText(costLimits);
+    }
+
     private void OpenBattleResult(StageState oldState, StageState newState)
     {
-        if(newState == StageState.Result)
-        {
-            UIBase instance = UIManager.ClaimOpenUI(UIType.BattleResult);
-            UI_BattleResultWindow resultWindow = instance.GetComponent<UI_BattleResultWindow>();
-            bool[] costOverResult = costChecker.CostLimitOverResult();
-            resultWindow.CostLimitOverCheck(costOverResult);
-        }
+        //if (newState == StageState.Result)
+        //{
+        //    UIBase instance = UIManager.ClaimOpenUI(UIType.BattleResult);
+        //    UI_BattleResultWindow resultWindow = instance.GetComponent<UI_BattleResultWindow>();
+        //    bool[] costOverResult = costChecker.CostLimitOverResult();
+        //    resultWindow.CostLimitOverCheck(costOverResult);
+        //}
     }
 }

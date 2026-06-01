@@ -10,15 +10,21 @@ public enum StageState
 
 public delegate void StageStateChangeEvent(StageState oldState, StageState newState);
 
-public class StageController : MonoBehaviour
+public class StageManager : MonoBehaviour
 {
     public static event StageStateChangeEvent OnStageStateChange;
 
     private StageState _currentState;
     public StageState CurrentState => _currentState;
 
+    [Header("각팀 전멸 신호기")]
     [SerializeField] TeamEliminateNotifier teamA;
     [SerializeField] TeamEliminateNotifier teamB;
+
+    [Header("스테이지 구성 요소")]
+    [SerializeField] PlacementManager placementManager;
+    [SerializeField] CostTracker costTracker;
+
 
     //스테이지 상태 변경
     public void ChangeState(StageState newState)
@@ -48,4 +54,17 @@ public class StageController : MonoBehaviour
     //Ready -> Battle -> Result는 일방향임. 
     //되돌아 간다는 것은 다시하기 등을 통해 씬을 새로 로드헀거나, 완전히 새로고침 했다는 것
     //그렇기에 따로 Ready를 만들지 않고, 나중에 씬 분리 과정에서 만드는게 더 좋을 것 같음
+
+    public void CostIncreasByUnitSpawn(int unitCost)
+    {
+        costTracker.IncreaseCost(unitCost);
+    }
+    public void CostDecreaseByUnitDespawn(int unitCost)
+    {
+        costTracker.DecreaseCost(unitCost);
+    }
+    public int[] GetCostLimits()
+    {
+        return costTracker.GetCostLimits();
+    }
 }

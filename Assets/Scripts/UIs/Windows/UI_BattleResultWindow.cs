@@ -3,9 +3,9 @@ using UnityEngine;
 public class UI_BattleResultWindow : OpenableUIBase
 {
     [SerializeField] Animator anim;
-    [SerializeField] CostStarResult coststarFirst;
-    [SerializeField] CostStarResult coststarSecond;
-    [SerializeField] CostStarResult coststarThird;
+    [SerializeField] UI_CostStarResult coststarFirst;
+    [SerializeField] UI_CostStarResult coststarSecond;
+    [SerializeField] UI_CostStarResult coststarThird;
 
     private void OnEnable()
     {

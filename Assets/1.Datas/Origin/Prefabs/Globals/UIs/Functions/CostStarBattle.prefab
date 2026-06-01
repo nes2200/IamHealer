@@ -250,10 +250,10 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 3073125387342917737, guid: 06a2b5500fc1aa2479029266b44dd430, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1254714699864335605}
+      addedObject: {fileID: 2193949219467254415}
     - targetCorrespondingSourceObject: {fileID: 3073125387342917737, guid: 06a2b5500fc1aa2479029266b44dd430, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2193949219467254415}
+      addedObject: {fileID: 8185734638511676183}
   m_SourcePrefab: {fileID: 100100000, guid: 06a2b5500fc1aa2479029266b44dd430, type: 3}
 --- !u!224 &2587148070825084334 stripped
 RectTransform:
@@ -265,21 +265,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3073125387342917737, guid: 06a2b5500fc1aa2479029266b44dd430, type: 3}
   m_PrefabInstance: {fileID: 6989387497504943005}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1254714699864335605
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5357776831520545780}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: edecae8327a7623418c89a027cdf6be2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CostStarStage
-  fullStar: {fileID: 6725018351754962732}
-  costLimitText: {fileID: 1903212935634521604}
-  coststarAnimator: {fileID: 2193949219467254415}
 --- !u!95 &2193949219467254415
 Animator:
   serializedVersion: 7
@@ -302,6 +287,21 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &8185734638511676183
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5357776831520545780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ff848262ba000347b02c58880e427d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_CostStarStage
+  fullStar: {fileID: 6725018351754962732}
+  costLimitText: {fileID: 1903212935634521604}
+  starAnimator: {fileID: 2193949219467254415}
 --- !u!1 &6725018351754962732 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4443744871429229745, guid: 06a2b5500fc1aa2479029266b44dd430, type: 3}

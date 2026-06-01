@@ -111,7 +111,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 3073125387342917737, guid: 06a2b5500fc1aa2479029266b44dd430, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 6640815388460597323}
+      addedObject: {fileID: 9197049150913757515}
   m_SourcePrefab: {fileID: 100100000, guid: 06a2b5500fc1aa2479029266b44dd430, type: 3}
 --- !u!1 &5068053602241451145 stripped
 GameObject:
@@ -123,7 +123,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3073125387342917737, guid: 06a2b5500fc1aa2479029266b44dd430, type: 3}
   m_PrefabInstance: {fileID: 8934593609693222968}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &6640815388460597323
+--- !u!114 &9197049150913757515
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -132,7 +132,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5862528710467545169}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 17ff7b3a9e4057a4792ab6c53c31a2c4, type: 3}
+  m_Script: {fileID: 11500000, guid: 5fbee7f3c28920c4bb2977b9658896f9, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CostStarResult
+  m_EditorClassIdentifier: Assembly-CSharp::UI_CostStarResult
   fullStar: {fileID: 5068053602241451145}

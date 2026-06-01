@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-public class CostStarResult : MonoBehaviour
+public class UI_CostStarResult : MonoBehaviour
 {
     [SerializeField] GameObject fullStar;
 

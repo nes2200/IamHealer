@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class TeamEliminateNotifier : MonoBehaviour
 {
-    [SerializeField] StageController stageController;
+    [SerializeField] StageManager stageController;
 
     List<CharacterBase> teamCharacters;
 

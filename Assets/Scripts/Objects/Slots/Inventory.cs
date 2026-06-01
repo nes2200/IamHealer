@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using Unity.Jobs;
 using UnityEngine;
 
 public class Inventory : MonoBehaviour
@@ -29,15 +27,15 @@ public class Inventory : MonoBehaviour
         }
     }
 
-    public void AxePluse()
+    public void AxePluse(int amount)
     {
         ItemContainer axe = DataManager.LoadDataFile<ItemContainer>("Axe");
-        AddItem(axe, 22);
+        AddItem(axe, amount);
     }
-    public void AxeMinus()
+    public void AxeMinus(int amount)
     {
         ItemContainer axe = DataManager.LoadDataFile<ItemContainer>("Axe");
-        RemoveItem(axe, 5);
+        RemoveItem(axe, amount);
     }
     public void AxeRemove()
     {
@@ -223,14 +221,17 @@ public class Inventory : MonoBehaviour
     {
         return default;
     }
+    //몇개 지워라 -> 몇개 못지웠는지 반환
+    //다 지워라 -> 몇개 지웠는지 반환
     public int RemoveItem(ItemContainer wantItem)
     {
+        int result = 0;
         foreach(ItemSlot currentSlot in FindFirstItem(wantItem))
         {
-            currentSlot.RemoveItem(wantItem);
+            result = currentSlot.RemoveItem(wantItem);
             currentSlot.SlotChangeNotify();
         }
-        return 0;
+        return result;
     }
     public int RemoveItem(ItemContainer wantItem, int amount)
     {

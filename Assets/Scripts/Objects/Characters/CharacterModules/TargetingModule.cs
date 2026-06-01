@@ -22,14 +22,14 @@ public class TargetingModule : CharacterModule
         //초기 쿨타임 세팅
         scanCooltime = UnityEngine.Random.Range(0.1f, scanInterval);
 
-        StageController.OnStageStateChange -= OnBattleStart;
-        StageController.OnStageStateChange += OnBattleStart;
+        StageManager.OnStageStateChange -= OnBattleStart;
+        StageManager.OnStageStateChange += OnBattleStart;
     }
     public override void OnUnregistration(CharacterBase oldOwner)
     {
         base.OnUnregistration(oldOwner);
 
-        StageController.OnStageStateChange -= OnBattleStart;
+        StageManager.OnStageStateChange -= OnBattleStart;
 
     }
 
