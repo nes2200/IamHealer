@@ -231,6 +231,7 @@ public class GameManager : MonoBehaviour
     {
         if (!Instance) return;
         Instance._isBattleStart = false;
+        Time.timeScale = 1f;
     }
 
     void InvokeInitializeEvent(ref InitializeEvent originEvent)

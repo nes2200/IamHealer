@@ -22,6 +22,9 @@ public class AnimationModule : CharacterModule
         newOwner.OnFaint -= AnimationByFaint;
         newOwner.OnFaint += AnimationByFaint;
 
+        StageManager.OnStageStateChange -= StopAnimationByEndBattle;
+        StageManager.OnStageStateChange += StopAnimationByEndBattle;
+
         //모든 rigid를 가져와 isKineatic을 true로 바꾼다
         GetAllRigidbody();
         SetRigidbodyAndCollier();
@@ -33,6 +36,7 @@ public class AnimationModule : CharacterModule
         oldOwner.OnLookAt -= AnimationByLookRotation;
         oldOwner.OnMovement -= AnimationByMovement;
         oldOwner.OnFaint -= AnimationByFaint;
+        StageManager.OnStageStateChange -= StopAnimationByEndBattle;
     }
 
     public void AnimationByLookRotation(Vector3 lookRotation)
@@ -83,5 +87,12 @@ public class AnimationModule : CharacterModule
             rigid.isKinematic = false; 
         }
         mainRigid.isKinematic = true;
+    }
+    public void StopAnimationByEndBattle(StageState oldState, StageState newState)
+    {
+        if(newState == StageState.Result)
+        {
+            anim.speed = 0f;
+        }
     }
 }

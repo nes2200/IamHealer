@@ -9,6 +9,7 @@ public class UI_CostStarStage : MonoBehaviour
 
     int costLimit;
     bool isLimitOver = false;
+    public bool IsLimitOver => isLimitOver;
 
 
     private void OnEnable()

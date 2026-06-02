@@ -3,20 +3,25 @@ using UnityEngine;
 public class UI_BattleResultWindow : OpenableUIBase
 {
     [SerializeField] Animator anim;
-    [SerializeField] UI_CostStarResult coststarFirst;
-    [SerializeField] UI_CostStarResult coststarSecond;
-    [SerializeField] UI_CostStarResult coststarThird;
+
+    [SerializeField] UI_CostStarResult[] stars;
+
+    public override void Registration(UIManager manager)
+    {
+        base.Registration(manager);
+    }
 
     private void OnEnable()
     {
-
         anim.SetTrigger("Show");
     }
 
+
     public void CostLimitOverCheck(bool[] costLimitOverResult)
     {
-        coststarFirst.CostLimitOverCheck(costLimitOverResult[0]);
-        coststarSecond.CostLimitOverCheck(costLimitOverResult[1]);
-        coststarThird.CostLimitOverCheck(costLimitOverResult[2]);
+        for(int i = 0; i < stars.Length; i++)
+        {
+            stars[i].CostLimitOverCheck(costLimitOverResult[i]);
+        }
     }
 }

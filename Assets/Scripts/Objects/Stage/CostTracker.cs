@@ -58,4 +58,21 @@ public class CostTracker : MonoBehaviour
 
         return result;
     }
+
+    public int GetCurrentCost()
+    {
+        return costValue.Current;
+    }
+
+    //소환할 유닛 비용이 최고점을 넘는다면?
+    public bool IsCostEnoughToSpawn(int unitCost)
+    {
+        if(costValue.Current + unitCost > costValue.Max)
+        {
+            Debug.Log("코스트 넘친다");
+            return false;
+        }
+        Debug.Log("코스트 남는다");
+        return true;
+    }
 }

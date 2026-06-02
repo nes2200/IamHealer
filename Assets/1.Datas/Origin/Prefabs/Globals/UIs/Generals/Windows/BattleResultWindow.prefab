@@ -93,6 +93,10 @@ MonoBehaviour:
   coststarFirst: {fileID: 0}
   coststarSecond: {fileID: 0}
   coststarThird: {fileID: 0}
+  stars:
+  - {fileID: 6999319223812871778}
+  - {fileID: 3849623906844942737}
+  - {fileID: 8038882307154102597}
 --- !u!95 &5845761737022825584
 Animator:
   serializedVersion: 7
@@ -533,6 +537,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5068053602241451145, guid: 0569cffc68aa11f4cb0a8cc191546e8c, type: 3}
   m_PrefabInstance: {fileID: 1165767804722481166}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8038882307154102597 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9197049150913757515, guid: 0569cffc68aa11f4cb0a8cc191546e8c, type: 3}
+  m_PrefabInstance: {fileID: 1165767804722481166}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4717029580217540703}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fbee7f3c28920c4bb2977b9658896f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_CostStarResult
 --- !u!1001 &1609862771531497497
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -866,6 +881,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5068053602241451145, guid: 0569cffc68aa11f4cb0a8cc191546e8c, type: 3}
   m_PrefabInstance: {fileID: 2198012501619644201}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6999319223812871778 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9197049150913757515, guid: 0569cffc68aa11f4cb0a8cc191546e8c, type: 3}
+  m_PrefabInstance: {fileID: 2198012501619644201}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5754204444813852536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fbee7f3c28920c4bb2977b9658896f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_CostStarResult
 --- !u!1001 &5390500845749919962
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -994,6 +1020,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_CostStarResult
   fullStar: {fileID: 908513348723700819}
+--- !u!114 &3849623906844942737 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9197049150913757515, guid: 0569cffc68aa11f4cb0a8cc191546e8c, type: 3}
+  m_PrefabInstance: {fileID: 5390500845749919962}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1987500551057672331}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fbee7f3c28920c4bb2977b9658896f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_CostStarResult
 --- !u!224 &8226042328791111377 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4100002030170813963, guid: 0569cffc68aa11f4cb0a8cc191546e8c, type: 3}

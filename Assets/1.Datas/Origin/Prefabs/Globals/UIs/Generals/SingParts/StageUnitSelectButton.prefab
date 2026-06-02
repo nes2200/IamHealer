@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 2625702993155594717}
   - component: {fileID: 5990692774666700209}
   - component: {fileID: 7849465199935752668}
-  - component: {fileID: 9108683575819096813}
+  - component: {fileID: 4752071938508217745}
+  - component: {fileID: 9108505666908554590}
   m_Layer: 5
   m_Name: StageUnitSelectButton
   m_TagString: Untagged
@@ -79,7 +80,23 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &9108683575819096813
+--- !u!114 &4752071938508217745
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1971250202855547454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a7d227340a2f934fa066dbde07f0eed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_UnitSelectButton
+  unitPrefab: {fileID: 6554844596053527657, guid: 7ee29d08994eefc409bf44c4732939cc, type: 3}
+  unitNameText: {fileID: 52238447037703895}
+  unitCostText: {fileID: 8061420427929433172}
+  unitImage: {fileID: 6318533664866450548}
+--- !u!114 &9108505666908554590
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -122,7 +139,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7849465199935752668}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4752071938508217745}
+        m_TargetAssemblyTypeName: UI_UnitSelectButton, Assembly-CSharp
+        m_MethodName: UnitSelect
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &3864488961709789138
 GameObject:
   m_ObjectHideFlags: 0
@@ -429,11 +458,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 2625702993155594717}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -32.344177, y: -25.217987}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 80, y: 80}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0, y: 0}
 --- !u!222 &7413857844217838049
 CanvasRenderer:
   m_ObjectHideFlags: 0

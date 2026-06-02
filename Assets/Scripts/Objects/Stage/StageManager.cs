@@ -25,7 +25,6 @@ public class StageManager : MonoBehaviour
     [SerializeField] PlacementManager placementManager;
     [SerializeField] CostTracker costTracker;
 
-
     //스테이지 상태 변경
     public void ChangeState(StageState newState)
     {
@@ -55,6 +54,7 @@ public class StageManager : MonoBehaviour
     //되돌아 간다는 것은 다시하기 등을 통해 씬을 새로 로드헀거나, 완전히 새로고침 했다는 것
     //그렇기에 따로 Ready를 만들지 않고, 나중에 씬 분리 과정에서 만드는게 더 좋을 것 같음
 
+    //현재 코스트 증감 함수
     public void CostIncreasByUnitSpawn(int unitCost)
     {
         costTracker.IncreaseCost(unitCost);
@@ -63,8 +63,15 @@ public class StageManager : MonoBehaviour
     {
         costTracker.DecreaseCost(unitCost);
     }
+
+    //텍스트 세팅시, UI가 각 코스트 한계 비용을 얻어오기 위한 함수
     public int[] GetCostLimits()
     {
         return costTracker.GetCostLimits();
+    }
+
+    public bool IsCostEnoughToSpawn(int unitCost)
+    {
+        return costTracker.IsCostEnoughToSpawn(unitCost);
     }
 }

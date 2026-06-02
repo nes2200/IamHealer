@@ -15,6 +15,7 @@ public delegate void MouseHoverEvent(GameObject newTarget, GameObject oldTarget)
 public delegate void ButtonEvent(bool value);
 public delegate void VectorEvent(Vector2 value);
 public delegate void AxisEvent(float value);
+public delegate void UnitSelectEvent(GameObject value);
 
 //특정 클래스는 특정 컴포넌트와 함께 사용해야 한다
 //특정 클래스가 다른 클래스를 Dependence, 의존하는 경우
@@ -41,6 +42,8 @@ public class InputManager : ManagerBase
     public static event VectorEvent      OnCameraRotate;
 
     public static event Action           OnAnyKey;
+
+    public static event UnitSelectEvent  OnUnitSelected;
 
 
     PlayerInput targetInput;

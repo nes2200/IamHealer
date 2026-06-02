@@ -10,8 +10,11 @@ public class PlacementManager : MonoBehaviour
     [SerializeField] GameObject unitPrefab;
     [SerializeField] LayerMask floorLayer;
 
-    Transform teamA_Parent;
-    Transform teamB_Parent;
+    int selectedUnitCost;
+
+    [Header("각 팀 부모")]
+    [SerializeField] Transform teamA_Parent;
+    [SerializeField] Transform teamB_Parent;
 
     private void OnEnable()
     {
@@ -20,9 +23,6 @@ public class PlacementManager : MonoBehaviour
 
         InputManager.OnMouseRightButton -= TryUnitDespawn;
         InputManager.OnMouseRightButton += TryUnitDespawn;
-
-        SetUnitsParent(ref teamA_Parent, "TeamA");
-        SetUnitsParent(ref teamB_Parent, "TeamB");
     }
     private void OnDisable()
     {
@@ -30,26 +30,16 @@ public class PlacementManager : MonoBehaviour
         InputManager.OnMouseRightButton -= TryUnitDespawn;
     }
 
-    private void SetUnitsParent(ref Transform parent, string name)
-    {
-        if (!parent)
-        {
-            GameObject findObj = GameObject.Find(name);
-            if (findObj)
-            {
-                parent = findObj.transform;
-            }
-            else
-            {
-                Debug.Log($"{name}을/를 찾을 수 없음");
-            }
-        }
-    }
-
     private void TryUnitSpawn(bool value, Vector2 screenPosition, Vector3 worldPosition)
     {
+        //준비 상태 아니라면 소환 안하기
+        if (stageManager.CurrentState != StageState.Ready) return;
+
         //마우스 뗄떼는 유닛 생성 안함
         if (!value) return;
+
+        //생성할 유닛 비용이 추가될 시 리미트 최고점을 넘으면 생성 안함
+        if (!IsCostEnoughToSpawn(selectedUnitCost)) return;
 
         //마우스가 지금 가리키는 오브젝트 가져오기
         GameObject mouseOverObj = GameManager.Instance.Input.CursorHoverObject;
@@ -116,5 +106,16 @@ public class PlacementManager : MonoBehaviour
         {
             return teamB_Parent;
         }
+    }
+
+    public void ChangeCurrentSelectedUnit(GameObject newUnit)
+    {
+        unitPrefab = newUnit;
+        selectedUnitCost = newUnit.GetComponent<CharacterBase>().Status.cost;
+    }
+
+    public bool IsCostEnoughToSpawn(int unitCost)
+    {
+        return stageManager.IsCostEnoughToSpawn(unitCost);
     }
 }

@@ -32,4 +32,15 @@ public class UI_CostStarController : MonoBehaviour
         }
     }
 
+    public bool[] GetStageResult()
+    {
+        bool[] result = new bool[coststars.Length];
+
+        for(int i = 0; i < result.Length; i++)
+        {
+            result[i] = coststars[i].IsLimitOver;
+        }
+
+        return result;
+    }
 }

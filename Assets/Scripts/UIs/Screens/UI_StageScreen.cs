@@ -8,8 +8,16 @@ public class UI_StageScreen : UI_ScreenBase
     [Header("별 그룹")]
     [SerializeField] UI_CostStarController starController;
 
-    private void OnEnable()
+    [Header("별 프리팹")]
+    [SerializeField] GameObject starPrefab;
+
+    [Header("유닛/무기 선택 영역")]
+    [SerializeField] UI_UnitSelectArea unitSelectArea;
+
+    public override void Registration(UIManager manager)
     {
+        base.Registration(manager);
+
         stageManager = GameObject.Find("StageManager").GetComponent<StageManager>();
         SetCostLimitText(stageManager.GetCostLimits());
 
@@ -20,8 +28,10 @@ public class UI_StageScreen : UI_ScreenBase
         StageManager.OnStageStateChange += OpenBattleResult;
     }
 
-    private void OnDisable()
+    public override void Unregistration(UIManager manager)
     {
+        base.Unregistration(manager);
+
         InputManager.OnCancel -= ToggleMenu;
         StageManager.OnStageStateChange -= OpenBattleResult;
     }
@@ -59,12 +69,11 @@ public class UI_StageScreen : UI_ScreenBase
 
     private void OpenBattleResult(StageState oldState, StageState newState)
     {
-        //if (newState == StageState.Result)
-        //{
-        //    UIBase instance = UIManager.ClaimOpenUI(UIType.BattleResult);
-        //    UI_BattleResultWindow resultWindow = instance.GetComponent<UI_BattleResultWindow>();
-        //    bool[] costOverResult = costChecker.CostLimitOverResult();
-        //    resultWindow.CostLimitOverCheck(costOverResult);
-        //}
+        if (newState == StageState.Result)
+        {
+            UIBase instance = UIManager.ClaimOpenUI(UIType.BattleResult);
+            UI_BattleResultWindow resultWindow = instance.GetComponent<UI_BattleResultWindow>();
+            resultWindow.CostLimitOverCheck(starController.GetStageResult());
+        }
     }
 }

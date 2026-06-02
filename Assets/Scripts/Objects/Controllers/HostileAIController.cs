@@ -137,5 +137,6 @@ public class HostileAIController : AIController
     public void OnFaint()
     {
         CommandStop();
+        teamEliminateNotifier.TeamEliminateCheck();
     }
 }

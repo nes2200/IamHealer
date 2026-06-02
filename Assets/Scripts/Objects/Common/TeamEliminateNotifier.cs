@@ -10,21 +10,29 @@ public class TeamEliminateNotifier : MonoBehaviour
 
     private void OnEnable()
     {
+        StageManager.OnStageStateChange -= CacheChildrensCharacter;
+        StageManager.OnStageStateChange += CacheChildrensCharacter;
+
+        teamCharacters = new List<CharacterBase>();
     }
     private void OnDisable()
     {
+        StageManager.OnStageStateChange -= CacheChildrensCharacter;
     }
 
     //자식들 캐싱하기
-    public void CacheChildrensCharacter()
+    public void CacheChildrensCharacter(StageState oldState, StageState newState)
     {
-        teamCharacters.Clear();
-        foreach(Transform child in transform)
+        if(newState == StageState.Battle)
         {
-            CharacterBase character = child.GetComponent<CharacterBase>();
-            if (character)
+            teamCharacters.Clear();
+            foreach (Transform child in transform)
             {
-                teamCharacters.Add(character);
+                CharacterBase character = child.GetComponent<CharacterBase>();
+                if (character)
+                {
+                    teamCharacters.Add(character);
+                }
             }
         }
     }
@@ -32,7 +40,7 @@ public class TeamEliminateNotifier : MonoBehaviour
     //내 팀 유닛들이 전부 죽었는지 체크
     public void TeamEliminateCheck()
     {
-        for(int i = 0; i < teamCharacters.Count; i++)
+        for(int i = 0; i < teamCharacters.Count - 1; i++)
         {
             if (teamCharacters[i].IsAlive) return;
         }
