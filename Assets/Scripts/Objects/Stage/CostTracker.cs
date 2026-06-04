@@ -69,10 +69,8 @@ public class CostTracker : MonoBehaviour
     {
         if(costValue.Current + unitCost > costValue.Max)
         {
-            Debug.Log("코스트 넘친다");
             return false;
         }
-        Debug.Log("코스트 남는다");
         return true;
     }
 }

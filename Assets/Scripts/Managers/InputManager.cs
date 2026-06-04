@@ -9,13 +9,14 @@ using UnityEngine.EventSystems;
 //      대리자
 //플레이어가 할 일을 대신 해주고, 열려있는 창이 있다면 그 친구의 기능도 수행하고
 //내가 신호주면 열결되어 있는 모든 애들이 한번에 기능을 수행하고 간다
-public delegate void MouseMoveEvent(Vector2 screenPosition, Vector3 worldPosition);
 public delegate void MouseButtonEvent(bool value, Vector2 screenPosition, Vector3 worldPosition);
+public delegate void MouseMoveEvent(Vector2 screenPosition, Vector3 worldPosition);
 public delegate void MouseHoverEvent(GameObject newTarget, GameObject oldTarget);
+public delegate void MouseWheelEvent(Vector2 value);
 public delegate void ButtonEvent(bool value);
 public delegate void VectorEvent(Vector2 value);
 public delegate void AxisEvent(float value);
-public delegate void UnitSelectEvent(GameObject value);
+public delegate void ObjectSelectEvent(GameObject selectedObject, int objectCost);
 
 //특정 클래스는 특정 컴포넌트와 함께 사용해야 한다
 //특정 클래스가 다른 클래스를 Dependence, 의존하는 경우
@@ -33,6 +34,8 @@ public class InputManager : ManagerBase
     public static event MouseMoveEvent   OnMouseMove;
     public static event MouseHoverEvent  OnMouseHover;
 
+    public static event MouseWheelEvent  OnMouseWheelScroll;
+
     public static event ButtonEvent      OnCancel;
     public static event ButtonEvent      OnShowStatus;
 
@@ -43,7 +46,9 @@ public class InputManager : ManagerBase
 
     public static event Action           OnAnyKey;
 
-    public static event UnitSelectEvent  OnUnitSelected;
+    //스크립트간 이벤트 입력 구역
+    public static event ObjectSelectEvent  OnUnitSelect;
+    public static void InvokeUnitSelect(GameObject selectedObject, int objectCost) => OnUnitSelect?.Invoke(selectedObject, objectCost);
 
 
     PlayerInput targetInput;
@@ -179,7 +184,8 @@ public class InputManager : ManagerBase
         InitializeAction("ShowStatusButton"     , (context) => OnShowStatus      ?.Invoke(true)
                                                 , (context) => OnShowStatus      ?.Invoke(false));
 
-    
+        InitializeAction("MouseWheelScroll"     , (context) => OnMouseWheelScroll?.Invoke(GetVector2Value(context))
+                                                , (context) => OnMouseWheelScroll?.Invoke(Vector2.zero));
 
         InitializeAction("MouseWheelButton"     , (context) => OnMouseWheelButton?.Invoke(true, cursorScreenPosition, cursorWorldPosition)
                                                 , (context) => OnMouseWheelButton?.Invoke(false, cursorScreenPosition, cursorWorldPosition));

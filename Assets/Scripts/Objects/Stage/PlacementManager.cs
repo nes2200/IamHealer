@@ -7,9 +7,9 @@ public class PlacementManager : MonoBehaviour
     [SerializeField] StageManager stageManager;
 
     [Header("유닛 생성 세팅")]
-    [SerializeField] GameObject unitPrefab;
     [SerializeField] LayerMask floorLayer;
 
+    GameObject unitPrefab;
     int selectedUnitCost;
 
     [Header("각 팀 부모")]
@@ -23,20 +23,28 @@ public class PlacementManager : MonoBehaviour
 
         InputManager.OnMouseRightButton -= TryUnitDespawn;
         InputManager.OnMouseRightButton += TryUnitDespawn;
+
+        InputManager.OnUnitSelect -= ChangeCurrentSelectedUnit;
+        InputManager.OnUnitSelect += ChangeCurrentSelectedUnit;
     }
     private void OnDisable()
     {
         InputManager.OnMouseLeftButton -= TryUnitSpawn;
         InputManager.OnMouseRightButton -= TryUnitDespawn;
+        InputManager.OnUnitSelect -= ChangeCurrentSelectedUnit;
+
     }
 
     private void TryUnitSpawn(bool value, Vector2 screenPosition, Vector3 worldPosition)
     {
+        //마우스 뗄떼는 유닛 생성 안함
+        if (!value) return;
+
         //준비 상태 아니라면 소환 안하기
         if (stageManager.CurrentState != StageState.Ready) return;
 
-        //마우스 뗄떼는 유닛 생성 안함
-        if (!value) return;
+        //프리팹에 유닛이 저장되있지 않으면 생성 안함
+        if(!unitPrefab) return;
 
         //생성할 유닛 비용이 추가될 시 리미트 최고점을 넘으면 생성 안함
         if (!IsCostEnoughToSpawn(selectedUnitCost)) return;
@@ -51,7 +59,7 @@ public class PlacementManager : MonoBehaviour
         if(mouseOverObj.layer != LayerMask.NameToLayer("Floor")) return;
 
         //바닥에 맞았으면 유닛 생성
-        GameObject newUnit = ObjectManager.CreateObject("Unit", worldPosition);
+        GameObject newUnit = ObjectManager.CreateObject(unitPrefab.name, worldPosition);
 
         //생성됬으면 등록하기
         if (newUnit)
@@ -85,6 +93,8 @@ public class PlacementManager : MonoBehaviour
 
         GameObject mouseOverObj = GameManager.Instance.Input.CursorHoverObject;
 
+        if(!mouseOverObj) return;
+
         if (mouseOverObj.layer != LayerMask.NameToLayer("Character")) return;
 
         CharacterBase targetCharacter = mouseOverObj.GetComponent<CharacterBase>();
@@ -92,8 +102,8 @@ public class PlacementManager : MonoBehaviour
         {
             int unitCost = targetCharacter.Status.cost;
             stageManager.CostDecreaseByUnitDespawn(unitCost);
+            ObjectManager.DestroyObject(mouseOverObj);
         }
-        Destroy(mouseOverObj);
     }
 
     private Transform SetTeamBySpawnPosition(Vector3 worldPosition)
@@ -108,10 +118,11 @@ public class PlacementManager : MonoBehaviour
         }
     }
 
-    public void ChangeCurrentSelectedUnit(GameObject newUnit)
+    //유닛 선택 버튼 클릭시 해당 유닛 정보를 받아오는 기능
+    public void ChangeCurrentSelectedUnit(GameObject newUnit, int unitCost)
     {
         unitPrefab = newUnit;
-        selectedUnitCost = newUnit.GetComponent<CharacterBase>().Status.cost;
+        selectedUnitCost = unitCost;
     }
 
     public bool IsCostEnoughToSpawn(int unitCost)

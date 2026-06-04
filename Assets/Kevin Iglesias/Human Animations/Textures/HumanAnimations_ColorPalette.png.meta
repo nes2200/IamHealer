@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 2c8e7f499d401414b8215275b03a4c66
+guid: 56091f1c9140303428503f373172e22d
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -138,10 +138,3 @@ TextureImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 154271
-  packageName: Human Basic Motions FREE
-  packageVersion: 2.4.1
-  assetPath: Assets/Kevin Iglesias/Human Animations/Textures/HumanAnimations_ColorPalette.png
-  uploadId: 825236

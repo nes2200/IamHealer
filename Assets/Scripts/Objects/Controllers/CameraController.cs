@@ -24,6 +24,9 @@ public class CameraController : MonoBehaviour
 
         InputManager.OnCameraRotate -= CameraRotate;
         InputManager.OnCameraRotate += CameraRotate;
+
+        InputManager.OnMouseWheelScroll -= CameraZoom;
+        InputManager.OnMouseWheelScroll += CameraZoom;
     }
 
     public void UnsetCameraController()
@@ -37,9 +40,10 @@ public class CameraController : MonoBehaviour
         InputManager.OnCameraMove -= CameraMove;
         InputManager.OnMouseRightButton -= CameraRotatingCheck;
         InputManager.OnCameraRotate -= CameraRotate;
+        InputManager.OnMouseWheelScroll -= CameraZoom;
     }
 
-    public void CameraMove(Vector2 direction)
+    private void CameraMove(Vector2 direction)
     {
         CameraMover.SetMoveDireciton(direction);
     }
@@ -51,6 +55,11 @@ public class CameraController : MonoBehaviour
     {
         CameraMover.IsRotating = value;
     }
+    private void CameraZoom(Vector2 value)
+    {
+        CameraMover.SetZoomDirection(value);
+    }
+
 }
 
 //스테이지 스크린에 들어가면 카메라 입력을 받아야 한다

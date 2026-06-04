@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e4a8306574de8154fbe56055f3f3dccf, type: 3}
-  m_Name: Test_UnitStatus
+  m_Name: UnitStatus_Test02
   m_EditorClassIdentifier: Assembly-CSharp::UnitStatus
   unitName: "\uD14C\uC2A4\uD2B8\uC6A9"
-  cost: 10
+  cost: 12
   maxHP: 20
   damage: 10
   attackSpeed: 2

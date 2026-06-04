@@ -16,14 +16,22 @@ PrefabInstance:
       propertyPath: mainCollider
       value: 
       objectReference: {fileID: 2297653737707165501}
+    - target: {fileID: 2807069527037148758, guid: 735c578458551124d932d8c8d7ee2416, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 1747725614a6d954bae1491d9c7207b8, type: 2}
     - target: {fileID: 8105353431706723296, guid: 735c578458551124d932d8c8d7ee2416, type: 3}
       propertyPath: m_Name
-      value: Unit
+      value: Unit_Test_02
       objectReference: {fileID: 0}
     - target: {fileID: 8105353431706723296, guid: 735c578458551124d932d8c8d7ee2416, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8563346422020298631, guid: 735c578458551124d932d8c8d7ee2416, type: 3}
+      propertyPath: _status
+      value: 
+      objectReference: {fileID: 11400000, guid: ea245bc9af6c91b4392ac363758f7a75, type: 2}
     - target: {fileID: 8878794627829676378, guid: 735c578458551124d932d8c8d7ee2416, type: 3}
       propertyPath: m_LocalPosition.x
       value: -8.04

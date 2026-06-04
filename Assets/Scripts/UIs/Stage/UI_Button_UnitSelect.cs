@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UI_UnitSelectButton : MonoBehaviour
+public class UI_Button_UnitSelect : MonoBehaviour
 {
     //버튼을 누르면 유닛 프리팹과 비용이 임시로 저장됨
     //바닥을 클릭하면 프리팹 복사본을 생성
@@ -10,7 +10,7 @@ public class UI_UnitSelectButton : MonoBehaviour
 
     [Header("유닛 프리팹")]
     [SerializeField] GameObject unitPrefab;
-
+    
     UnitStatus status;
 
     [Header("오브젝트 구성 요소")]
@@ -30,14 +30,11 @@ public class UI_UnitSelectButton : MonoBehaviour
         unitCostText.text = status.cost.ToString();
     }
 
-    public void SelectUnit()
+    public void OnClickUnitSelect()
     {
-        InputManager.OnUnitSelected -= SelectUnit;
-        InputManager.OnUnitSelected += SelectUnit;
-    }
-
-    private void SelectUnit(GameObject selectedUnit)
-    {
-
+        if(unitPrefab && status)
+        {
+            InputManager.InvokeUnitSelect(unitPrefab, status.cost);
+        }
     }
 }

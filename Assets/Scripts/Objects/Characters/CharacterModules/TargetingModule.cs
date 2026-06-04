@@ -13,7 +13,7 @@ public class TargetingModule : CharacterModule
     bool _canScan;
     public bool CanScan => _canScan;
 
-    public override Type RegistrationType => typeof(TargetingModule);
+    public sealed override Type RegistrationType => typeof(TargetingModule);
 
     public override void OnRegistration(CharacterBase newOwner)
     {

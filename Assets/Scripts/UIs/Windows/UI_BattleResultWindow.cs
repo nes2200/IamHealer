@@ -16,7 +16,6 @@ public class UI_BattleResultWindow : OpenableUIBase
         anim.SetTrigger("Show");
     }
 
-
     public void CostLimitOverCheck(bool[] costLimitOverResult)
     {
         for(int i = 0; i < stars.Length; i++)

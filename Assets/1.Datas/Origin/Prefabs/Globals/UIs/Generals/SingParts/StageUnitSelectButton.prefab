@@ -142,8 +142,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 4752071938508217745}
         m_TargetAssemblyTypeName: UI_UnitSelectButton, Assembly-CSharp
-        m_MethodName: UnitSelect
-        m_Mode: 6
+        m_MethodName: OnClickUnitSelect
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

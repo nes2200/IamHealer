@@ -1,13 +1,23 @@
+using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
 
 public class CameraMover : MonoBehaviour
 {
+    [Header("카메라 움직임 속도")]
+    [SerializeField] float moveSpeed = 10f;
+    [SerializeField] float rotateSpeed = 0.075f;
+    [SerializeField] float zoomSpeed = 10f;
+
+    [Header("카메라 줌 수치")]
+    [SerializeField] float minFov = 20f;
+    [SerializeField] float maxFov = 70f;
+    [SerializeField] float lerpSpeed = 20f;
+
     Vector2 moveDirection;
     Vector2 rotateDirection;
+    Vector2 zoomDirection;
 
-    float moveSpeed = 10f;
-    float rotateSpeed = 0.075f;
+    Camera mainCamera;
 
     bool _isRotating = false;
     public bool IsRotating { get { return _isRotating; } set { _isRotating = value; } }
@@ -18,6 +28,8 @@ public class CameraMover : MonoBehaviour
     {
         GameManager.OnUpdateCamera -= CameraTransformUpdate;
         GameManager.OnUpdateCamera += CameraTransformUpdate;
+
+        mainCamera = GameManager.Instance.Camera.MainCamera;
 
         //처음에는 0f, 0f로 초기화 되어있기에 카메라가 확 튀어버리고 이를 방지하기 위해 초기값을 추가해준다
         Vector3 currentRotation = transform.localRotation.eulerAngles;
@@ -33,15 +45,16 @@ public class CameraMover : MonoBehaviour
     {
         MovementUpdate(deltaTime);
         RotateUpdate(deltaTime);
+        ZoomUpdate(deltaTime);
     }
-    public void MovementUpdate(float deltaTime)
+    private void MovementUpdate(float deltaTime)
     {
         if(moveDirection == Vector2.zero) return; 
 
         Vector3 localDirection = new Vector3(moveDirection.x, 0f, moveDirection.y);
         transform.Translate(localDirection * moveSpeed * deltaTime);
     }
-    public void RotateUpdate(float deltaTime)
+    private void RotateUpdate(float deltaTime)
     {
         if (!IsRotating) return;
 
@@ -61,6 +74,14 @@ public class CameraMover : MonoBehaviour
 
         transform.localRotation = Quaternion.Euler(xRotation, yRotation, 0f);
     }
+    private void ZoomUpdate(float deltaTime)
+    {
+        if(zoomDirection == Vector2.zero) return;
+
+        float targetFov = mainCamera.fieldOfView - (zoomDirection.y * zoomSpeed);
+        targetFov = Mathf.Clamp(targetFov, minFov, maxFov);
+        mainCamera.fieldOfView = Mathf.Lerp(mainCamera.fieldOfView, targetFov, deltaTime * lerpSpeed);
+    }
 
     public void SetMoveDireciton(Vector2 direction)
     {
@@ -69,5 +90,9 @@ public class CameraMover : MonoBehaviour
     public void SetRotateDirection(Vector2 value)
     {
        rotateDirection = value;
+    }
+    public void SetZoomDirection(Vector2 value)
+    {
+        zoomDirection = value;
     }
 }
