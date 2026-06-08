@@ -5,17 +5,6 @@ public class UI_SaveLoadScreen : UI_ScreenBase
 {
     public UI_SaveSlot saveSlot;
 
-    private void OnEnable()
-    {
-        InputManager.OnCancel -= BackToTitle;
-        InputManager.OnCancel += BackToTitle;
-
-    }
-    private void OnDisable()
-    {
-        InputManager.OnCancel -= BackToTitle;
-    }
-
     void BackToTitle(bool value) 
     {
         UIManager.ClaimOpenScreen(UIType.Title, ScreenChangeType.ScreenChanger);
@@ -25,8 +14,13 @@ public class UI_SaveLoadScreen : UI_ScreenBase
     {
         gameObject.SetActive(true);
         saveSlot.ChangeText();
+
+        InputManager.OnCancel -= BackToTitle;
+        InputManager.OnCancel += BackToTitle;
     }
-   
-
-
+    public override void Close()
+    {
+        base.Close();
+        InputManager.OnCancel -= BackToTitle;
+    }
 }

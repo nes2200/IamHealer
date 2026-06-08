@@ -8,7 +8,8 @@ using UnityEngine.UI;
 public enum UIType
 {
     None, 
-    Loading, Title, Option, Movable, Menu, Info, SaveSlot, Stage, GameQuit, Sandbox, BattleResult, TargetHoverInfo, Inventory,
+    Loading, Title, Sandbox, SaveSlot, Option, ChapterSelect, StageSelect, Stage,
+    GameQuit, BattleResult, TargetHoverInfo, Inventory,  Movable, Menu, Info,
     _Length
 }
 
@@ -33,7 +34,9 @@ public class UIManager : ManagerBase
         new(UIType.Option, "OptionScreen"),
         new(UIType.SaveSlot, "SaveLoadScreen"),
         new(UIType.Sandbox, "SandboxScreen"),
-        new(UIType.Stage, "StageScreen")
+        new(UIType.Stage, "StageScreen"),
+        new(UIType.ChapterSelect, "ChapterSelectScreen"),
+        new(UIType.StageSelect, "StageSelectScreen"),
     };
 
     Canvas _mainCanvas;
@@ -118,6 +121,8 @@ public class UIManager : ManagerBase
             instance?.SetActive(false);
         }
 
+        _movableScreen.gameObject.SetActive(true);
+
         yield return null;
     }
 
@@ -150,6 +155,7 @@ public class UIManager : ManagerBase
     {
         GameObject instance = ObjectManager.CreateObject(wantName, parent);
         UIBase result = instance?.GetComponent<UIBase>();
+
         return SetUI(wantType, result);
     }
     protected UIBase CreateUI(UIType wantType, string wantName)

@@ -2,14 +2,24 @@ using UnityEngine;
 
 public class UI_OptionScreen : UI_ScreenBase
 {
-    private void OnEnable()
+    public override void Registration(UIManager manager)
     {
+        base.Registration(manager);
+    }
+    public override void Unregistration(UIManager manager)
+    {
+        base.Unregistration(manager);
+    }
+
+    public override void Open()
+    {
+        base.Open();
         InputManager.OnCancel -= BackToTitle;
         InputManager.OnCancel += BackToTitle;
-
     }
-    private void OnDisable()
+    public override void Close()
     {
+        base.Close();
         InputManager.OnCancel -= BackToTitle;
     }
 

@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class UI_StageScreen : UI_ScreenBase
@@ -20,6 +19,18 @@ public class UI_StageScreen : UI_ScreenBase
 
         stageManager = GameObject.Find("StageManager").GetComponent<StageManager>();
         SetCostLimitText(stageManager.GetCostLimits());
+    }
+
+    public override void Unregistration(UIManager manager)
+    {
+        base.Unregistration(manager);
+    }
+
+    public override void Open()
+    {
+        base.Open();
+        GameManager.Instance.Camera.AddCameraController();
+        GameManager.ResetBattle();
 
         InputManager.OnCancel -= ToggleMenu;
         InputManager.OnCancel += ToggleMenu;
@@ -27,24 +38,14 @@ public class UI_StageScreen : UI_ScreenBase
         StageManager.OnStageStateChange -= OpenBattleResult;
         StageManager.OnStageStateChange += OpenBattleResult;
     }
-
-    public override void Unregistration(UIManager manager)
-    {
-        base.Unregistration(manager);
-
-        InputManager.OnCancel -= ToggleMenu;
-        StageManager.OnStageStateChange -= OpenBattleResult;
-    }
-
-    public override void Open()
-    {
-        base.Open();
-        GameManager.Instance.Camera.AddCameraController();
-    }
     public override void Close()
     {
         base.Close();
         GameManager.Instance.Camera.RemoveCameraController();
+        GameManager.ResetBattle();
+
+        InputManager.OnCancel -= ToggleMenu;
+        StageManager.OnStageStateChange -= OpenBattleResult;
     }
 
     public void ToggleMenu(bool value)
@@ -74,6 +75,7 @@ public class UI_StageScreen : UI_ScreenBase
             UIBase instance = UIManager.ClaimOpenUI(UIType.BattleResult);
             UI_BattleResultWindow resultWindow = instance.GetComponent<UI_BattleResultWindow>();
             resultWindow.CostLimitOverCheck(starController.GetStageResult());
+            InputManager.OnCancel -= ToggleMenu;
         }
     }
 }

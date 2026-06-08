@@ -2,14 +2,15 @@ using UnityEngine;
 
 public class UI_SandboxScreen : UI_ScreenBase
 {
-    private void OnEnable()
+    public override void Open()
     {
+        base.Open();
         InputManager.OnCancel -= BackToTitle;
         InputManager.OnCancel += BackToTitle;
-
     }
-    private void OnDisable()
+    public override void Close()
     {
+        base.Close();
         InputManager.OnCancel -= BackToTitle;
     }
 

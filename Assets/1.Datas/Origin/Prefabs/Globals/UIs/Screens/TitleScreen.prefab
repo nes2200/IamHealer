@@ -712,7 +712,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7667f2eaf22cee64a986410a61e060dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_Button_OpenScreen
-  wantType: 10
+  wantType: 3
   changeType: 1
 --- !u!1 &4940164195117281587
 GameObject:
@@ -1078,7 +1078,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7667f2eaf22cee64a986410a61e060dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_Button_OpenScreen
-  wantType: 7
+  wantType: 4
   changeType: 1
 --- !u!1 &5926394449266159750
 GameObject:
@@ -1438,7 +1438,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7667f2eaf22cee64a986410a61e060dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_Button_OpenScreen
-  wantType: 3
+  wantType: 5
   changeType: 1
 --- !u!1 &7433882745912391559
 GameObject:
@@ -1935,5 +1935,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7667f2eaf22cee64a986410a61e060dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_Button_OpenScreen
-  wantType: 7
+  wantType: 4
   changeType: 1

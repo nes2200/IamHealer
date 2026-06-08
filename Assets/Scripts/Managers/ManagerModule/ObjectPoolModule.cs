@@ -105,6 +105,7 @@ public class ObjectPoolModule
             {
                 pool.OnDequeue();
             }
+
             result.SetActive(true);
 
             Transform currentTransform = result.transform;

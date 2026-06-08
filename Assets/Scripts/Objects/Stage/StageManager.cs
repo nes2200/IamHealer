@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using UnityEngine;
 
 //스테이지의 현재 상태
@@ -30,16 +31,18 @@ public class StageManager : MonoBehaviour
     {
         if (CurrentState == newState) return;
 
-        //배틀이면 배틀로, 아니면 배틀 끝내기
-        if(newState == StageState.Battle)
+        switch (newState)
         {
-            GameManager.StartBattle();
+            case StageState.Ready:
+                GameManager.ResetBattle();
+                break;
+            case StageState.Battle:
+                GameManager.StartBattle();
+                break;
+            case StageState.Result:
+                GameManager.EndBattle();
+                break;
         }
-        else
-        {
-            GameManager.EndBattle();
-        }
-
         //바뀌었으니까 바뀐 상태로 바꿔주고 이벤트 발동
         StageState oldState = CurrentState;
         _currentState = newState;

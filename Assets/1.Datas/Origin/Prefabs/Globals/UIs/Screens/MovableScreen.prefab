@@ -50,6 +50,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UI_MovableScreen
   requiredUI:
   - prefabName: MenuWindow
-    uiType: 5
+    uiType: 14
     isOpen: 0
+  closeWithScreen: 
   popupList: []

@@ -57,8 +57,6 @@ public class GameManager : MonoBehaviour
     public static event DestroyEvent    OnDestroyUI;
     public static event DestroyEvent    OnDestroyCamera;
 
-
-
     [SerializeField] UIType startScreen;
 
     public static bool is2D = false;
@@ -222,6 +220,12 @@ public class GameManager : MonoBehaviour
         Instance.isPlaying = true;
         Time.timeScale = 1f;
     }
+    public static void ResetBattle()
+    {
+        if (!Instance) return;
+        Instance._isBattleStart = false;
+        Time.timeScale = 1f;
+    }
     public static void StartBattle()
     {
         if (!Instance) return;
@@ -231,7 +235,27 @@ public class GameManager : MonoBehaviour
     {
         if (!Instance) return;
         Instance._isBattleStart = false;
-        Time.timeScale = 1f;
+        Time.timeScale = 0f;
+    }
+    public static void SetTimeScaleByStageState(StageState newState)
+    {
+        if (!Instance) return;
+
+        switch (newState)
+        {
+            case StageState.Ready:
+                Instance.isPlaying = true;
+                Time.timeScale = 1f;
+                break;
+            case StageState.Battle:
+                Instance.isPlaying = true;
+                Time.timeScale = 1f;
+                break;
+            case StageState.Result:
+                Instance.isPlaying = false;
+                Time.timeScale = 0f;
+                break;
+        }
     }
 
     void InvokeInitializeEvent(ref InitializeEvent originEvent)
