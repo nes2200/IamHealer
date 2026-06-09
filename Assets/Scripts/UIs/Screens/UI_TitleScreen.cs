@@ -22,9 +22,14 @@ public class UI_TitleScreen : UI_ScreenBase
     }
     public override void Close()
     {
-        base.Close();
         InputManager.OnCancel -= ToggleCloseConfirm;
+        base.Close();
     }
+    //private void OnDisable()
+    //{
+    //    InputManager.OnCancel -= ToggleCloseConfirm;
+    //}
+
 
     void ToggleCloseConfirm(bool value) => UIManager.ClaimToggleUI(UIType.GameQuit);
 }

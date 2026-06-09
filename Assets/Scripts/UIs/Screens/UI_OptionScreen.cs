@@ -19,8 +19,8 @@ public class UI_OptionScreen : UI_ScreenBase
     }
     public override void Close()
     {
-        base.Close();
         InputManager.OnCancel -= BackToTitle;
+        base.Close();
     }
 
     void BackToTitle(bool value) => UIManager.ClaimOpenScreen(UIType.Title, ScreenChangeType.ScreenChanger);

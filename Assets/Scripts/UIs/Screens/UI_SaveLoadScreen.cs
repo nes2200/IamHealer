@@ -20,7 +20,7 @@ public class UI_SaveLoadScreen : UI_ScreenBase
     }
     public override void Close()
     {
-        base.Close();
         InputManager.OnCancel -= BackToTitle;
+        base.Close();
     }
 }

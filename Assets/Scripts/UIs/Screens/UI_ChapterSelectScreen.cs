@@ -2,12 +2,17 @@ using UnityEngine;
 
 public class UI_ChapterSelectScreen : UI_ScreenBase
 {
-    public override void Registration(UIManager manager)
+    public override void Open()
     {
-        base.Registration(manager);
+        base.Open();
+        InputManager.OnCancel -= BackToTitle;
+        InputManager.OnCancel += BackToTitle;
     }
-    public override void Unregistration(UIManager manager)
+    public override void Close()
     {
-        base.Unregistration(manager);
+        InputManager.OnCancel -= BackToTitle;
+        base.Close();
     }
+
+    void BackToTitle(bool value) => UIManager.ClaimOpenScreen(UIType.Title, ScreenChangeType.ScreenChanger);
 }

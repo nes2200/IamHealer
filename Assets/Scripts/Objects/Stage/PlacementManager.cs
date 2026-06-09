@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class PlacementManager : MonoBehaviour
 {
@@ -58,13 +57,16 @@ public class PlacementManager : MonoBehaviour
         //바닥이 아니면 생성 안함
         if(mouseOverObj.layer != LayerMask.NameToLayer("Floor")) return;
 
+        //위치가 생성 불가한 위치인지 체크하고 불가하면 안함
+        if (worldPosition.x > 0) return;
+
         //바닥에 맞았으면 유닛 생성
         GameObject newUnit = ObjectManager.CreateObject(unitPrefab.name, worldPosition);
 
         //생성됬으면 등록하기
         if (newUnit)
         {
-            Transform unitParent = SetTeamBySpawnPosition(worldPosition);
+            Transform unitParent = teamA_Parent;
             //유닛의 부모 설정으로 팀 배정
             newUnit.transform.SetParent(unitParent);
 
@@ -91,6 +93,8 @@ public class PlacementManager : MonoBehaviour
     {
         if (!value) return;
 
+        if (worldPosition.x > 0) return;
+
         GameObject mouseOverObj = GameManager.Instance.Input.CursorHoverObject;
 
         if(!mouseOverObj) return;
@@ -106,17 +110,17 @@ public class PlacementManager : MonoBehaviour
         }
     }
 
-    private Transform SetTeamBySpawnPosition(Vector3 worldPosition)
-    {
-        if(worldPosition.x < 0)
-        {
-            return teamA_Parent;
-        }
-        else
-        {
-            return teamB_Parent;
-        }
-    }
+    //private Transform SetTeamBySpawnPosition(Vector3 worldPosition)
+    //{
+    //    if(worldPosition.x < 0)
+    //    {
+    //        return teamA_Parent;
+    //    }
+    //    else
+    //    {
+    //        return teamB_Parent;
+    //    }
+    //}
 
     //유닛 선택 버튼 클릭시 해당 유닛 정보를 받아오는 기능
     public void ChangeCurrentSelectedUnit(GameObject newUnit, int unitCost)

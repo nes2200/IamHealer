@@ -46,12 +46,12 @@ public class UI_ScreenBase : OpenableUIBase
 
     public override void Close()
     {
-        base.Close();
 
         if (closeWithScreen != null) 
         {
             foreach(UIType currentUI in closeWithScreen) UIManager.ClaimCloseUI(currentUI);
         }
+        base.Close();
     }
 
     public virtual bool CloseInnerUI() => UIManager.ClaimCloseUI(closeWithScreen);

@@ -1429,13 +1429,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UI_BattleScreen
   requiredUI:
   - prefabName: BattleResultWindow
-    uiType: 11
+    uiType: 10
     isOpen: 0
   - prefabName: TargetHoverInfo
-    uiType: 12
+    uiType: 11
     isOpen: 0
   - prefabName: InventoryWindow
-    uiType: 13
+    uiType: 12
     isOpen: 0
   closeWithScreen: 05000000
   starController: {fileID: 4095887824672729739}

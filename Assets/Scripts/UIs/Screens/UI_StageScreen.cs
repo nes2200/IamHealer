@@ -73,7 +73,7 @@ public class UI_StageScreen : UI_ScreenBase
         if (newState == StageState.Result)
         {
             UIBase instance = UIManager.ClaimOpenUI(UIType.BattleResult);
-            UI_BattleResultWindow resultWindow = instance.GetComponent<UI_BattleResultWindow>();
+            UI_BattleResultWindow resultWindow = instance as UI_BattleResultWindow;
             resultWindow.CostLimitOverCheck(starController.GetStageResult());
             InputManager.OnCancel -= ToggleMenu;
         }
