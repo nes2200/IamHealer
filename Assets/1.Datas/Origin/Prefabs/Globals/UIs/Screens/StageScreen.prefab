@@ -1245,7 +1245,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &934958885866455044
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1431,12 +1431,19 @@ MonoBehaviour:
   - prefabName: BattleResultWindow
     uiType: 10
     isOpen: 0
+    isOverlay: 0
   - prefabName: TargetHoverInfo
     uiType: 11
     isOpen: 0
+    isOverlay: 0
   - prefabName: InventoryWindow
     uiType: 12
     isOpen: 0
+    isOverlay: 0
+  - prefabName: ItemCursorSlot
+    uiType: 16
+    isOpen: 0
+    isOverlay: 1
   closeWithScreen: 05000000
   starController: {fileID: 4095887824672729739}
   starPrefab: {fileID: 5357776831520545780, guid: c2ae4760d40ecc14a85d4df0fd4c6484, type: 3}

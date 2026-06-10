@@ -9,7 +9,7 @@ public enum UIType
 {
     None, 
     Loading, Title, Sandbox, SaveSlot, Option, ChapterSelect, StageSelect, Stage,
-    GameQuit, BattleResult, TargetHoverInfo, Inventory,  Movable, Menu, Info,
+    GameQuit, BattleResult, TargetHoverInfo, Inventory,  Movable, Menu, Info, ItemCursorSlot,
     _Length
 }
 
@@ -43,6 +43,7 @@ public class UIManager : ManagerBase
     public Canvas MainCanvas => _mainCanvas;
 
     UIBase _movableScreen;
+    RectTransform overlayTransform;
     RectTransform switcherTransform;
     RectTransform createdTransfrom;
     RectTransform changerTransform;
@@ -100,15 +101,18 @@ public class UIManager : ManagerBase
 
         switcherTransform = CreateFullScreen("ScreenSwitcher");
 
+        changerTransform = CreateFullScreen("ScreenChanger");
+        changerTransform.SetAsLastSibling();
+
+        overlayTransform = CreateFullScreen("OverlayTransform");
+        overlayTransform.SetAsLastSibling();
+
         foreach(var currentPair in globalScreenArray)
         {
             UIBase created = CreateUI(currentPair.Key, currentPair.Value, switcherTransform);
 
             if (created is IOpenable asOpenable) asOpenable.Close();
         }
-
-        changerTransform = CreateFullScreen("ScreenChanger");
-        changerTransform.SetAsLastSibling();
 
         //screenChanger를 등록하는 과정
         for (ScreenChangeType currentChanger = (ScreenChangeType)1; currentChanger < ScreenChangeType._Length; currentChanger++) 
@@ -158,6 +162,13 @@ public class UIManager : ManagerBase
 
         return SetUI(wantType, result);
     }
+
+    protected UIBase CreateOverlay(UIType wantType, string wantName)
+    {
+        return CreateUI(wantType, wantName, overlayTransform ?? MainCanvas?.transform);
+    }
+    public static UIBase ClaimCreateOverlay(UIType wantType, string wantName) => GameManager.Instance.UI?.CreateOverlay(wantType, wantName);
+
     protected UIBase CreateUI(UIType wantType, string wantName)
     {
         UIBase result = CreateUI(wantType, wantName, createdTransfrom ?? MainCanvas?.transform);
@@ -168,7 +179,6 @@ public class UIManager : ManagerBase
 
         return result;
     }
-
     public static UIBase ClaimCreateUI(UIType wantType, string wantName) => GameManager.Instance?.UI?.CreateUI(wantType, wantName);
 
     protected UIBase SetUI(UIBase wantUI)

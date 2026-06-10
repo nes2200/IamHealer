@@ -49,7 +49,7 @@ public class PlacementManager : MonoBehaviour
         if (!IsCostEnoughToSpawn(selectedUnitCost)) return;
 
         //마우스가 지금 가리키는 오브젝트 가져오기
-        GameObject mouseOverObj = GameManager.Instance.Input.CursorHoverObject;
+        GameObject mouseOverObj = InputManager.CursorHoverObject;
 
         //없으면 유닛 생성 안함
         if (!mouseOverObj) return;
@@ -95,7 +95,7 @@ public class PlacementManager : MonoBehaviour
 
         if (worldPosition.x > 0) return;
 
-        GameObject mouseOverObj = GameManager.Instance.Input.CursorHoverObject;
+        GameObject mouseOverObj = InputManager.CursorHoverObject;
 
         if(!mouseOverObj) return;
 

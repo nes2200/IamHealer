@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
+    public static ItemSlot cursorSlot = new ItemSlot();
+
     //가로 세로
     //columns rows
     public int columns;
@@ -263,7 +265,35 @@ public class Inventory : MonoBehaviour
     }
     public void MoveItem(int startRow, int startColumn, Inventory targetInventory,int targetRow, int targetColumn, int amount = -1)
     {
+       
+    }
+    public void ExchangeItem(int startRow, int startColumn, ItemSlot targetSlot)
+    {
+        if (targetSlot is null) return;
 
+        ItemSlot first = FindItem(startRow, startColumn);
+        if (first is null) return;
+
+        first.ExchangeItem(targetSlot); 
+        first.SlotChangeNotify();
+        targetSlot.SlotChangeNotify();
+    }
+    public void ExchangeItem(int startRow, int startColumn, int targetRow, int targetColumn)
+    {
+        ExchangeItem(startRow, startColumn, this, targetRow, targetColumn);
+    }
+    public void ExchangeItem(int startRow, int startColumn, Inventory targetInventory, int targetRow, int targetColumn)
+    {
+        ItemSlot first = FindItem(startRow, startColumn);
+        if (first is null) return;
+
+        if (!targetInventory) return;
+        ItemSlot second = targetInventory.FindItem(targetRow, targetColumn);
+        if (second is null) return;
+
+        first.ExchangeItem(second);
+        first.SlotChangeNotify();
+        second.SlotChangeNotify();
     }
     public bool UseItem(ItemContainer target)
     {

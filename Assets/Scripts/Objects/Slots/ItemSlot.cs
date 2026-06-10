@@ -25,7 +25,6 @@ public class ItemSlot
         if (GetIsMax())               return false;
 
         return true;
-
     } 
 
     public ItemContainer GetItem()  => item;
@@ -80,5 +79,32 @@ public class ItemSlot
         }
         currentStack -= amount;
         return 0;
+    }
+
+    public void ExchangeItem(ItemSlot wantSlot)
+    {
+        if (wantSlot is null) return;
+
+        ItemContainer wasItem = item;
+        int wasStack = currentStack;
+
+        item = wantSlot.item;
+        currentStack = wantSlot.currentStack;
+
+        wantSlot.item = wasItem;
+        wantSlot.currentStack = wasStack;
+    }
+
+    public void LeftClick(ItemSlot wantSlot)
+    {
+        if (wantSlot is null) return;
+
+        ExchangeItem(wantSlot);
+        SlotChangeNotify();
+        wantSlot.SlotChangeNotify();
+    }
+    public void RightClick()
+    {
+
     }
 }

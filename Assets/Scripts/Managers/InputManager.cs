@@ -56,10 +56,15 @@ public class InputManager : ManagerBase
 
     List<RaycastResult> cursorHitList = new();
 
-    GameObject _cursorHoverObject;
-    public GameObject CursorHoverObject => _cursorHoverObject;
-    Vector2 cursorScreenPosition;
-    Vector3 cursorWorldPosition;
+    static Vector2 _cursorScreenPosition;
+    public static Vector2 CursorScreenPosition => _cursorScreenPosition;
+
+    static Vector3 _cursorWorldPosition;
+    public static Vector3 CursorWorldPosition => _cursorWorldPosition;
+
+    static GameObject _cursorHoverObject;
+    public static GameObject CursorHoverObject => _cursorHoverObject;
+    
 
     bool canInput = true;
     public bool CanInput { get { return canInput; } set { canInput = value; } }
@@ -82,7 +87,7 @@ public class InputManager : ManagerBase
 
     public void UpdateEvent(float deltaTime)
     {
-        RefreshGameObjectUnderCursor(cursorScreenPosition);
+        RefreshGameObjectUnderCursor(_cursorScreenPosition);
     }
 
     void RefreshGameObjectUnderCursor(Vector2 screenPosition)
@@ -135,8 +140,8 @@ public class InputManager : ManagerBase
         }
 
         GameObject lastHoverObject = CursorHoverObject;
-        cursorScreenPosition = screenPosition;
-        cursorWorldPosition = worldPosition;
+        _cursorScreenPosition = screenPosition;
+        _cursorWorldPosition = worldPosition;
         _cursorHoverObject = firstObject;
 
         if (lastHoverObject != firstObject)
@@ -175,11 +180,11 @@ public class InputManager : ManagerBase
         InitializeAction("CursorDeltaChange"    , (context) => OnCameraRotate    ?.Invoke(GetVector2Value(context))
                                                 , (context) => OnCameraRotate    ?.Invoke(Vector2.zero));
 
-        InitializeAction("MouseLeftButton"      , (context) => OnMouseLeftButton ?.Invoke(true, cursorScreenPosition, cursorWorldPosition)
-                                                , (context) => OnMouseLeftButton ?.Invoke(false, cursorScreenPosition, cursorWorldPosition));
+        InitializeAction("MouseLeftButton"      , (context) => OnMouseLeftButton ?.Invoke(true, _cursorScreenPosition, _cursorWorldPosition)
+                                                , (context) => OnMouseLeftButton ?.Invoke(false, _cursorScreenPosition, _cursorWorldPosition));
                                                   
-        InitializeAction("MouseRightButton"     , (context) => OnMouseRightButton?.Invoke(true, cursorScreenPosition, cursorWorldPosition)
-                                                , (context) => OnMouseRightButton?.Invoke(false, cursorScreenPosition, cursorWorldPosition));
+        InitializeAction("MouseRightButton"     , (context) => OnMouseRightButton?.Invoke(true, _cursorScreenPosition, _cursorWorldPosition)
+                                                , (context) => OnMouseRightButton?.Invoke(false, _cursorScreenPosition, _cursorWorldPosition));
                                                   
         InitializeAction("ShowStatusButton"     , (context) => OnShowStatus      ?.Invoke(true)
                                                 , (context) => OnShowStatus      ?.Invoke(false));
@@ -187,8 +192,8 @@ public class InputManager : ManagerBase
         InitializeAction("MouseWheelScroll"     , (context) => OnMouseWheelScroll?.Invoke(GetVector2Value(context))
                                                 , (context) => OnMouseWheelScroll?.Invoke(Vector2.zero));
 
-        InitializeAction("MouseWheelButton"     , (context) => OnMouseWheelButton?.Invoke(true, cursorScreenPosition, cursorWorldPosition)
-                                                , (context) => OnMouseWheelButton?.Invoke(false, cursorScreenPosition, cursorWorldPosition));
+        InitializeAction("MouseWheelButton"     , (context) => OnMouseWheelButton?.Invoke(true, _cursorScreenPosition, _cursorWorldPosition)
+                                                , (context) => OnMouseWheelButton?.Invoke(false, _cursorScreenPosition, _cursorWorldPosition));
 
         InitializeAction("Cancel"               , (context) => OnCancel          ?.Invoke(true));
         InitializeAction("AnyKey"               , (context) => OnAnyKey          ?.Invoke());
@@ -222,7 +227,7 @@ public class InputManager : ManagerBase
     {
         RefreshGameObjectUnderCursor(screenPosition); //새로고침
 
-        OnMouseMove?.Invoke(cursorScreenPosition, cursorWorldPosition);
+        OnMouseMove?.Invoke(_cursorScreenPosition, _cursorWorldPosition);
     }
 
     public void SetInputState(bool isEnabled)

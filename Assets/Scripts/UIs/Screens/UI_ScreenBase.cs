@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.ProBuilder.MeshOperations;
 
 [Serializable]
 public struct UIClaim
@@ -7,13 +8,19 @@ public struct UIClaim
     public string prefabName;
     public UIType uiType;
     public bool   isOpen;
+    public bool   isOverlay;
 
     public UIBase Execute()
     {
         //찾아보자
         UIBase result = UIManager.ClaimGetUI(uiType);
         //찾아보니 없다                    만들자
-        if (!result) result = UIManager.ClaimCreateUI(uiType, prefabName);
+        if (!result)
+        {
+            if (isOverlay)  result = UIManager.ClaimCreateOverlay(uiType, prefabName);
+            else            result = UIManager.ClaimCreateUI(uiType, prefabName);
+        }
+            
         //만든게 없다         없네
         if (!result) return result;
 
