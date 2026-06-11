@@ -16,6 +16,14 @@ PrefabInstance:
       propertyPath: mainCollider
       value: 
       objectReference: {fileID: 2297653737707165501}
+    - target: {fileID: 6321743010092666124, guid: 735c578458551124d932d8c8d7ee2416, type: 3}
+      propertyPath: navAgent
+      value: 
+      objectReference: {fileID: -5921513134892075422}
+    - target: {fileID: 6321743010092666124, guid: 735c578458551124d932d8c8d7ee2416, type: 3}
+      propertyPath: targetModule
+      value: 
+      objectReference: {fileID: 8088506240215896207}
     - target: {fileID: 8105353431706723296, guid: 735c578458551124d932d8c8d7ee2416, type: 3}
       propertyPath: m_Name
       value: Unit_Test_01
@@ -77,6 +85,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8105353431706723296, guid: 735c578458551124d932d8c8d7ee2416, type: 3}
       insertIndex: -1
       addedObject: {fileID: 197322890141754039}
+    - targetCorrespondingSourceObject: {fileID: 8105353431706723296, guid: 735c578458551124d932d8c8d7ee2416, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -5921513134892075422}
   m_SourcePrefab: {fileID: 100100000, guid: 735c578458551124d932d8c8d7ee2416, type: 3}
 --- !u!136 &2297653737707165501 stripped
 CapsuleCollider:
@@ -125,6 +136,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d4859bdf4cea13459d173c17ac89845, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AttackModule
+--- !u!195 &-5921513134892075422
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6554844596053527657}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!54 &7602657174223366533 stripped
 Rigidbody:
   m_CorrespondingSourceObject: {fileID: 4830510846358521356, guid: 735c578458551124d932d8c8d7ee2416, type: 3}

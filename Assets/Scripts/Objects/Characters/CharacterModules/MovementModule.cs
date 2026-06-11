@@ -1,5 +1,5 @@
-using Unity.Hierarchy;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class MovementModule : CharacterModule, IRunnable
 {
@@ -9,8 +9,15 @@ public class MovementModule : CharacterModule, IRunnable
     protected float targetTolerance;
     protected float mainColliderRadius;
 
-    [SerializeField]float moveSpeed = 2.0f;
-    [SerializeField]float rotateSpeed = 2.0f;
+
+    [Header("이동 속도")]
+    [SerializeField] float moveSpeed = 2.0f;
+    [SerializeField] float rotateSpeed = 2.0f;
+
+    [Header("필수 부속품들")]
+    [SerializeField] NavMeshAgent navAgent;
+    [SerializeField] TargetingModule targetModule;
+    
 
     //이런 거대한 모듈을 만들 때에 한 번 "대분류"로 분류하기
     public sealed override System.Type RegistrationType => typeof(MovementModule);
@@ -18,8 +25,13 @@ public class MovementModule : CharacterModule, IRunnable
     public override void OnRegistration(CharacterBase newOwner)
     {
         base.OnRegistration(newOwner);
-        GameManager.OnPhysicsCharacter -= MovementUpdate;
-        GameManager.OnPhysicsCharacter += MovementUpdate;
+        //GameManager.OnPhysicsCharacter -= MovementUpdate;
+        //GameManager.OnPhysicsCharacter += MovementUpdate;
+
+        SetNavmeshAgent();
+
+        targetModule.OnTargetScanned -= SetDestination;
+        targetModule.OnTargetScanned += SetDestination;
 
         newOwner.OnFaint -= StopAllMovementByFaint;
         newOwner.OnFaint += StopAllMovementByFaint;
@@ -27,9 +39,21 @@ public class MovementModule : CharacterModule, IRunnable
     public override void OnUnregistration(CharacterBase oldOwner)
     {
         base.OnUnregistration(oldOwner);
-        GameManager.OnPhysicsCharacter -= MovementUpdate;
+        //GameManager.OnPhysicsCharacter -= MovementUpdate;
 
+        targetModule.OnTargetScanned -= SetDestination;
         oldOwner.OnFaint -= StopAllMovementByFaint;
+    }
+
+    public void SetNavmeshAgent()
+    {
+        if (!navAgent) navAgent = GetComponent<NavMeshAgent>();
+        navAgent.speed = moveSpeed;
+        navAgent.angularSpeed = rotateSpeed;
+    }
+    public void SetDestination(Vector3 targetPosition)
+    {
+        navAgent.SetDestination(targetPosition);
     }
 
     public void MovementUpdate(float deltaTime)
@@ -89,6 +113,7 @@ public class MovementModule : CharacterModule, IRunnable
             float currentMoveSpeed = GetMoveSpeed(deltaTime);
             //이동할 거리와 남은 거리를 비교하여, 더 짧은 거리를 가면 된다
             float resultMoveSpeed = Mathf.Min(currentMoveSpeed, distance);
+
 
             Translate(resultMoveSpeed * currentMoveDirection);
         }

@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+public delegate void TargetScanEvent(Vector3 target);
+
 public class TargetingModule : CharacterModule
 {
     [SerializeField] Transform _hostileGroupParent;
@@ -12,6 +14,9 @@ public class TargetingModule : CharacterModule
     float scanInterval = 0.5f; //스캔 인터벌. 한번에 모든 유닛이 스캔하지 않도록 하기 위해서
     bool _canScan;
     public bool CanScan => _canScan;
+
+    public event TargetScanEvent OnTargetScanned;
+    public void ClaimOnTargetScanned(Vector3 target) => OnTargetScanned?.Invoke(target);
 
     public sealed override Type RegistrationType => typeof(TargetingModule);
 
@@ -75,9 +80,10 @@ public class TargetingModule : CharacterModule
         if (target)
         {
             newTarget = target;
+            //스캔 했으니까 이벤트 실행
+            OnTargetScanned?.Invoke(target.transform.position);
             return true;
         }
-
         //스캔을 돌렸는데, 돌린게 null이기 때문에 false를 반환한다
         return false;
     }

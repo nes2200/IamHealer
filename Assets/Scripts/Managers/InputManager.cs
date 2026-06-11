@@ -46,6 +46,14 @@ public class InputManager : ManagerBase
 
     public static event Action           OnAnyKey;
 
+    public static event ButtonEvent OnShift;
+    public static bool IsShift { get; private set; } = false;
+    void ShiftInput(bool value)
+    {
+        IsShift = value;
+        OnShift?.Invoke(value);
+    }
+
     //스크립트간 이벤트 입력 구역
     public static event ObjectSelectEvent  OnUnitSelect;
     public static void InvokeUnitSelect(GameObject selectedObject, int objectCost) => OnUnitSelect?.Invoke(selectedObject, objectCost);
@@ -171,6 +179,7 @@ public class InputManager : ManagerBase
         if (actionDictionary == null || actionDictionary.Count == 0) return;
 
         InitializeAction("CursorPositionChanged", (context) => CursorPositionChanged(GetVector2Value(context)));
+
         InitializeAction("Move"                 , (context) => OnMove            ?.Invoke(GetVector2Value(context))
                                                 , (context) => OnMove            ?.Invoke(Vector2.zero));
         InitializeAction("Rotate"               , (context) => OnRotate          ?.Invoke(GetVector2Value(context))
@@ -197,6 +206,9 @@ public class InputManager : ManagerBase
 
         InitializeAction("Cancel"               , (context) => OnCancel          ?.Invoke(true));
         InitializeAction("AnyKey"               , (context) => OnAnyKey          ?.Invoke());
+
+        InitializeAction("Shift"                , (context) => ShiftInput(true)
+                                                , (context) => ShiftInput(false));
     }
 
     void InitializeAction(string actionName, Action<InputAction.CallbackContext> actionMethod, Action<InputAction.CallbackContext> cancelMethod = null) 

@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class HostileAIController : AIController 
 {
-    TargetingModule targetingModule;
+    TargetingModule targetModule;
     AttackModule atkModule;
     HitPointModule targetHPModule;
     float targetRadius;
@@ -17,7 +17,7 @@ public class HostileAIController : AIController
         newCharacter.OnFaint -= OnFaint;
         newCharacter.OnFaint += OnFaint;
 
-        targetingModule = Character.GetModule<TargetingModule>();
+        targetModule = Character.GetModule<TargetingModule>();
         atkModule = Character.GetModule<AttackModule>();
         teamEliminateNotifier = GetComponentInParent<TeamEliminateNotifier>();
     }
@@ -53,11 +53,11 @@ public class HostileAIController : AIController
         {
             //우선 비워주기
             SetFocusTarget(null);
-            targetingModule.ForceScanReady();
+            targetModule.ForceScanReady();
         }
 
         //스캔 주기마다 스캔 시도
-        if (targetingModule.TryGetNewTarget(deltaTime, out GameObject newTarget))
+        if (targetModule.TryGetNewTarget(deltaTime, out GameObject newTarget))
         {
             //스캔시도 됬으면 기존 목표와 같은지 체크, 다르면 그때 넣기
             if(newTarget != FocusTarget)

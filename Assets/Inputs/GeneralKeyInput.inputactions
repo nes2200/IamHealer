@@ -124,7 +124,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "New action",
+                    "name": "Shift",
                     "type": "Button",
                     "id": "c0336591-5a3c-4c96-9c18-8a7bbf7ab58f",
                     "expectedControlType": "",
@@ -544,11 +544,22 @@
                 {
                     "name": "",
                     "id": "60d523f2-1dd9-40d8-b08a-6a6d58837eb1",
-                    "path": "",
+                    "path": "<Keyboard>/shift",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "New action",
+                    "action": "Shift",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7ece1b18-138e-44fe-9ae6-34b33bd64a20",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Shift",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

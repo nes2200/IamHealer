@@ -1,3 +1,4 @@
+using Unity.Cinemachine;
 using UnityEngine;
 
 public abstract class AIController : ControllerBase
@@ -24,6 +25,5 @@ public abstract class AIController : ControllerBase
     protected virtual bool IsFocussable(GameObject target) => target != FocusTarget;
     protected virtual void OnFocusTargetChanged(GameObject oldTarget, GameObject newTarget)
     {
-
     }
 }
