@@ -107,7 +107,7 @@ public class HostileAIController : AIController
         float attackRange = targetDistance - (Character.Status.colliderRadius + targetRadius);
 
         //만약 여유공간 만큼 들어왔다면 공격, 아니면 이동
-        if (attackRange < 0.075f)
+        if (attackRange < 0.5f)
         {
             //여유공간 만큼 들어왔다면 자동으로 이동은 안하게된다
             TryAttack();

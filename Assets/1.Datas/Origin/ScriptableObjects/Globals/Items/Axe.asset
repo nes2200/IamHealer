@@ -9,12 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8a4101412ef8264f9033b580fca4ad8, type: 3}
+  m_Script: {fileID: 11500000, guid: d06154fc72ca779458ad4a5de29262a0, type: 3}
   m_Name: Axe
-  m_EditorClassIdentifier: Assembly-CSharp::ItemContainer
+  m_EditorClassIdentifier: Assembly-CSharp::Item_Equipment_Weapon
   icon: {fileID: 3524946487738824031, guid: b7e8ac9c19c821b49b76cf817b206def, type: 3}
-  displayName: "\uB3C4\uB07C"
-  explain: "\uBA38\uB9AC\uB97C \uCABC\uAC1C\uAE30\uC5D0 \uC801\uB2F9\uD558\uB2E4"
+  name: "\uB3C4\uB07C"
+  explain: "\uBB34\uC5B8\uAC00\uB97C \uCABC\uAC1C\uAE30\uC5D0 \uC801\uB2F9\uD558\uB2E4"
   type: 0
-  maxStack: 100
-  weight: 0
+  maxStack: 1
+  grade: 1
+  damage: 20
+  attackSpeed: 1.6

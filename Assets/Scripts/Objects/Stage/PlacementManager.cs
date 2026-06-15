@@ -69,6 +69,7 @@ public class PlacementManager : MonoBehaviour
             Transform unitParent = teamA_Parent;
             //유닛의 부모 설정으로 팀 배정
             newUnit.transform.SetParent(unitParent);
+            newUnit.transform.rotation = Quaternion.Euler(0f, 90f, 0f);
 
             //생성한놈 등록하기
             ObjectManager.RegistrationObject(newUnit);
@@ -80,6 +81,7 @@ public class PlacementManager : MonoBehaviour
                 targetModule.SetHostileGroupParents((unitParent == teamA_Parent) ? teamB_Parent : teamA_Parent);
             }
 
+            //배치한 만큼 코스트 증가시키기
             CharacterBase targetCharacter = newUnit.GetComponent<CharacterBase>();
             if (targetCharacter)
             {

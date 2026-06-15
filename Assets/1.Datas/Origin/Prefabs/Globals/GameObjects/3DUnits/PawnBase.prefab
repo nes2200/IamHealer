@@ -1451,7 +1451,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MovementModule
   moveSpeed: 2
-  rotateSpeed: 2
+  rotateSpeed: 120
+  navAgent: {fileID: 0}
+  targetModule: {fileID: 0}
 --- !u!54 &4830510846358521356
 Rigidbody:
   m_ObjectHideFlags: 0

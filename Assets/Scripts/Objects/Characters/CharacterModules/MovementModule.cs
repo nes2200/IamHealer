@@ -25,8 +25,8 @@ public class MovementModule : CharacterModule, IRunnable
     public override void OnRegistration(CharacterBase newOwner)
     {
         base.OnRegistration(newOwner);
-        //GameManager.OnPhysicsCharacter -= MovementUpdate;
-        //GameManager.OnPhysicsCharacter += MovementUpdate;
+        GameManager.OnPhysicsCharacter -= MovementUpdate;
+        GameManager.OnPhysicsCharacter += MovementUpdate;
 
         SetNavmeshAgent();
 
@@ -48,6 +48,8 @@ public class MovementModule : CharacterModule, IRunnable
     public void SetNavmeshAgent()
     {
         if (!navAgent) navAgent = GetComponent<NavMeshAgent>();
+
+        navAgent.updateRotation = true;
         navAgent.speed = moveSpeed;
         navAgent.angularSpeed = rotateSpeed;
     }
@@ -58,10 +60,15 @@ public class MovementModule : CharacterModule, IRunnable
 
     public void MovementUpdate(float deltaTime)
     {
-        Vector3 originPosition = transform.position; //이동 전 위치 저장
-        PhysicsUpdate(deltaTime); // 이동
-        Vector3 positionDelta = transform.position - originPosition; //이동량 저장
-        Owner.MovementNotify(positionDelta); //이동량에 따라 애니메이션 실행
+        if (!navAgent || !navAgent.isOnNavMesh) return;
+
+        Vector3 positionDelta = navAgent.velocity * deltaTime;
+        Owner.MovementNotify(positionDelta);
+
+        //Vector3 originPosition = transform.position; //이동 전 위치 저장
+        //PhysicsUpdate(deltaTime); // 이동
+        //Vector3 positionDelta = transform.position - originPosition; //이동량 저장
+        //Owner.MovementNotify(positionDelta); //이동량에 따라 애니메이션 실행
 
         //Vector3? moveDelta = targetDirection.Value + targetRotation.Value;
         //PhysicsUpdate(deltaTime);
@@ -121,7 +128,7 @@ public class MovementModule : CharacterModule, IRunnable
 
     public void UpdateRotate(float deltaTime)
     {
-        if(targetRotation is null || targetRotation == Vector3.zero) return;
+        if (targetRotation is null || targetRotation == Vector3.zero) return;
 
         //받아온 방향을 로컬로 바꾸기
         //Vector3 localRotation = transform.TransformDirection(targetRotation.Value).normalized;
@@ -130,6 +137,7 @@ public class MovementModule : CharacterModule, IRunnable
         //받아온 회전을 부드럽게 처리하여 돌리기
         transform.rotation = Quaternion.Slerp(transform.rotation, targetLocalRotation, GetRotateSpeed(deltaTime));
     }
+    
     public void UpdateMove(float deltaTime)
     {
         if (targetDirection is null) return;
@@ -175,6 +183,7 @@ public class MovementModule : CharacterModule, IRunnable
     {
         StopMovement();
         GameManager.OnPhysicsCharacter -= MovementUpdate;
+        navAgent.enabled = false;
     }
 
     protected void SetMainColliderRadius()

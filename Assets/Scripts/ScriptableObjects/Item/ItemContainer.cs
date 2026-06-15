@@ -2,7 +2,7 @@ using UnityEngine;
 
 public enum ItemType
 {
-    Equipment, Consumable, Material, Miscellaneous, Quest, Important, 
+    Equipment, Consumable, Material, Quest, Important,  Miscellaneous,
     Length
 }
 
@@ -11,5 +11,4 @@ public class ItemContainer :InfoContainer
 {
     public ItemType type;
     public int maxStack;
-    public float weight;
 }
