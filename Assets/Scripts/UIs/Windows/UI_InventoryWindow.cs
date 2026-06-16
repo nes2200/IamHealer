@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -60,6 +61,14 @@ public class UI_InventoryWindow : OpenableUIBase
             Transform targetChild = layout.transform.GetChild(0);
             targetChild.SetParent(null);
             ObjectManager.DestroyObject(targetChild.gameObject);
+        }
+    }
+
+    public void ClaimSort()
+    {
+        if (targetInventory)
+        {
+            targetInventory.SortByType();
         }
     }
 }

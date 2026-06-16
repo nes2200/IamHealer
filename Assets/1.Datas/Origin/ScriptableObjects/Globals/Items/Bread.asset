@@ -15,7 +15,8 @@ MonoBehaviour:
   icon: {fileID: -8840532882692168022, guid: 0201a72c6b53e3440aa8e26c104d5424, type: 3}
   name: "\uC2DD\uBE75"
   explain: "\uBD80\uB4DC\uB7EC\uC6B4 \uC2DD\uBE75\uC774\uB2E4"
-  type: 1
+  id: 20001
+  type: 400
   maxStack: 99
   useCooltime: 0.5
   hungerChange: 15

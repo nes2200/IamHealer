@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Inventory : MonoBehaviour
@@ -29,26 +30,101 @@ public class Inventory : MonoBehaviour
         }
     }
 
+    readonly string[] itemList = {"Axe", "Bread", "Crystallize Branch", "GreatPotion", "LesserPotion"};
+
     public void AxePluse(int amount)
     {
-        ItemContainer axe = DataManager.LoadDataFile<ItemContainer>("Axe");
+        int index = Random.Range(0, itemList.Length);
+        ItemContainer axe = DataManager.LoadDataFile<ItemContainer>(itemList[index]);
         AddItem(axe, amount);
     }
-    public void AxeMinus(int amount)
-    {
-        ItemContainer axe = DataManager.LoadDataFile<ItemContainer>("Axe");
-        RemoveItem(axe, amount);
-    }
+    
     public void AxeRemove()
     {
         ItemContainer axe = DataManager.LoadDataFile<ItemContainer>("Axe");
         RemoveItem(axe);
     }
-    public void Sort(System.Comparison<ItemContainer> Method)
+
+    //Comparison의 반환값 => int
+    //음수 : 왼쪽이 작다
+    //0   : 같다
+    //양수 : 왼쪽이 크다
+    public void Sort(System.Comparison<ItemSlot> Method)
     {
+        int totalLength = slots.Length;
+        if (slots is null || totalLength <= 1) return;
+        int width = slots.GetLength(1);
 
+        int lastFinder = totalLength - 1;
+        while (lastFinder > 0)
+        {
+            int currentFinder = -1;
+            for (int i = 0; i < lastFinder; i++)
+            {
+                ItemSlot left = GetSlot(i, width);
+                ItemSlot right = GetSlot(i + 1, width);
+                int comparisonResult = Method(left, right);
+                //if (comparisonResult > 0) //왼쪽이 더 클때 -> 작은놈을 왼쪽으로 가져오겠다 -> 오름차순으로 정렬
+                if (comparisonResult < 0) //왼쪽이 더 작을때 -> 큰놈을 왼쪽으로 가져오겠다 -> 내림차순으로 정렬
+                {
+                    currentFinder = i;
+                    left.ExchangeItem(right);
+                }
+            }
+            lastFinder = currentFinder;
+        }
+
+        foreach(ItemSlot currentSlot in GetAllSlot())
+        {
+            currentSlot?.SlotChangeNotify();
+        }
     }
+    int ItemTypeComparison(ItemSlot left, ItemSlot right)
+    {
+        int result;
+        if (ItemExistComparison(left, right, out result)) return result;
 
+        ItemContainer leftItem = left.GetItem();
+        ItemContainer rightItem = right.GetItem();
+
+        result = leftItem.CompareByType(rightItem);
+        if (result != 0) return result;
+        result = left.GetStack() - right.GetStack();
+        return result;
+    }
+    int? ItemExistComparison(ItemSlot left, ItemSlot right)
+    {
+        //왼쪽이 없다면
+        if(left is null)
+        {
+            //거기에 오른쪽도 없다면
+            if (right is null) return 0;
+            //오른쪽이 있다면
+            else return -1;
+        }
+        //여기 왔다면, 왼쪽은 있다는 것임. 그럼 오른쪽 유무만 체크하면 됨
+        if (right is null) return 1;
+
+        ItemContainer leftItem = left.GetItem();
+        ItemContainer rightItem = right.GetItem();
+        if (!leftItem)
+        {
+            if (!rightItem) return 0;
+            else return -1;
+        }
+        if (!rightItem) return 1;
+
+        //다 있으면 null 반환
+        return null;
+    }
+    bool ItemExistComparison(ItemSlot left, ItemSlot right, out int result)
+    {
+        int? value = ItemExistComparison(left, right);
+        result = value ?? 0;
+        return value.HasValue; //값이 나왔으면 됬다
+    }
+    public void SortByType() => Sort(ItemTypeComparison);
+    
     public void AutoQuickInsert(Inventory other)
     {
 
@@ -77,14 +153,40 @@ public class Inventory : MonoBehaviour
 
     public int CountItem(ItemContainer wantItem)
     {
-        return default;
+        if (!wantItem) return 0;
+
+        int result = 0;
+        //해당하는 아이템을 가지고 있는 슬롯들을 모두 찾아와서
+        foreach (ItemSlot currentSlot in FindFirstItem(wantItem))
+        {
+            //리스트에 넣어주기
+            result += currentSlot.GetStack();
+        }
+        return result;
     }
     public int CountItem(ItemContainer wantItem, out List<ItemSlot> returnSlots)
     {
-        returnSlots = default;
-        return default;
+        returnSlots = new();
+        if (!wantItem) return 0;
+
+        int result = 0;
+        //해당하는 아이템을 가지고 있는 슬롯들을 모두 찾아와서
+        foreach(ItemSlot currentSlot in FindFirstItem(wantItem))
+        {
+            //리스트에 넣어주기
+            returnSlots.Add(currentSlot);
+            result += currentSlot.GetStack();
+        }
+        return result;
     }
 
+    public ItemSlot GetSlot(int index)
+    {
+        if (slots is null || slots.Length == 0 || slots.Length <= index || index < 0) return null ;
+        int width = slots.GetLength(1);
+        return slots[index / width, index % width];
+    }
+    public ItemSlot GetSlot(int index, int width) => slots[index / width, index % width];
     //       반복기 => 원하는 자료형을 반복적으로 내보냄
     //                 요구할 때 마다 하나씩 나옴
     //                 ItemSlot을 요구할 떄 마다 다음 슬롯을 내놓는 기능
@@ -263,10 +365,27 @@ public class Inventory : MonoBehaviour
     {
         return default;
     }
+
     public void MoveItem(int startRow, int startColumn, Inventory targetInventory,int targetRow, int targetColumn, int amount = -1)
     {
        
     }
+
+    public void MergeItem(ItemContainer wantItem)
+    {
+        if (!wantItem) return;
+        if (wantItem.maxStack <= 1) return;
+        int totalCount = CountItem(wantItem, out List<ItemSlot> containSlots);
+        //  들어있는 슬롯이 없거나    슬롯이 다해서 1개 이하거나
+        if (containSlots is null || containSlots.Count <= 1) return;
+        //모든 슬롯이 꽉차있거나
+        for(int i = 0; i < containSlots.Count; i++)
+        {
+            ItemSlot currentslot = containSlots[i];
+            if (currentslot.GetIsMax()) continue;
+        }
+    }
+
     public void ExchangeItem(int startRow, int startColumn, ItemSlot targetSlot)
     {
         if (targetSlot is null) return;
@@ -295,6 +414,7 @@ public class Inventory : MonoBehaviour
         first.SlotChangeNotify();
         second.SlotChangeNotify();
     }
+
     public bool UseItem(ItemContainer target)
     {
         return default;

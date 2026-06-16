@@ -15,7 +15,8 @@ MonoBehaviour:
   icon: {fileID: 3524946487738824031, guid: b7e8ac9c19c821b49b76cf817b206def, type: 3}
   name: "\uB3C4\uB07C"
   explain: "\uBB34\uC5B8\uAC00\uB97C \uCABC\uAC1C\uAE30\uC5D0 \uC801\uB2F9\uD558\uB2E4"
-  type: 0
+  id: 10001
+  type: 500
   maxStack: 1
   grade: 1
   damage: 20

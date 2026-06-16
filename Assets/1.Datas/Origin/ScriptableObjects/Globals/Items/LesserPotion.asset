@@ -16,7 +16,8 @@ MonoBehaviour:
   name: "\uCD08\uC18C\uD615 \uD3EC\uC158"
   explain: "\uC5F0\uAE08\uC220\uC744 \uC774\uC81C \uB9C9 \uBC30\uC6B4 \uC774\uB4E4\uB3C4
     \uB9CC\uB4E4 \uC218 \uC788\uB2E4"
-  type: 1
+  id: 20003
+  type: 400
   maxStack: 99
   useCooltime: 5
   healAmount: 10

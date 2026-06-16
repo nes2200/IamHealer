@@ -16,7 +16,8 @@ MonoBehaviour:
   name: "\uACB0\uC815\uD654\uB41C \uB098\uBB47\uAC00\uC9C0"
   explain: "\uB9C8\uB098 \uACB0\uC815\uD654\uAC00 \uC9C4\uD589\uC911\uC778 \uACE0\uBAA9\uC5D0\uC11C
     \uB5A8\uC5B4\uC838\uB098\uC628 \uB098\uBB47\uAC00\uC9C0\uB2E4."
-  type: 0
+  id: 10002
+  type: 500
   maxStack: 1
   grade: 4
   useCooltime: 60
