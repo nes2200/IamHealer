@@ -4,9 +4,13 @@ using System.Collections.Generic;
 
 public class TeamEliminateNotifier : MonoBehaviour
 {
-    [SerializeField] StageManager stageController;
+    [Header("Stage Manager")]
+    [SerializeField] StageManager stageManager;
+    [Header("Player Check")]
+    [SerializeField] bool isPlayer;
 
     List<CharacterBase> teamCharacters;
+
 
     private void OnEnable()
     {
@@ -50,6 +54,6 @@ public class TeamEliminateNotifier : MonoBehaviour
 
     private void TeamEliminated()
     {
-        stageController.EndBattle();
+        stageManager.EndBattle(isPlayer);
     }
 }

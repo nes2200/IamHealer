@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Inventory : MonoBehaviour
@@ -51,6 +50,8 @@ public class Inventory : MonoBehaviour
     //양수 : 왼쪽이 크다
     public void Sort(System.Comparison<ItemSlot> Method)
     {
+        MergeAll(); //정렬 시작 전 병합
+
         int totalLength = slots.Length;
         if (slots is null || totalLength <= 1) return;
         int width = slots.GetLength(1);
@@ -222,6 +223,49 @@ public class Inventory : MonoBehaviour
         }
     }
 
+    public IEnumerable<ItemContainer> GetAllItem()
+    {
+        //List는 추가나 제거가 쉬운 대신 순서가 있다
+        //무언가를 찾으려면 처음부터 돌아야 하기 때문에 손해가 있음
+        //Set => 검색에 용이하도록 만들어진 자료구조 => 중복 허용 안하고 순서 상관 없음
+        //SortedSet : 값의 크기에 따라 저장
+        //HashedSet : 값을 해시로 변경해서 저장
+        //해시 => 자료를 변경하여 동일한 길이의 숫자로 바꿈
+        //되돌릴 수 없는, 그렇지만 다시 같은 경우를 반복할 수 있는 함수
+
+        HashSet<ItemContainer> usedItem = new();
+        foreach(ItemSlot currentSlot in GetAllSlot())
+        {
+            ItemContainer currentItem = currentSlot.GetItem();
+            if (!currentItem) continue;
+            //추가가 안된다 -> 이미 있다
+            if (!usedItem.Add(currentItem)) continue;
+            yield return currentItem;
+        }
+    }
+    public Dictionary<ItemContainer, List<ItemSlot>> GetAllItemList()
+    {
+        Dictionary<ItemContainer, List<ItemSlot>> result = new();
+
+        foreach (ItemSlot currentSlot in GetAllSlot())
+        {
+            ItemContainer currentItem = currentSlot.GetItem();
+            if (!currentItem) continue;
+            //이미 딕셔너리에 해당 아이템이 존재하는 경우
+            if(result.TryGetValue(currentItem, out List<ItemSlot> currentList))
+            {
+                //리스트에 포함시킨다
+                currentList.Add(currentSlot);
+            }
+            else
+            {
+                result.Add(currentItem, new() { currentSlot });
+            }
+        }
+
+        return result;
+    }
+
     public ItemSlot FindItem(ItemContainer target)
     {
         return default;
@@ -371,18 +415,39 @@ public class Inventory : MonoBehaviour
        
     }
 
+    public void MergeAll()
+    {
+        foreach(ItemContainer currentItem in GetAllItem())
+        {
+            MergeItem(currentItem);
+        }
+    }
     public void MergeItem(ItemContainer wantItem)
     {
         if (!wantItem) return;
-        if (wantItem.maxStack <= 1) return;
+        int maxStack = wantItem.maxStack;
+        if (maxStack <= 1) return;
         int totalCount = CountItem(wantItem, out List<ItemSlot> containSlots);
-        //  들어있는 슬롯이 없거나    슬롯이 다해서 1개 이하거나
-        if (containSlots is null || containSlots.Count <= 1) return;
-        //모든 슬롯이 꽉차있거나
-        for(int i = 0; i < containSlots.Count; i++)
+        if (totalCount <= 1) return;
+        if (containSlots is null) return;
+        int slotCount = containSlots.Count;
+        if (totalCount >= slotCount * maxStack || slotCount <= 1) return;
+
+        //모든 슬롯을 돌아주지만 마지막은 돌 필요가 없다
+        int finalSlot = slotCount - 1;
+        for(int i = 0; i < finalSlot; i++)
         {
             ItemSlot currentslot = containSlots[i];
-            if (currentslot.GetIsMax()) continue;
+            for(int j = finalSlot; j > i; j--)
+            {
+                //가득찬 슬롯은 병합할 필요 없음 -> 넘어가
+                if (currentslot.GetIsMax()) break;
+
+                ItemSlot targetSlot = containSlots[j];
+                targetSlot.GiveItem(currentslot);
+                //대상 슬롯이 비었으니 마지막 슬롯 체크를 안해도 됨
+                if (targetSlot.GetIsEmpty()) finalSlot--;
+            }
         }
     }
 

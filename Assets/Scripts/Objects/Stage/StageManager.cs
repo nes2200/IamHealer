@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using UnityEngine;
+using UnityEngine.InputSystem.LowLevel;
 
 //스테이지의 현재 상태
 public enum StageState
@@ -10,6 +11,8 @@ public enum StageState
 }
 
 public delegate void StageStateChangeEvent(StageState oldState, StageState newState);
+public delegate void BattleStartEvent();
+public delegate void BattleEndEvent();
 
 public class StageManager : MonoBehaviour
 {
@@ -17,10 +20,6 @@ public class StageManager : MonoBehaviour
 
     private StageState _currentState;
     public StageState CurrentState => _currentState;
-
-    [Header("각팀 전멸 신호기")]
-    [SerializeField] TeamEliminateNotifier teamA;
-    [SerializeField] TeamEliminateNotifier teamB;
 
     [Header("스테이지 구성 요소")]
     [SerializeField] PlacementManager placementManager;
@@ -31,26 +30,27 @@ public class StageManager : MonoBehaviour
     {
         if (CurrentState == newState) return;
 
-        switch (newState)
-        {
-            case StageState.Ready:
-                GameManager.ResetBattle();
-                break;
-            case StageState.Battle:
-                GameManager.StartBattle();
-                break;
-            case StageState.Result:
-                GameManager.EndBattle();
-                break;
-        }
         //바뀌었으니까 바뀐 상태로 바꿔주고 이벤트 발동
         StageState oldState = CurrentState;
         _currentState = newState;
         OnStageStateChange?.Invoke(oldState, newState);
     }
 
-    public void StartBattle() => ChangeState(StageState.Battle);
-    public void EndBattle() => ChangeState(StageState.Result);
+    public void StartBattle()
+    {
+        GameManager.StartBattle();
+        ChangeState(StageState.Battle);
+    }
+    public void EndBattle(bool isPlayerLoose)
+    {
+        GameManager.EndBattle();
+        ChangeState(StageState.Result);
+
+        if (isPlayerLoose)
+        {
+
+        }
+    }
 
     //ReadyBattle은 따로 안만듬?
     //Ready -> Battle -> Result는 일방향임. 
@@ -77,4 +77,9 @@ public class StageManager : MonoBehaviour
     {
         return costTracker.IsCostEnoughToSpawn(unitCost);
     }
+
+    //TeamA -> 플레이어
+    //TeamB -> 컴퓨터
+    //둘 다 동일한 TeamElimnateNotifier를 가지고 있음
+    //그렇다면, 플레이어와 컴퓨터가 보내는 '우리 전멸했어' 신호를 어떻게 구분하는가?
 }

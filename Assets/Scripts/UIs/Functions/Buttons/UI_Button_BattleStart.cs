@@ -11,8 +11,6 @@ public class UI_Button_BattleStart : MonoBehaviour
 
     public void BattleStart()
     {
-        GameManager.StartBattle();
-        
         if(stage != null)
         {
             stage.StartBattle();

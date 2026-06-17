@@ -70,12 +70,11 @@ public class UI_StageScreen : UI_ScreenBase
 
     private void OpenBattleResult(StageState oldState, StageState newState)
     {
-        if (newState == StageState.Result)
-        {
-            UIBase instance = UIManager.ClaimOpenUI(UIType.BattleResult);
-            UI_BattleResultWindow resultWindow = instance as UI_BattleResultWindow;
-            resultWindow.CostLimitOverCheck(starController.GetStageResult());
-            InputManager.OnCancel -= ToggleMenu;
-        }
+        if (newState != StageState.Result) return;
+
+        UIBase instance = UIManager.ClaimOpenUI(UIType.BattleResult);
+        UI_BattleResultWindow resultWindow = instance as UI_BattleResultWindow;
+        resultWindow.CostLimitOverCheck(starController.GetStageResult());
+        InputManager.OnCancel -= ToggleMenu;
     }
 }
