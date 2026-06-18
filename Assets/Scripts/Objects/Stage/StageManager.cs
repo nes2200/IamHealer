@@ -45,12 +45,7 @@ public class StageManager : MonoBehaviour
     {
         GameManager.EndBattle();
         ChangeState(StageState.Result);
-
-        if (isPlayerLoose)
-        {
-
-        }
-    }
+    }   
 
     //ReadyBattle은 따로 안만듬?
     //Ready -> Battle -> Result는 일방향임. 

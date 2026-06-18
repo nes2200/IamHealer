@@ -1530,7 +1530,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e9a549d9cf6f954eae2b6b5257e7d91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TeamEliminateNotifier
-  stageManager: {fileID: 0}
+  stageManager: {fileID: 746648329}
   isPlayer: 1
 --- !u!4 &1222593319 stripped
 Transform:
@@ -2020,7 +2020,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e9a549d9cf6f954eae2b6b5257e7d91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TeamEliminateNotifier
-  stageManager: {fileID: 0}
+  stageManager: {fileID: 746648329}
   isPlayer: 0
 --- !u!1001 &1651211521
 PrefabInstance:
