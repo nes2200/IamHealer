@@ -35,8 +35,8 @@ public class UI_StageScreen : UI_ScreenBase
         InputManager.OnCancel -= ToggleMenu;
         InputManager.OnCancel += ToggleMenu;
 
-        StageManager.OnStageStateChange -= OpenBattleResult;
-        StageManager.OnStageStateChange += OpenBattleResult;
+        StageManager.OnBattleEnd -= OpenBattleResult;
+        StageManager.OnBattleEnd += OpenBattleResult;
     }
     public override void Close()
     {
@@ -45,7 +45,7 @@ public class UI_StageScreen : UI_ScreenBase
         GameManager.ResetBattle();
 
         InputManager.OnCancel -= ToggleMenu;
-        StageManager.OnStageStateChange -= OpenBattleResult;
+        StageManager.OnBattleEnd -= OpenBattleResult;
     }
 
     public void ToggleMenu(bool value)
@@ -68,13 +68,11 @@ public class UI_StageScreen : UI_ScreenBase
         starController.SetAllCostLimitText(costLimits);
     }
 
-    private void OpenBattleResult(StageState oldState, StageState newState)
+    private void OpenBattleResult(bool isPlayerLoose)
     {
-        if (newState != StageState.Result) return;
-
         UIBase instance = UIManager.ClaimOpenUI(UIType.BattleResult);
         UI_BattleResultWindow resultWindow = instance as UI_BattleResultWindow;
-        resultWindow.CostLimitOverCheck(starController.GetStageResult());
-        InputManager.OnCancel -= ToggleMenu;
+
+        resultWindow.SetResult(isPlayerLoose, starController.GetStageResult());
     }
 }

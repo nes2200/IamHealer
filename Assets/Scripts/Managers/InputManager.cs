@@ -32,6 +32,7 @@ public class InputManager : ManagerBase
     public static event MouseButtonEvent OnMouseWheelButton;
 
     public static event MouseMoveEvent   OnMouseMove;
+    public static event MouseMoveEvent   OnMouseMoveFloor;
     public static event MouseHoverEvent  OnMouseHover;
 
     public static event MouseWheelEvent  OnMouseWheelScroll;
@@ -72,7 +73,10 @@ public class InputManager : ManagerBase
 
     static GameObject _cursorHoverObject;
     public static GameObject CursorHoverObject => _cursorHoverObject;
-    
+
+    static Vector3 _cursorFloorPosition;
+    public static Vector3 CursorFloorPosition => _cursorFloorPosition;
+
 
     bool canInput = true;
     public bool CanInput { get { return canInput; } set { canInput = value; } }
@@ -96,6 +100,7 @@ public class InputManager : ManagerBase
     public void UpdateEvent(float deltaTime)
     {
         RefreshGameObjectUnderCursor(_cursorScreenPosition);
+        GetFloorPositionUnderMouse(_cursorScreenPosition);
     }
 
     void RefreshGameObjectUnderCursor(Vector2 screenPosition)
@@ -157,6 +162,22 @@ public class InputManager : ManagerBase
             //마우스 호버 변경됨 알림
             OnMouseHover?.Invoke(firstObject, lastHoverObject);
         }
+    }
+
+    void GetFloorPositionUnderMouse(Vector2 screenPosition)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(screenPosition);
+
+        if (Physics.Raycast(ray, out RaycastHit floorHit, 1000f, LayerMask.GetMask("Floor")))
+        {
+            _cursorFloorPosition = floorHit.point;
+            OnMouseMoveFloor?.Invoke(screenPosition, floorHit.point);
+        }
+        else
+        {
+            OnMouseMoveFloor?.Invoke(screenPosition, Vector3.down * 9999f);
+        }
+
     }
 
     public GameObject GetGameObjectUnderCursor()

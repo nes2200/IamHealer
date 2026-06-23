@@ -154,7 +154,6 @@ public class ObjectManager : ManagerBase
                     result.transform.localPosition = position; //부모를 기준으로
                     break;
             }
-            result.transform.position = position;
         }
         return result;
     }
@@ -172,7 +171,6 @@ public class ObjectManager : ManagerBase
                     result.transform.localPosition = position; //부모를 기준으로
                     break;
             }
-            result.transform.position = position;
         }
         return result;
     }

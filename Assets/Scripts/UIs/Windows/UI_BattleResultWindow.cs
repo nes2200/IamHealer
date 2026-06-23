@@ -1,9 +1,13 @@
+using TMPro;
 using UnityEngine;
 
 public class UI_BattleResultWindow : OpenableUIBase
 {
+    [Header("UIs")]
     [SerializeField] Animator anim;
+    [SerializeField] TextMeshProUGUI resultText;
 
+    [Header("Stars")]
     [SerializeField] UI_CostStarResult[] stars;
 
     public override void Registration(UIManager manager)
@@ -14,6 +18,20 @@ public class UI_BattleResultWindow : OpenableUIBase
     private void OnEnable()
     {
         anim.SetTrigger("Show");
+    }
+
+    public void SetResult(bool isPlayerLoose, bool[] costLimitOverResult)
+    {
+        if (isPlayerLoose)
+        {
+            resultText.text = "ÆÐ¹è";
+            CostLimitOverCheck(new bool[] { true, true, true});
+        }
+        else
+        {
+            resultText.text = "½Â¸®";
+            CostLimitOverCheck(costLimitOverResult);
+        }
     }
 
     public void CostLimitOverCheck(bool[] costLimitOverResult)

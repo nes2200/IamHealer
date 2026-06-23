@@ -12,11 +12,13 @@ public enum StageState
 
 public delegate void StageStateChangeEvent(StageState oldState, StageState newState);
 public delegate void BattleStartEvent();
-public delegate void BattleEndEvent();
+public delegate void BattleEndEvent(bool isPlayer);
 
 public class StageManager : MonoBehaviour
 {
     public static event StageStateChangeEvent OnStageStateChange;
+    public static event BattleStartEvent OnBattleStart;
+    public static event BattleEndEvent OnBattleEnd;
 
     private StageState _currentState;
     public StageState CurrentState => _currentState;
@@ -24,6 +26,7 @@ public class StageManager : MonoBehaviour
     [Header("스테이지 구성 요소")]
     [SerializeField] PlacementManager placementManager;
     [SerializeField] CostTracker costTracker;
+    [SerializeField] UnitPlaceIndicator indicator;
 
     //스테이지 상태 변경
     public void ChangeState(StageState newState)
@@ -39,11 +42,13 @@ public class StageManager : MonoBehaviour
     public void StartBattle()
     {
         GameManager.StartBattle();
+        OnBattleStart?.Invoke();
         ChangeState(StageState.Battle);
     }
     public void EndBattle(bool isPlayerLoose)
     {
         GameManager.EndBattle();
+        OnBattleEnd?.Invoke(isPlayerLoose);
         ChangeState(StageState.Result);
     }   
 
