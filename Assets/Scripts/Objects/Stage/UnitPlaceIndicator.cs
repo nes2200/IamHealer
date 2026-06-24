@@ -1,10 +1,15 @@
-using System;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class UnitPlaceIndicator : MonoBehaviour
 {
-    [SerializeField] float floorOffset = 0.05f;
+    [Header("Offsets")]
+    [SerializeField] float floorOffset = 0.025f;
+    [SerializeField] float navMeshCheckRadius = 0.1f;
+
+    [Header("Indicator")]
     [SerializeField] GameObject indicator;
+    [SerializeField] Material indicatorMat;
 
     float size;
     bool selected = false;
@@ -15,8 +20,8 @@ public class UnitPlaceIndicator : MonoBehaviour
         InputManager.OnUnitSelect -= ChangeCurrentSelectedUnit;
         InputManager.OnUnitSelect += ChangeCurrentSelectedUnit;
 
-        InputManager.OnMouseMoveFloor -= MoveToMouse;
-        InputManager.OnMouseMoveFloor += MoveToMouse;
+        InputManager.OnMouseMove -= MoveToMouse;
+        InputManager.OnMouseMove += MoveToMouse;
 
         StageManager.OnBattleStart -= DisablePreview;
         StageManager.OnBattleStart += DisablePreview;
@@ -28,7 +33,7 @@ public class UnitPlaceIndicator : MonoBehaviour
     private void OnDisable()
     {
         InputManager.OnUnitSelect -= ChangeCurrentSelectedUnit;
-        InputManager.OnMouseMoveFloor -= MoveToMouse;
+        InputManager.OnMouseMove -= MoveToMouse;
         StageManager.OnBattleStart -= DisablePreview;
     }
 
@@ -36,19 +41,43 @@ public class UnitPlaceIndicator : MonoBehaviour
     {
         if (!selected) return;
 
+        //비정상값 -> 제외
         if (worldPosition.y < -9000f)
         {
             SetIndicatorVisual(false);
+            canSpawn = false;
             return;
         }
 
+        CheckSpawnable(worldPosition);
+
         SetIndicatorVisual(true);
-        transform.position = worldPosition + new Vector3(0f, floorOffset, 0f);
+        transform.position = worldPosition + new Vector3 (0f, floorOffset, 0f);
+    }
+
+    void CheckSpawnable(Vector3 worldPosition)
+    {
+        bool SpawnableCheck = NavMesh.SamplePosition(worldPosition, out NavMeshHit hit, navMeshCheckRadius, NavMesh.AllAreas);
+
+        if(canSpawn != SpawnableCheck)
+        {
+            if (SpawnableCheck)
+            {
+                Debug.Log("스폰 가능");
+                indicatorMat.SetColor("_TintColor", new Color(0f, 1f, 0f, 0.6f));
+            }
+            else
+            {
+                Debug.Log("불가능");
+                indicatorMat.SetColor("_TintColor", new Color(1f, 0f, 0f, 0.6f));
+            }
+            canSpawn = SpawnableCheck;
+        }
     }
 
     void SetIndicatorVisual(bool visible)
     {
-        if(indicator.activeSelf != visible)
+        if (indicator.activeSelf != visible)
         {
             indicator.SetActive(visible);
         }
@@ -62,7 +91,7 @@ public class UnitPlaceIndicator : MonoBehaviour
 
         selected = true;
         size = status.colliderRadius * 2.0f;
-        indicator.transform.localScale = new Vector3(size, size, indicator.transform.localScale.z);
+        transform.localScale = new Vector3(size, size, transform.localScale.z);
     }
 
     void DisablePreview()
