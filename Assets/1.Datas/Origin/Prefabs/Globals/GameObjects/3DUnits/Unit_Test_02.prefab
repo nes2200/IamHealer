@@ -20,6 +20,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 1747725614a6d954bae1491d9c7207b8, type: 2}
+    - target: {fileID: 3848778366972197044, guid: 735c578458551124d932d8c8d7ee2416, type: 3}
+      propertyPath: m_Radius
+      value: 0.32
+      objectReference: {fileID: 0}
     - target: {fileID: 6321743010092666124, guid: 735c578458551124d932d8c8d7ee2416, type: 3}
       propertyPath: navAgent
       value: 
@@ -40,6 +44,18 @@ PrefabInstance:
       propertyPath: _status
       value: 
       objectReference: {fileID: 11400000, guid: ea245bc9af6c91b4392ac363758f7a75, type: 2}
+    - target: {fileID: 8878794627829676378, guid: 735c578458551124d932d8c8d7ee2416, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8878794627829676378, guid: 735c578458551124d932d8c8d7ee2416, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8878794627829676378, guid: 735c578458551124d932d8c8d7ee2416, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.2
+      objectReference: {fileID: 0}
     - target: {fileID: 8878794627829676378, guid: 735c578458551124d932d8c8d7ee2416, type: 3}
       propertyPath: m_LocalPosition.x
       value: -8.04
@@ -153,7 +169,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 6554844596053527657}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.5
+  m_Radius: 0.32
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50

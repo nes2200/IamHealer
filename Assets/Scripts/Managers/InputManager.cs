@@ -80,6 +80,8 @@ public class InputManager : ManagerBase
     bool canInput = true;
     public bool CanInput { get { return canInput; } set { canInput = value; } }
 
+    List<RaycastResult> uiHitList = new List<RaycastResult>();
+
     protected override IEnumerator Onconnected(GameManager newManager)
     {
         targetInput = GetComponent<PlayerInput>();
@@ -249,5 +251,17 @@ public class InputManager : ManagerBase
     {
         if (isEnabled) targetInput.enabled = true;
         else targetInput.enabled = false;
+    }
+
+     public bool IsMouseOverUI()
+    {
+        if (EventSystem.current == null) return false;
+
+        PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
+        eventDataCurrentPosition.position = CursorScreenPosition;
+
+        uiHitList.Clear();
+        EventSystem.current.RaycastAll(eventDataCurrentPosition, uiHitList);
+        return uiHitList.Count > 0;
     }
 }

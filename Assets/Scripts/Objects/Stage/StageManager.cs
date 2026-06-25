@@ -23,7 +23,7 @@ public class StageManager : MonoBehaviour
     private StageState _currentState;
     public StageState CurrentState => _currentState;
 
-    [Header("스테이지 구성 요소")]
+    [Header("Stage Components")]
     [SerializeField] PlacementManager placementManager;
     [SerializeField] CostTracker costTracker;
     [SerializeField] UnitPlaceIndicator indicator;
@@ -76,6 +76,11 @@ public class StageManager : MonoBehaviour
     public bool IsCostEnoughToSpawn(int unitCost)
     {
         return costTracker.IsCostEnoughToSpawn(unitCost);
+    }
+
+    public bool CanSpawn()
+    {
+        return indicator.CanSpawn;
     }
 
     //TeamA -> 플레이어

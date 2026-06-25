@@ -1,19 +1,29 @@
+using NUnit.Framework.Constraints;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Rendering.Universal;
 
 public class UnitPlaceIndicator : MonoBehaviour
 {
-    [Header("Offsets")]
-    [SerializeField] float floorOffset = 0.025f;
+    [Header("Settings")]
     [SerializeField] float navMeshCheckRadius = 0.1f;
+    [SerializeField] LayerMask floorLayer;
 
     [Header("Indicator")]
     [SerializeField] GameObject indicator;
     [SerializeField] Material indicatorMat;
+    [SerializeField] DecalProjector decal;
+
+    Camera mainCam;
+
+    readonly int tintColorPorpertyID = Shader.PropertyToID("_TintColor");
+    int floorLayerNum;
 
     float size;
     bool selected = false;
-    bool canSpawn;
+
+    bool _canSpawn;
+    public bool CanSpawn => _canSpawn;
 
     private void OnEnable()
     {
@@ -26,9 +36,10 @@ public class UnitPlaceIndicator : MonoBehaviour
         StageManager.OnBattleStart -= DisablePreview;
         StageManager.OnBattleStart += DisablePreview;
 
-        //처음에는 선택된 유닛이 없으니까
-        SetIndicatorVisual(false);
+        indicatorMat.SetColor(tintColorPorpertyID, Color.gray);
+        floorLayerNum = LayerMask.NameToLayer("Floor");
 
+        mainCam = Camera.main;
     }
     private void OnDisable()
     {
@@ -39,39 +50,45 @@ public class UnitPlaceIndicator : MonoBehaviour
 
     void MoveToMouse(Vector2 screenPosition, Vector3 worldPosition)
     {
-        if (!selected) return;
+        Ray ray = mainCam.ScreenPointToRay(screenPosition);
 
-        //비정상값 -> 제외
-        if (worldPosition.y < -9000f)
+        if(Physics.Raycast(ray, out RaycastHit hit, 1000f, floorLayer))
+        {
+            SetIndicatorVisual(true);
+
+            transform.position = hit.point + new Vector3 (0f, 5f, 0f);
+            CheckSpawnable(hit.point);
+        }
+        else
         {
             SetIndicatorVisual(false);
-            canSpawn = false;
+        }
+    }
+
+    void CheckSpawnable(Vector3 floorPosition)
+    {
+        //선택된 유닛이 없다면 ,지금 마우스가 가리키는 오브젝트가 floor가 아니라면 생성 안함.
+        if (!selected || GameManager.Instance.Input.IsMouseOverUI())
+        {
+            _canSpawn = false;
             return;
         }
 
-        CheckSpawnable(worldPosition);
+        bool SpawnableCheck = NavMesh.SamplePosition(floorPosition, out NavMeshHit hit, navMeshCheckRadius, NavMesh.AllAreas);
 
-        SetIndicatorVisual(true);
-        transform.position = worldPosition + new Vector3 (0f, floorOffset, 0f);
-    }
-
-    void CheckSpawnable(Vector3 worldPosition)
-    {
-        bool SpawnableCheck = NavMesh.SamplePosition(worldPosition, out NavMeshHit hit, navMeshCheckRadius, NavMesh.AllAreas);
-
-        if(canSpawn != SpawnableCheck)
+        if(_canSpawn != SpawnableCheck)
         {
             if (SpawnableCheck)
             {
                 Debug.Log("스폰 가능");
-                indicatorMat.SetColor("_TintColor", new Color(0f, 1f, 0f, 0.6f));
+                indicatorMat.SetColor(tintColorPorpertyID, new Color(0f, 1f, 0f, 0.6f));
             }
             else
             {
                 Debug.Log("불가능");
-                indicatorMat.SetColor("_TintColor", new Color(1f, 0f, 0f, 0.6f));
+                indicatorMat.SetColor(tintColorPorpertyID, new Color(1f, 0f, 0f, 0.6f));
             }
-            canSpawn = SpawnableCheck;
+            _canSpawn = SpawnableCheck;
         }
     }
 
@@ -91,11 +108,17 @@ public class UnitPlaceIndicator : MonoBehaviour
 
         selected = true;
         size = status.colliderRadius * 2.0f;
-        transform.localScale = new Vector3(size, size, transform.localScale.z);
+
+        if (decal)
+        {
+            decal.size = new Vector3(size, size, decal.size.z);
+        }
+        _canSpawn = !NavMesh.SamplePosition(transform.position, out NavMeshHit hit, navMeshCheckRadius, NavMesh.AllAreas);
     }
 
     void DisablePreview()
     {
         gameObject.SetActive(false);
     }
+
 }

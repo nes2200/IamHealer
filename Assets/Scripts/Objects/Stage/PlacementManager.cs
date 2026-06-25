@@ -5,9 +5,6 @@ public class PlacementManager : MonoBehaviour
     [Header("스테이지 매니저")]
     [SerializeField] StageManager stageManager;
 
-    [Header("유닛 생성 세팅")]
-    [SerializeField] LayerMask floorLayer;
-
     GameObject unitPrefab;
     int selectedUnitCost;
 
@@ -48,14 +45,8 @@ public class PlacementManager : MonoBehaviour
         //생성할 유닛 비용이 추가될 시 리미트 최고점을 넘으면 생성 안함
         if (!IsCostEnoughToSpawn(selectedUnitCost)) return;
 
-        //마우스가 지금 가리키는 오브젝트 가져오기
-        GameObject mouseOverObj = InputManager.CursorHoverObject;
-
-        //없으면 유닛 생성 안함
-        if (!mouseOverObj) return;
-
-        //바닥이 아니면 생성 안함
-        if(mouseOverObj.layer != LayerMask.NameToLayer("Floor")) return;
+        //생성 불가능한 위치라면 생성 안함
+        if (!stageManager.CanSpawn()) return;
 
         //위치가 생성 불가한 위치인지 체크하고 불가하면 안함
         if (worldPosition.x > 0) return;
