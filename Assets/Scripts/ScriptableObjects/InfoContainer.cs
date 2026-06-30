@@ -4,6 +4,6 @@ using UnityEngine;
 public class InfoContainer : ScriptableObject
 {
     public Sprite icon;
-    public string name;
+    public string displayName;
     public string explain;
 }

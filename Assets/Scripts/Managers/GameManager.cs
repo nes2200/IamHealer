@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance => _instance;
 
     UIManager        _ui;
+    DBManager        _db;
     DataManager      _data;
     ObjectManager    _objectM;
     SaveManager      _save;
@@ -21,15 +22,16 @@ public class GameManager : MonoBehaviour
     CameraManager    _camera;
     InputManager     _input;
 
-    public UIManager        UI => _ui;
-    public DataManager      Data => _data;
-    public ObjectManager    ObjectM => _objectM;
-    public SaveManager      Save => _save;
-    public SettingManager   Setting => _setting;
-    public LanguageManager  Language => _language;
-    public AudioManager     Audio => _audio;
-    public CameraManager    Camera => _camera;
-    public InputManager     Input => _input;
+    public static UIManager        UI => Instance._ui;
+    public static DBManager        DB => Instance._db;
+    public static DataManager      Data => Instance._data;
+    public static ObjectManager    ObjectM => Instance._objectM;
+    public static SaveManager      Save => Instance._save;
+    public static SettingManager   Setting => Instance._setting;
+    public static LanguageManager  Language => Instance._language;
+    public static AudioManager     Audio => Instance._audio;
+    public static CameraManager    Camera => Instance._camera;
+    public static InputManager     Input => Instance._input;
 
     IEnumerator initializing;
 
@@ -106,6 +108,7 @@ public class GameManager : MonoBehaviour
         // 유저 입력 받기 시작
         int totalLoadCount = 0;
         totalLoadCount += CreatManager(ref _ui).LoadCount;
+        totalLoadCount += CreatManager(ref _db).LoadCount;
         totalLoadCount += CreatManager(ref _data).LoadCount;
         totalLoadCount += CreatManager(ref _objectM).LoadCount;
         totalLoadCount += CreatManager(ref _save).LoadCount;
@@ -119,6 +122,9 @@ public class GameManager : MonoBehaviour
         UIBase loadingUI =  UIManager.ClaimOpenScreen(UIType.Loading); //UI가 연결됬으니 기능 실행해보기
         IProgress<int> loadingProgress = loadingUI as IProgress<int>;
         loadingProgress?.Set(0, totalLoadCount);
+
+        yield return DB.Connect(this);
+        loadingProgress?.AddCurrent(1);
 
         yield return Data.Connect(this);
 
@@ -159,24 +165,16 @@ public class GameManager : MonoBehaviour
 
     void DeleteManagers()
     {
-        // 유저 입력
         Input?.Disconnect();
-        // 오브젝트 제거
         ObjectM.Disconnect();
-        // 사운드
         Audio?.Disconnect();
-        // 언어 
         Language?.Disconnect();
-        // 설정
         Setting?.Disconnect();
-        // 유저 세이브
         Save?.Disconnect();
-        // 카메라 
         Camera?.Disconnect();
-        // UI
         UI?.Disconnect();
-        // 데이터
         Data?.Disconnect();
+        DB?.Disconnect();
     }
 
     //달라지는 것이 "자료형"뿐이라면 "자료형"에 따라 변수로 작용하는 함수를 만들 수 있다

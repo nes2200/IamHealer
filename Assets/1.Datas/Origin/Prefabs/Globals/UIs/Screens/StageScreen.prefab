@@ -1435,7 +1435,7 @@ MonoBehaviour:
   closeWithScreen: 05000000
   starController: {fileID: 4095887824672729739}
   starPrefab: {fileID: 5357776831520545780, guid: c2ae4760d40ecc14a85d4df0fd4c6484, type: 3}
-  unitSelectArea: {fileID: 0}
+  unitSelectArea: {fileID: 3188341460730144471}
 --- !u!1 &7905621148645317202
 GameObject:
   m_ObjectHideFlags: 0
@@ -2173,6 +2173,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 986164264129728844, guid: d9d2cd646e3f4f540b7985cb057d9396, type: 3}
   m_PrefabInstance: {fileID: 2669756457530469488}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &3188341460730144471 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 663052722275142311, guid: d9d2cd646e3f4f540b7985cb057d9396, type: 3}
+  m_PrefabInstance: {fileID: 2669756457530469488}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1293144747982408882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45d1a56fb2b10184dbec81f6ba867b67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_UnitSelectArea
 --- !u!1 &3376864760061283823 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 851718823883334047, guid: d9d2cd646e3f4f540b7985cb057d9396, type: 3}

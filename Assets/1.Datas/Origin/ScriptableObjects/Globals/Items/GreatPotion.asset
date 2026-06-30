@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GreatPotion
   m_EditorClassIdentifier: Assembly-CSharp::Item_Consumable_Potion
   icon: {fileID: 8566586046313911275, guid: 03b53e0e247bfc74a80c23c8d8ed1dbb, type: 3}
-  name: "\uB300\uD615 \uD3EC\uC158"
+  displayName: "\uB300\uC6A9\uB7C9 \uD3EC\uC158"
   explain: "\uB9CE\uC740 \uC591\uC774 \uB4E4\uC5B4\uC788\uB294 \uD3EC\uC158"
   id: 20002
   type: 400

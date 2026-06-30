@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "333321267007",
+    "firebase_url": "https://pmbs-3f249-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "pmbs-3f249",
+    "storage_bucket": "pmbs-3f249.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:333321267007:android:f48fadd4e945eb6a83d58a",
+        "android_client_info": {
+          "package_name": "com.DragonBone.PMBS"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNlTCQHbdWtGxNf-j4gI0F1olsIXtpOjc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

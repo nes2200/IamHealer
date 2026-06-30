@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Threading.Tasks;
-using Unity.Mathematics.Geometry;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 //확장 메소드를 가지고 있을 클래스
 //객체화가 필요할까?

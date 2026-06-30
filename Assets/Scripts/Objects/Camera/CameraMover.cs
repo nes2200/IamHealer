@@ -29,7 +29,7 @@ public class CameraMover : MonoBehaviour
         GameManager.OnUpdateCamera -= CameraTransformUpdate;
         GameManager.OnUpdateCamera += CameraTransformUpdate;
 
-        mainCamera = GameManager.Instance.Camera.MainCamera;
+        mainCamera = GameManager.Camera.MainCamera;
 
         //처음에는 0f, 0f로 초기화 되어있기에 카메라가 확 튀어버리고 이를 방지하기 위해 초기값을 추가해준다
         Vector3 currentRotation = transform.localRotation.eulerAngles;

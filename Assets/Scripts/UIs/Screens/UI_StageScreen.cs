@@ -29,7 +29,7 @@ public class UI_StageScreen : UI_ScreenBase
     public override void Open()
     {
         base.Open();
-        GameManager.Instance.Camera.AddCameraController();
+        GameManager.Camera.AddCameraController();
         GameManager.ResetBattle();
 
         InputManager.OnCancel -= ToggleMenu;
@@ -41,7 +41,7 @@ public class UI_StageScreen : UI_ScreenBase
     public override void Close()
     {
         base.Close();
-        GameManager.Instance.Camera.RemoveCameraController();
+        GameManager.Camera.RemoveCameraController();
         GameManager.ResetBattle();
 
         InputManager.OnCancel -= ToggleMenu;

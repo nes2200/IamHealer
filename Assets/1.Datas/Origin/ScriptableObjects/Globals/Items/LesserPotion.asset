@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: LesserPotion
   m_EditorClassIdentifier: Assembly-CSharp::Item_Consumable_Potion
   icon: {fileID: 2600781864912617905, guid: 2677545638ce278438f255b2fdc2a234, type: 3}
-  name: "\uCD08\uC18C\uD615 \uD3EC\uC158"
+  displayName: "\uCD5C\uD558\uAE09 \uD3EC\uC158"
   explain: "\uC5F0\uAE08\uC220\uC744 \uC774\uC81C \uB9C9 \uBC30\uC6B4 \uC774\uB4E4\uB3C4
     \uB9CC\uB4E4 \uC218 \uC788\uB2E4"
   id: 20003

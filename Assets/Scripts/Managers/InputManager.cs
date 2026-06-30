@@ -106,7 +106,7 @@ public class InputManager : ManagerBase
     void RefreshGameObjectUnderCursor(Vector2 screenPosition)
     {
         cursorHitList.Clear();
-        GameManager.Instance.Camera.GetRaycastResult(screenPosition, cursorHitList);
+        GameManager.Camera.GetRaycastResult(screenPosition, cursorHitList);
 
         //마우스의 화면상 실제 픽셀 위치
         //화면과 유티니간의 좌표가 다르다 -> 바꿔줘야 한다. -> 기준점이 필요
@@ -121,6 +121,7 @@ public class InputManager : ManagerBase
         if(cursorHitList.Count > 0 && cursorHitList[0].element != null)
         {
             firstObject = cursorHitList[0].gameObject;
+           
         }
         if (GameManager.is2D)
         {
@@ -253,15 +254,19 @@ public class InputManager : ManagerBase
         else targetInput.enabled = false;
     }
 
-     public bool IsMouseOverUI()
+    public bool IsMouseOverUI
     {
-        if (EventSystem.current == null) return false;
-
-        PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
-        eventDataCurrentPosition.position = CursorScreenPosition;
-
-        uiHitList.Clear();
-        EventSystem.current.RaycastAll(eventDataCurrentPosition, uiHitList);
-        return uiHitList.Count > 0;
+        get
+        {
+            if (CursorHoverObject)
+            {
+                //UI 오브젝트들의 기본 레이어는 5
+                if(CursorHoverObject.layer == 5)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

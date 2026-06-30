@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Crystallize Branch
   m_EditorClassIdentifier: Assembly-CSharp::Item_Equipment_Trinket
   icon: {fileID: 4749952645443913530, guid: 871f282843ee281489e3b1324262a7d1, type: 3}
-  name: "\uACB0\uC815\uD654\uB41C \uB098\uBB47\uAC00\uC9C0"
+  displayName: "\uACB0\uC815\uD654\uB41C \uB098\uBB47\uAC00\uC9C0"
   explain: "\uB9C8\uB098 \uACB0\uC815\uD654\uAC00 \uC9C4\uD589\uC911\uC778 \uACE0\uBAA9\uC5D0\uC11C
     \uB5A8\uC5B4\uC838\uB098\uC628 \uB098\uBB47\uAC00\uC9C0\uB2E4."
   id: 10002
