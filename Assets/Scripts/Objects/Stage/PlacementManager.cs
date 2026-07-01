@@ -2,15 +2,18 @@ using UnityEngine;
 
 public class PlacementManager : MonoBehaviour
 {
-    [Header("스테이지 매니저")]
+    [Header("StageManager")]
     [SerializeField] StageManager stageManager;
 
     GameObject unitPrefab;
     int selectedUnitCost;
 
-    [Header("각 팀 부모")]
+    [Header("Each Team Parent")]
     [SerializeField] Transform teamA_Parent;
     [SerializeField] Transform teamB_Parent;
+
+    [Header("Indicator")]
+    [SerializeField] UnitPlaceIndicator indicator;
 
     private void OnEnable()
     {
@@ -46,7 +49,7 @@ public class PlacementManager : MonoBehaviour
         if (!IsCostEnoughToSpawn(selectedUnitCost)) return;
 
         //생성 불가능한 위치라면 생성 안함
-        if (!stageManager.CanSpawn()) return;
+        if (!indicator.CanSpawn) return;
 
         //위치가 생성 불가한 위치인지 체크하고 불가하면 안함
         if (worldPosition.x > 0) return;

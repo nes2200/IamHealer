@@ -55,7 +55,7 @@ public class DBManager : ManagerBase
         WriteData(MakeNewUserData(nickNameInput.text), "users", "userData", user.UserId);
     }
 
-    public void GuestLogin()
+    public async void GuestLogin()
     {
         //인증기가 없다면?
         if (authentication is null) return;
@@ -63,11 +63,19 @@ public class DBManager : ManagerBase
         if(user is not null)
         {
             Debug.LogError($"Login Failed : Already Has Login Data ({user.IsValid()}, {user.UserId})");
-            WriteData(MakeNewUserData("용뼈"), "users", "userData", user.UserId);
+            UserData resultData = await ReadDataAsync<UserData>("users", "userData", user.UserId);
+            if(resultData is not null)
+            {
+                Debug.Log(resultData.nickname);
+            }
+            else
+            {
+                WriteData(MakeNewUserData("NoNamed"), "users", "userData", user.UserId);
+            }
             return;
         }
         //익명으로 로그인하기
-        authentication.SignInAnonymouslyAsync().ContinueWithOnMainThread(OnLoginResult);
+        await authentication.SignInAnonymouslyAsync().ContinueWithOnMainThread(OnLoginResult);
     }
 
     private void OnLoginResult(Task<AuthResult> task)
@@ -101,6 +109,18 @@ public class DBManager : ManagerBase
         attendtime  = 0
     };
 
+    public DatabaseReference GetFinalDirectory(DatabaseReference root, params string[] directory)
+    {
+        if (directory is null || directory.Length == 0) return root;
+
+        DatabaseReference currentReference = root;
+        foreach (string currentChild in directory)
+        {
+            currentReference = currentReference.Child(currentChild);
+        }
+        return currentReference;
+    }
+
     public void WriteData(object wantData, params string[] directory)
     {
         if (rootDB is null || wantData is null) return;
@@ -108,26 +128,59 @@ public class DBManager : ManagerBase
         //NoSQL은 JSON으로 저장한다
         string jsonData = JsonUtility.ToJson(wantData);
         //뿌리에서부터 시작
-        DatabaseReference currentReference = rootDB;
-        //디렉토리 하나하나 타고 내려가기
-        foreach(string currentChild in directory)
-        {
-            currentReference = currentReference.Child(currentChild);
-        }
-        //최종 도착한 위치에 저장하기
-        currentReference.SetRawJsonValueAsync(jsonData).ContinueWithOnMainThread(OnTaskResult);
-
-        Dictionary<string, object> item = new()
-        {
-            { "name", "돌"},
-            { "weight", .3 },
-            { "price", 1}
-        };
-
+        GetFinalDirectory(rootDB, directory).SetRawJsonValueAsync(jsonData).ContinueWithOnMainThread(OnTaskResult);
+    }
+    public void WriteData(Dictionary<string, object> changes, params string[] directory)
+    {
+        if (rootDB is null || changes is null) return;
 
         //폴더를 따라 내려가는 것
         //제일 처음에 만든 reference가 바로 root폴더 => c드라이브다
-        rootDB.Child("Items").Child("Misc").Child("Nature").Child("Stone").UpdateChildrenAsync(item).ContinueWithOnMainThread(OnTaskResult);
+        GetFinalDirectory(rootDB, directory).UpdateChildrenAsync(changes).ContinueWithOnMainThread(OnTaskResult);
+    }
+
+    public void ReadData(Action<Task<DataSnapshot>> OnReadData, params string[] directory)
+    {
+        GetFinalDirectory(rootDB, directory).GetValueAsync().ContinueWithOnMainThread(OnReadData);
+    }
+
+    //데이터 읽기의 경우 기다려야 하는 사안이 많음
+    //로그인시 로그인 정보 읽기가 끝나야 들여보내줌
+    //아이템 구매시 내 인벤토리 정보를 읽어보고 구매 가능하면 그때 아이템 구매를 허가해줌
+    //이렇듯 데이터 읽기가 끝나야 다음 일을 해야 하는 경우가 많음
+    public IEnumerator ReadDataCoroutine(Action<Task<DataSnapshot>> OnReadData, params string[] directory)
+    {
+        Task<DataSnapshot> readTask = GetFinalDirectory(rootDB, directory).GetValueAsync();
+        yield return readTask.WaitForTask();
+        OnReadData?.Invoke(readTask);
+    }
+
+    //기다릴 수 있는 형태의 함수 => 코루틴, 비동기
+    //                        Ienumerator async
+    public async Task<T> ReadDataAsync<T>(params string[] directory)
+    {
+        //다른 비동기 함수가 진행되는 동안 기다린다고 알려주는 구문
+        DataSnapshot currentTask = await GetFinalDirectory(rootDB, directory).GetValueAsync();
+
+        if (currentTask is null) return default;
+        if (!currentTask.Exists) return default;
+
+        //1. 복합타입
+        //구조화된 존재를 JSON으로 저장하고 있었다
+        try
+        {
+            if (currentTask.HasChildren)
+            {
+                return JsonUtility.FromJson<T>(currentTask.GetRawJsonValue());
+            }
+            //2. 단일타입
+            return (T)System.Convert.ChangeType(currentTask.Value, typeof(T));
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(e);
+            return default;
+        }
     }
 
     private void OnTaskResult(Task task)

@@ -26,7 +26,6 @@ public class StageManager : MonoBehaviour
     [Header("Stage Components")]
     [SerializeField] PlacementManager placementManager;
     [SerializeField] CostTracker costTracker;
-    [SerializeField] UnitPlaceIndicator indicator;
 
     //스테이지 상태 변경
     public void ChangeState(StageState newState)
@@ -78,10 +77,7 @@ public class StageManager : MonoBehaviour
         return costTracker.IsCostEnoughToSpawn(unitCost);
     }
 
-    public bool CanSpawn()
-    {
-        return indicator.CanSpawn;
-    }
+    
 
     //TeamA -> 플레이어
     //TeamB -> 컴퓨터

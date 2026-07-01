@@ -1,4 +1,3 @@
-using NUnit.Framework.Constraints;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Rendering.Universal;
@@ -85,7 +84,9 @@ public class UnitPlaceIndicator : MonoBehaviour
         bool SpawnableCheck = NavMesh.SamplePosition(floorPosition, out NavMeshHit hit, navMeshCheckRadius, NavMesh.AllAreas);
 
         //마우스가 navMesh 위에는 있지만 적 진영이라 생성 불가하니까
-        if(SpawnableCheck && hit.position.x > 0)
+        //indicator의 중심은 마우스이기에 x 기준을 0으로 하면 유닛 절반이 상대 진영으로 넘어가도 소환 가능함
+        //그렇기에 유닛의 size 보정을 줘서 넘어가지 않게 해주기
+        if(SpawnableCheck && hit.position.x > -size)
         {
             SpawnableCheck = false;
         }
@@ -126,11 +127,11 @@ public class UnitPlaceIndicator : MonoBehaviour
         if (!status) return;
 
         selected = true;
-        size = status.colliderRadius * 2.0f;
+        size = status.colliderRadius;
 
         if (decal)
         {
-            decal.size = new Vector3(size, size, decal.size.z);
+            decal.size = new Vector3(size * 2f, size * 2f, decal.size.z);
         }
         _canSpawn = !NavMesh.SamplePosition(transform.position, out NavMeshHit hit, navMeshCheckRadius, NavMesh.AllAreas);
     }
@@ -139,5 +140,4 @@ public class UnitPlaceIndicator : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
-
 }
