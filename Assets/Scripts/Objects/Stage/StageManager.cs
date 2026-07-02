@@ -77,8 +77,6 @@ public class StageManager : MonoBehaviour
         return costTracker.IsCostEnoughToSpawn(unitCost);
     }
 
-    
-
     //TeamA -> 플레이어
     //TeamB -> 컴퓨터
     //둘 다 동일한 TeamElimnateNotifier를 가지고 있음

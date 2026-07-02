@@ -14,6 +14,46 @@ public class DBManager : ManagerBase
     private FirebaseUser user;
     private DatabaseReference rootDB;
 
+    [SerializeField] Transform rock;
+
+    public void ChangeRockTransform()
+    {
+        ProbData currentStatus = new ProbData()
+        {
+            name = rock.name,
+            position = rock.position,
+            rotation = rock.eulerAngles,
+            scale = rock.localScale
+        };
+
+        WriteData(currentStatus, "Custom_Uploaded_Maps", "1231585", "Map_Data", "Probs", "Probs_001");
+    }
+
+    public void CreateRock()
+    {
+        ReadDataAsync<ProbData>("Custom_Uploaded_Maps", "1231585", "Map_Data", "Probs", "Probs_001").ContinueWithOnMainThread( task => 
+        {
+            if(task is not null)
+            {
+                ProbData result = task.Result;
+                ObjectManager.CreateObject(result.name, result.position, Quaternion.Euler(result.rotation), result.scale);
+            }
+            else
+            {
+                Debug.Log("맵 데이터를 불러오지 못했습니다. 다시 확인해 주세요");
+            }
+        });
+    }
+
+    [Serializable]
+    public class ProbData
+    {
+        public string name;
+        public Vector3 position;
+        public Vector3 rotation;
+        public Vector3 scale;
+    }
+
     protected override IEnumerator Onconnected(GameManager newManager)
     {
         //              의존성 검사         비동기 
@@ -63,14 +103,15 @@ public class DBManager : ManagerBase
         if(user is not null)
         {
             Debug.LogError($"Login Failed : Already Has Login Data ({user.IsValid()}, {user.UserId})");
-            UserData resultData = await ReadDataAsync<UserData>("users", "userData", user.UserId);
+            UserData resultData = await ReadDataAsync<UserData>("users", "userData", "500");
             if(resultData is not null)
             {
-                Debug.Log(resultData.nickname);
+                //Debug.Log(resultData.steamNickname);
+                //Debug.Log(resultData.downloadedMaps_uuid._2138564);
             }
             else
             {
-                WriteData(MakeNewUserData("NoNamed"), "users", "userData", user.UserId);
+                WriteData(MakeNewUserData("Test"), "users", "userData", "500");
             }
             return;
         }
@@ -93,20 +134,31 @@ public class DBManager : ManagerBase
     [Serializable]
     public class UserData
     {
-        public string nickname;
-        public DateTime assignDate;
-        public int userLeve;
-        public int money;
-        public int attendtime;
+        public string steamNickname;
+        public DownloadedMaps downloadedMaps_uuid;
+        public UploadedMaps uploadedMaps_uuid;
+    }
+    [Serializable]
+    public class DownloadedMaps
+    {
+        public long _2138564 = 202605231322;
+        public long _52689845 = 202605241423;
+        public long _689456456 = 202605251156;
+    }
+    [Serializable]
+    public class UploadedMaps
+    {
+        public bool _231231 = true;
+        public bool _8852486 = true;
+        public bool _23844213 = true;
     }
 
     public UserData MakeNewUserData(string wantNickname) => new()
     {
-        nickname    = wantNickname,
-        assignDate  = DateTime.Now,
-        userLeve    = 1,
-        money       = 3000,
-        attendtime  = 0
+        steamNickname = wantNickname,
+        downloadedMaps_uuid = new DownloadedMaps(),
+        uploadedMaps_uuid = new UploadedMaps()
+        
     };
 
     public DatabaseReference GetFinalDirectory(DatabaseReference root, params string[] directory)

@@ -32,8 +32,8 @@ public class UnitPlaceIndicator : MonoBehaviour
         InputManager.OnMouseMove -= MoveToMouse;
         InputManager.OnMouseMove += MoveToMouse;
 
-        StageManager.OnBattleStart -= DisablePreview;
-        StageManager.OnBattleStart += DisablePreview;
+        StageManager.OnBattleStart -= DisableIndicator;
+        StageManager.OnBattleStart += DisableIndicator;
 
         indicatorMat.SetColor(tintColorPorpertyID, Color.gray);
         floorLayerNum = LayerMask.NameToLayer("Floor");
@@ -44,7 +44,7 @@ public class UnitPlaceIndicator : MonoBehaviour
     {
         InputManager.OnUnitSelect -= ChangeCurrentSelectedUnit;
         InputManager.OnMouseMove -= MoveToMouse;
-        StageManager.OnBattleStart -= DisablePreview;
+        StageManager.OnBattleStart -= DisableIndicator;
     }
 
     void MoveToMouse(Vector2 screenPosition, Vector3 worldPosition)
@@ -136,7 +136,7 @@ public class UnitPlaceIndicator : MonoBehaviour
         _canSpawn = !NavMesh.SamplePosition(transform.position, out NavMeshHit hit, navMeshCheckRadius, NavMesh.AllAreas);
     }
 
-    void DisablePreview()
+    void DisableIndicator()
     {
         gameObject.SetActive(false);
     }

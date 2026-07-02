@@ -106,18 +106,6 @@ public class PlacementManager : MonoBehaviour
         }
     }
 
-    //private Transform SetTeamBySpawnPosition(Vector3 worldPosition)
-    //{
-    //    if(worldPosition.x < 0)
-    //    {
-    //        return teamA_Parent;
-    //    }
-    //    else
-    //    {
-    //        return teamB_Parent;
-    //    }
-    //}
-
     //유닛 선택 버튼 클릭시 해당 유닛 정보를 받아오는 기능
     public void ChangeCurrentSelectedUnit(GameObject newUnit, int unitCost)
     {
