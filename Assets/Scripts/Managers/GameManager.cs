@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public delegate void InitializeEvent();
 public delegate void UpdateEvent(float deltaTime);
@@ -344,5 +345,11 @@ public class GameManager : MonoBehaviour
 
         OnPhysicsCharacter?.Invoke(deltaTime);
         OnPhysicsObject?.Invoke(deltaTime);
+    }
+
+    public void LoadSceneAndSetup(string sceneName)
+    {
+        UIManager.ClaimOpenScreen(UIType.Stage, ScreenChangeType.SlideChanger);
+        SceneManager.LoadScene(sceneName, LoadSceneMode.Additive);
     }
 }

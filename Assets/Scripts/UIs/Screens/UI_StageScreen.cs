@@ -17,7 +17,7 @@ public class UI_StageScreen : UI_ScreenBase
     {
         base.Registration(manager);
 
-        stageManager = GameObject.Find("StageManager").GetComponent<StageManager>();
+        stageManager = GameObject.Find("StageManager")?.GetComponent<StageManager>();
         SetCostLimitText(stageManager.GetCostLimits());
     }
 

@@ -11,7 +11,7 @@ public class CameraMover : MonoBehaviour
     [Header("카메라 줌 수치")]
     [SerializeField] float minFov = 20f;
     [SerializeField] float maxFov = 70f;
-    [SerializeField] float lerpSpeed = 20f;
+    [SerializeField] float lerpSpeed = 500f;
 
     Vector2 moveDirection;
     Vector2 rotateDirection;
@@ -80,7 +80,7 @@ public class CameraMover : MonoBehaviour
 
         float targetFov = mainCamera.fieldOfView - (zoomDirection.y * zoomSpeed);
         targetFov = Mathf.Clamp(targetFov, minFov, maxFov);
-        mainCamera.fieldOfView = Mathf.Lerp(mainCamera.fieldOfView, targetFov, deltaTime * lerpSpeed);
+        mainCamera.fieldOfView = Mathf.MoveTowards(mainCamera.fieldOfView, targetFov, deltaTime * lerpSpeed);
     }
 
     public void SetMoveDireciton(Vector2 direction)

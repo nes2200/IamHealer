@@ -6,7 +6,7 @@ public class UI_Button_BattleStart : MonoBehaviour
 
     private void OnEnable()
     {
-        stage = GameObject.Find("StageManager").GetComponent<StageManager>();
+        stage = GameObject.Find("StageManager")?.GetComponent<StageManager>();
     }
 
     public void BattleStart()

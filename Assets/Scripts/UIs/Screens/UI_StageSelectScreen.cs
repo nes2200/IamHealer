@@ -29,9 +29,7 @@ public class UI_StageSelectScreen : UI_ScreenBase
 
         for(int i = 0; i < stageButtons.Length; i++)
         {
-            stageButtons[i].SetStageText(chapter, i + 1);
+            stageButtons[i].SetStageText(chapter);
         }
     }
-
-   
 }

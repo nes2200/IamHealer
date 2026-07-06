@@ -261,7 +261,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 6862131800163423973}
         m_TargetAssemblyTypeName: UI_Button_StageSelect, Assembly-CSharp
-        m_MethodName: OpenStage
+        m_MethodName: ChangeSceneToStage
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -284,3 +284,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_Button_StageSelect
   stageText: {fileID: 5372233115943117719}
+  stage: 1
