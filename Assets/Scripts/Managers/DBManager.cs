@@ -14,7 +14,7 @@ public class DBManager : ManagerBase
     private FirebaseUser user;
     private DatabaseReference rootDB;
 
-    [SerializeField] Transform rock;
+    Transform rock;
 
     public void ChangeRockTransform()
     {

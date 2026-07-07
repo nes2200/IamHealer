@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ObjectManager : ManagerBase
 {
@@ -33,11 +35,15 @@ public class ObjectManager : ManagerBase
         RegistrationPool(globalPoolSettings);
         InitializePool();
 
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        SceneManager.sceneLoaded += OnSceneLoaded;
+
         yield return null;
     }
 
     protected override void OnDisconnected()
     {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
     public static GameObject CreateObject(string wantName, Transform parent = null)
@@ -362,6 +368,30 @@ public class ObjectManager : ManagerBase
         foreach(ObjectPoolModule currentPool in poolDictionary.Values)
         {
             currentPool?.Initialize();
+        }
+    }
+
+    //씬 로드시 해당 씬에 있던 오브젝트들을 다시 한번 등록하기 위한 기능
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if(mode == LoadSceneMode.Additive)
+        {
+            RegistrationInScene(scene);
+        }
+    }
+
+    public void RegistrationInScene(Scene scene)
+    {
+        if (!scene.IsValid() || !scene.isLoaded) return;
+
+        GameObject[] rootObjects = scene.GetRootGameObjects();
+
+        foreach(GameObject root in rootObjects)
+        {
+            foreach (var current in root.GetComponentsInChildren<IFunctionable>())
+            {
+                current.RegistrationFunctions();
+            }
         }
     }
 }

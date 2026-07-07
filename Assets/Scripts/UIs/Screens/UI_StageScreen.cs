@@ -16,9 +16,6 @@ public class UI_StageScreen : UI_ScreenBase
     public override void Registration(UIManager manager)
     {
         base.Registration(manager);
-
-        stageManager = GameObject.Find("StageManager")?.GetComponent<StageManager>();
-        SetCostLimitText(stageManager.GetCostLimits());
     }
 
     public override void Unregistration(UIManager manager)
@@ -37,6 +34,9 @@ public class UI_StageScreen : UI_ScreenBase
 
         StageManager.OnBattleEnd -= OpenBattleResult;
         StageManager.OnBattleEnd += OpenBattleResult;
+
+        stageManager = GameObject.Find("StageManager").GetComponent<StageManager>();
+        SetCostLimitText(stageManager.GetCostLimits());
     }
     public override void Close()
     {

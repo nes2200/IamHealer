@@ -27,14 +27,14 @@ public class TargetingModule : CharacterModule
         //초기 쿨타임 세팅
         scanCooltime = UnityEngine.Random.Range(0.1f, scanInterval);
 
-        StageManager.OnStageStateChange -= OnBattleStart;
-        StageManager.OnStageStateChange += OnBattleStart;
+        StageManager.OnBattleStart -= OnBattleStart;
+        StageManager.OnBattleStart += OnBattleStart;
     }
     public override void OnUnregistration(CharacterBase oldOwner)
     {
         base.OnUnregistration(oldOwner);
 
-        StageManager.OnStageStateChange -= OnBattleStart;
+        StageManager.OnBattleStart -= OnBattleStart;
 
     }
 
@@ -144,11 +144,8 @@ public class TargetingModule : CharacterModule
     }
 
     //변화했는데 Battle이 시작됬다? -> 그럼 적 유닛 캐싱해
-    private void OnBattleStart(StageState oldState, StageState newState)
+    private void OnBattleStart()
     {
-        if (newState == StageState.Battle)
-        {
-            CacheHostileCharacters();
-        }
+        CacheHostileCharacters();
     }
 }
