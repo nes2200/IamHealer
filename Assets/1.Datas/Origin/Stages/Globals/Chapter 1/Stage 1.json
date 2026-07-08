@@ -1,0 +1,144 @@
+{
+  "probs": [
+    {
+      "name": "Cube (1)",
+      "prefabName": "Cube (1)",
+      "parentName": "Probs",
+      "position": {
+        "x": 0.0,
+        "y": 0.41527,
+        "z": 5.72258
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.33878541,
+        "z": 4.356135
+      }
+    },
+    {
+      "name": "Unit_Test_02",
+      "prefabName": "Unit_Test_02",
+      "parentName": "TeamB",
+      "position": {
+        "x": 8.61,
+        "y": 1.08466,
+        "z": -1.87
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 270.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.2,
+        "y": 1.2,
+        "z": 1.2
+      }
+    },
+    {
+      "name": "Acacia_Tree_l_03_LOD",
+      "prefabName": "Acacia_Tree_l_03_LOD",
+      "parentName": "Probs",
+      "position": {
+        "x": -13.94,
+        "y": 0.02763,
+        "z": 7.31
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "name": "Acacia_Tree_l_03_LOD (1)",
+      "prefabName": "Acacia_Tree_l_03_LOD",
+      "parentName": "Probs",
+      "position": {
+        "x": 17.02,
+        "y": 0.0276298523,
+        "z": 3.3
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 94.55789,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      }
+    },
+    {
+      "name": "Cube",
+      "prefabName": "Cube",
+      "parentName": "Probs",
+      "position": {
+        "x": 0.0,
+        "y": 0.41527,
+        "z": -4.94742
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.33878541,
+        "z": 7.369748
+      }
+    },
+    {
+      "name": "Terrain",
+      "prefabName": "Terrain",
+      "parentName": "Floor",
+      "position": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 48.037,
+        "y": 0.055256,
+        "z": 34.1674728
+      }
+    },
+    {
+      "name": "CrossLine",
+      "prefabName": "CrossLine",
+      "parentName": "Terrain",
+      "position": {
+        "x": 0.0,
+        "y": 90.4879,
+        "z": 0.0
+      },
+      "rotation": {
+        "x": 90.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.0208172873,
+        "y": 0.0292676054,
+        "z": 18.09758
+      }
+    }
+  ]
+}
