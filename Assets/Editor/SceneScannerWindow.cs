@@ -1,15 +1,14 @@
 #if UNITY_EDITOR
+using Newtonsoft.Json; 
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
-using Newtonsoft.Json; 
-using System.Collections.Generic;
-using Unity.VisualScripting;
 
 public class SceneScannerWindow : EditorWindow
 {
     private string inputFileName = "FileName_Default";
-
     private string calculatedSubPath = "1.Datas/Origin/Stages/Globals";
 
     //저장할 데이터 전체를 담은 그릇
@@ -18,6 +17,13 @@ public class SceneScannerWindow : EditorWindow
     {
         public List<StageObject> probs = new List<StageObject>();
     }
+
+    //소숫점 셋째 자리까지 반올림 해주는 함수
+    public static float RoundToThreeDecimals(float value)
+    {
+        return Mathf.Round(value * 1000f) / 1000f;
+    }
+
     //Vectro3를 직렬화하여 저장할 컨테이너
     [System.Serializable]
     public struct SerializableVector3
@@ -27,15 +33,35 @@ public class SceneScannerWindow : EditorWindow
         //변환이 쉽게 하기 위한 생성자
         public SerializableVector3(Vector3 v3)
         {
-            x = v3.x;
-            y = v3.y;
-            z = v3.z;
+            x = RoundToThreeDecimals(v3.x);
+            y = RoundToThreeDecimals(v3.y);
+            z = RoundToThreeDecimals(v3.z);
         }
 
         //형변환을 쉽게 하기 위한 연산자
         public static implicit operator SerializableVector3(Vector3 v3) => new SerializableVector3(v3);
         public static implicit operator Vector3(SerializableVector3 v3) => new Vector3(v3.x, v3.y, v3.z);
     }
+    //회전 오차 방지를 위한 Quaternion 저장 컨테이너
+    [System.Serializable]
+    public struct SerializableQuaternion
+    {
+        public float x, y, z, w;
+
+        //변환이 쉽게 하기 위한 생성자
+        public SerializableQuaternion(Quaternion q)
+        {
+            x = RoundToThreeDecimals(q.x);
+            y = RoundToThreeDecimals(q.y);
+            z = RoundToThreeDecimals(q.z);
+            w = RoundToThreeDecimals(q.w);
+        }
+
+        //형변환을 쉽게 하기 위한 연산자
+        public static implicit operator SerializableQuaternion(Quaternion q) => new SerializableQuaternion(q);
+        public static implicit operator Quaternion(SerializableQuaternion sq) => new Quaternion(sq.x, sq.y, sq.z, sq.w);
+    }
+
     //저장할 데이터에 대한 정보
     [System.Serializable]
     public class StageObject
@@ -44,9 +70,11 @@ public class SceneScannerWindow : EditorWindow
         public string prefabName;
         public string parentName;
         public SerializableVector3 position;
-        public SerializableVector3 rotation;
         public SerializableVector3 scale;
+        public SerializableQuaternion rotation;
     }
+
+
 
     //유니티 상단 바에 메뉴 추가
     [MenuItem("Tools/Scene Scanner")]
@@ -55,15 +83,24 @@ public class SceneScannerWindow : EditorWindow
         GetWindow<SceneScannerWindow>("Scene Scanner");
     }
 
+    //현재 탭을 나타낼 정보들
+    private int seletedTab = 0;
+    private string[] tabNames = { "Save Stage (Scan)", "Load Stage" };
+
     //그리기
     private void OnGUI()
     {
         //헤더
-        GUILayout.Label("Scene Object Scanner", EditorStyles.boldLabel);
-
+        GUILayout.Label("Scene Object Scanner & Loader", EditorStyles.boldLabel);
+        
         GUILayout.Space(10); //여백
 
-        //파일 이름 적는 곳
+        //상단 탭 구분
+        seletedTab = GUILayout.Toolbar(seletedTab, tabNames, GUILayout.Height(30));
+
+        GUILayout.Space(15);
+
+        //공통 입력 정보
         GUILayout.Label("File Name Here (No Extensions)");
         inputFileName = GUILayout.TextField(inputFileName);
 
@@ -80,7 +117,7 @@ public class SceneScannerWindow : EditorWindow
             if (!Directory.Exists(defaultPath)) defaultPath = Application.dataPath;
 
             //폴더 선택창 팝업
-            string selectedPath = EditorUtility.OpenFolderPanel("저장할 폴더 선택", defaultPath, "");
+            string selectedPath = EditorUtility.OpenFolderPanel("대상 폴더 선택", defaultPath, "");
 
             if (!string.IsNullOrEmpty(selectedPath))
             {
@@ -104,22 +141,55 @@ public class SceneScannerWindow : EditorWindow
         }
 
         //계산되어 적용될 경로를 화면에 가이드라인으로 표시
-        EditorGUILayout.HelpBox($"저장 위치 : Asset/{calculatedSubPath}", MessageType.Info);
+        EditorGUILayout.HelpBox($"작업 위치 : Asset/{calculatedSubPath}", MessageType.Info);
 
-        GUILayout.Space(20); 
+        GUILayout.Space(20);
 
-        //실행 버튼
-        if (GUILayout.Button("Scan Scene and Save JSON", GUILayout.Height(40)))
+        //선택된 탭에 따라 버튼 화면을 분기처리 및 안전 팝업
+        if (seletedTab == 0)
         {
-            //빈칸 있는지 방어 함수 추가
-            if(string.IsNullOrEmpty(inputFileName))
+            //save 화면
+            GUI.backgroundColor = new Color(0.7f, 0.8f, 1f);
+            //실행 버튼
+            if (GUILayout.Button("Scan Scene and Save JSON", GUILayout.Height(40)))
             {
-                EditorUtility.DisplayDialog("경고", "파일 이름과 경로가 불확실함", "확인");
-                return;
-            }
+                //빈칸 있는지 방어 함수 추가
+                if (string.IsNullOrEmpty(inputFileName))
+                {
+                    EditorUtility.DisplayDialog("경고", "파일 이름을 입력해 주세요", "확인");
+                    return;
+                }
 
-            ExecuteScan(inputFileName, calculatedSubPath);
+                //덮어쓰기 방지 경고창
+                string fullPath = Path.Combine(Application.dataPath, calculatedSubPath, inputFileName + ".json");
+                if (File.Exists(fullPath))
+                {
+                    bool proceed = EditorUtility.DisplayDialog("덮어쓰기 경고",
+                        $"이미 '{inputFileName}.json'이 존재합니다.\n정말로 덮어 쓰시겠습니까?", "예, 덮어 씁니다", "아니오");
+
+                    if (!proceed) return; //취소하면 끝
+                }
+
+                ExecuteScan(inputFileName, calculatedSubPath);
+            }
         }
+        else //로드 화면
+        {
+            GUI.backgroundColor = new Color(0.7f, 1f, 0.7f); // 연녹
+            if (GUILayout.Button("Load JSON to Scene", GUILayout.Height(40)))
+            {
+                if (string.IsNullOrEmpty(inputFileName))
+                {
+                    EditorUtility.DisplayDialog("경고", "로드할 파일 이름을 입력해 주세요.", "확인");
+                    return;
+                }
+
+                bool proceed = EditorUtility.DisplayDialog("씬 초기화 및 로드 경고",
+                    $"정말로 기존 배치를 지우고 '{inputFileName}.json' 데이터를 새로 로드하시겠습니까?\n이 작업은 되돌릴 수 없습니다.",
+                    "예, 새로 로드합니다", "아니오");
+            }
+        }
+        GUI.backgroundColor = Color.white;
     }
 
     private void ExecuteScan(string fileName, string subPath)
@@ -166,8 +236,8 @@ public class SceneScannerWindow : EditorWindow
                 prefabName = sourcePrefabName,
                 parentName = registeredParent,
                 position = obj.transform.localPosition,
-                rotation = obj.transform.eulerAngles,
-                scale = obj.transform.localScale
+                scale = obj.transform.localScale,
+                rotation = obj.transform.localRotation
             };
             saveData.probs.Add(data);
         }

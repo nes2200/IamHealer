@@ -1,0 +1,151 @@
+{
+  "probs": [
+    {
+      "name": "Acacia_Tree_l_03_LOD",
+      "prefabName": "Acacia_Tree_l_03_LOD",
+      "parentName": "Probs",
+      "position": {
+        "x": -13.94,
+        "y": 0.028,
+        "z": 7.31
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 1.0
+      }
+    },
+    {
+      "name": "Terrain",
+      "prefabName": "Terrain",
+      "parentName": "Floor",
+      "position": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 48.037,
+        "y": 0.055,
+        "z": 34.167
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 1.0
+      }
+    },
+    {
+      "name": "Acacia_Tree_l_03_LOD (1)",
+      "prefabName": "Acacia_Tree_l_03_LOD",
+      "parentName": "Probs",
+      "position": {
+        "x": 17.02,
+        "y": 0.028,
+        "z": 3.3
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.735,
+        "z": 0.0,
+        "w": 0.678
+      }
+    },
+    {
+      "name": "Cube",
+      "prefabName": "Cube",
+      "parentName": "Probs",
+      "position": {
+        "x": 0.0,
+        "y": 0.415,
+        "z": -4.947
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.339,
+        "z": 7.37
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 1.0
+      }
+    },
+    {
+      "name": "Unit_Test_02",
+      "prefabName": "Unit_Test_02",
+      "parentName": "TeamB",
+      "position": {
+        "x": 8.61,
+        "y": 0.59,
+        "z": -1.87
+      },
+      "scale": {
+        "x": 1.2,
+        "y": 1.2,
+        "z": 1.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": -0.707,
+        "z": 0.0,
+        "w": 0.707
+      }
+    },
+    {
+      "name": "Cube (1)",
+      "prefabName": "Cube (1)",
+      "parentName": "Probs",
+      "position": {
+        "x": 0.0,
+        "y": 0.415,
+        "z": 5.723
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.339,
+        "z": 4.356
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 1.0
+      }
+    },
+    {
+      "name": "CrossLine",
+      "prefabName": "CrossLine",
+      "parentName": "Terrain",
+      "position": {
+        "x": 0.0,
+        "y": 90.488,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.021,
+        "y": 0.029,
+        "z": 18.098
+      },
+      "rotation": {
+        "x": 0.707,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.707
+      }
+    }
+  ]
+}
