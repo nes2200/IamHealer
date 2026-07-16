@@ -3,13 +3,15 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using Unity.AI.Navigation;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class SceneScannerWindow : EditorWindow
 {
     private string inputFileName = "FileName_Default";
-    private string calculatedSubPath = "1.Datas/Origin/Stages/Globals";
+    private string calculatedSubPath = "1.Datas/Origin/StageData/Globals";
 
     //저장할 데이터 전체를 담은 그릇
     [System.Serializable]
@@ -187,6 +189,7 @@ public class SceneScannerWindow : EditorWindow
                 bool proceed = EditorUtility.DisplayDialog("씬 초기화 및 로드 경고",
                     $"정말로 기존 배치를 지우고 '{inputFileName}.json' 데이터를 새로 로드하시겠습니까?\n이 작업은 되돌릴 수 없습니다.",
                     "예, 새로 로드합니다", "아니오");
+                ExecuteLoad(inputFileName, calculatedSubPath);
             }
         }
         GUI.backgroundColor = Color.white;
@@ -253,6 +256,195 @@ public class SceneScannerWindow : EditorWindow
 
         AssetDatabase.Refresh();
         EditorUtility.DisplayDialog("저장 완료", $"성공적으로 스테이지 파일 생성 \n경로 : Asset/{subPath}/{fileName}", "확인");
+    }
+
+    private void ExecuteLoad(string fileName, string subPath)
+    {
+        if (!fileName.EndsWith(".json")) fileName += ".json";
+        string targetPath = Path.Combine(Application.dataPath, subPath, fileName);
+
+        //제이슨 파일 읽고 역직렬화
+        string jsonContent = File.ReadAllText(targetPath);
+        SceneSaveData loadData = JsonConvert.DeserializeObject<SceneSaveData>(jsonContent);
+
+        if (loadData is null || loadData.probs is null)
+        {
+            EditorUtility.DisplayDialog("에러", "로드 데이터가 올바르지 않거나 비어있음", "확인");
+            return;
+        }
+
+        //Undo(되돌리기) 등록을 위한 그룹 ID 생성
+        Undo.IncrementCurrentGroup();
+        int undoGroup = Undo.GetCurrentGroup();
+        Undo.SetCurrentGroupName("Load Stage Object");
+
+        //씬에 있는 주요 부모/관리자를 미리 검색하여 등록
+        Dictionary<string, GameObject> parentContainer = new Dictionary<string, GameObject>();
+        string[] keyParent = { "Probs", "TeamB", "Terrain", "Floor" };
+        foreach (string parentName in keyParent)
+        {
+            GameObject found = GameObject.Find(parentName);
+            if (found is not null)
+            {
+                parentContainer.Add(parentName, found);
+            }
+        }
+
+        //기존 자식 및 배치 오브젝트 청소
+        //Probs, TeamB 아래 있는 기존 자식들을 일괄 제거
+        foreach (var container in parentContainer)
+        {
+            //Terrain이나 Floor를 지우면 안되니까 자식만 특정하기
+            if (container.Key == "Probs" || container.Key == "TeamB")
+            {
+                List<GameObject> childrenToDestroy = new List<GameObject>();
+                foreach (Transform child in container.Value.transform)
+                {
+                    childrenToDestroy.Add(child.gameObject);
+                }
+                foreach (GameObject child in childrenToDestroy)
+                {
+                    Undo.DestroyObjectImmediate(child);
+                }
+            }
+            else if (container.Key == "Terrain")
+            {
+                Transform crossLine = container.Value.transform.Find("CrossLine");
+                if (crossLine is not null) 
+                {
+                    Undo.DestroyObjectImmediate(crossLine.gameObject);
+                }
+            }
+        }
+
+        //데이터를 기반으로 에셋 폴더 내 프리팹을 검색하여 스폰 및 위치 복구
+        foreach (StageObject data in loadData.probs)
+        {
+            GameObject spawnObject = null;
+
+            //프로젝트 내 프리팹 검색
+            string[] guids = AssetDatabase.FindAssets($"{data.prefabName} t:Prefab");
+            GameObject prefabAsset = null;
+            if (guids.Length > 0)
+            {
+                //정확히 일치하는 프리팹 찾기
+                foreach (string guid in guids)
+                {
+                    string assetPath = AssetDatabase.GUIDToAssetPath(guid);
+                    GameObject obj = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
+                    if (obj && obj.name == data.prefabName)
+                    {
+                        prefabAsset = obj;
+                        break;
+                    }
+                }
+            }
+
+            //프리팹을 찾았다면 Prefab 연결을 유지하며 스폰
+            if (prefabAsset)
+            {
+                spawnObject = (GameObject)PrefabUtility.InstantiatePrefab(prefabAsset);
+                Undo.RegisterCreatedObjectUndo(spawnObject, "Spawn Stage Object");
+            }
+            else
+            {
+                //프리팹을 못찾은 경우 기본 빈 오브젝트로 임시 생성하여 유실을 방지
+                spawnObject = new GameObject(data.name);
+                Undo.RegisterCreatedObjectUndo(spawnObject, "Spawn Fallback Object");
+                UnityEngine.Debug.LogWarning($"[SceneScanner] '{data.prefabName}' 프리팹을 찾을 수 없어 기본 오브젝트로 대체됩니다;");
+            }
+
+            if (spawnObject)
+            {
+                spawnObject.name = data.name;
+
+                //부모 관계 복구
+                if (data.parentName != "None" && parentContainer.ContainsKey(data.parentName))
+                {
+                    spawnObject.transform.SetParent(parentContainer[data.parentName].transform);
+                }
+                else if (data.parentName == "Terrain" && data.name == "CrossLine")
+                {
+                    // Terrain의 자식인 CrossLine 예외 부모 설정
+                    if (parentContainer.ContainsKey("Terrain"))
+                    {
+                        spawnObject.transform.SetParent(parentContainer["Terrain"].transform);
+                    }
+                }
+
+                // 트랜스폼 복구 (Local 값 적용)
+                spawnObject.transform.localPosition = data.position;
+                spawnObject.transform.localScale = data.scale;
+                spawnObject.transform.localRotation = data.rotation;
+            }
+        }
+
+        //Probs 폴더에서 자식들 세팅하기
+        if (parentContainer.ContainsKey("Probs"))
+        {
+            foreach(Transform child in parentContainer["Probs"].transform)
+            {
+                GameObject probObj = child.gameObject;
+
+                // 변경사항을 Undo 시스템에 등록 (Ctrl+Z 지원을 위해 변경 직전 상태 기록)
+                Undo.RegisterCompleteObjectUndo(probObj, "Set Static & Add Obstacle");
+
+                //자신과 자식들의 모든 상태 변경 
+                SetChildsStaticAndLayer(probObj, true, 9);
+
+                NavMeshObstacle navObs = probObj.GetComponent<NavMeshObstacle>();
+                if (navObs == null)
+                {
+                    // Undo 지원용 컴포넌트 추가 기능 사용
+                    navObs = Undo.AddComponent<NavMeshObstacle>(probObj);
+                }
+                if (navObs)
+                {
+                    navObs.carving = true;
+                }
+            }
+        }
+
+        // 2. Terrain의 NavMesh 베이크(Bake) 하기
+        if (parentContainer.ContainsKey("Terrain"))
+        {
+            NavMeshSurface navSurface = parentContainer["Terrain"].GetComponent<NavMeshSurface>();
+            if (navSurface != null)
+            {
+                // 베이크 시 가끔 씬 데이터 변경 감지가 안 될 수 있으므로 상태 등록
+                Undo.RegisterCompleteObjectUndo(navSurface, "Bake Stage NavMesh");
+
+                // 실제 NavMesh 빌드(Bake) 실행!
+                navSurface.BuildNavMesh();
+
+                // 에디터 씬 뷰 갱신 유도
+                SceneView.RepaintAll();
+            }
+            else
+            {
+                UnityEngine.Debug.LogWarning("[SceneScanner] Terrain 오브젝트에서 NavMeshSurface 컴포넌트를 찾을 수 없습니다.");
+            }
+        }
+
+        // 실행 기록을 하나의 Undo 그룹으로 병합
+        Undo.CollapseUndoOperations(undoGroup);
+        EditorUtility.DisplayDialog("로드 완료", $"'{fileName}' 데이터를 기반으로 배치를 정상적으로 복구했습니다.", "확인");
+    }
+
+    private void SetChildsStaticAndLayer(GameObject obj, bool isStatic, int layer)
+    {
+        if (obj == null) return;
+
+        // Undo 등록을 위해 상태 기록
+        Undo.RegisterCompleteObjectUndo(obj, "Set Static and Layer");
+
+        obj.isStatic = isStatic;
+        obj.layer = layer;
+
+        foreach (Transform child in obj.transform)
+        {
+            SetChildsStaticAndLayer(child.gameObject, isStatic, layer);
+        }
     }
 }
 #endif

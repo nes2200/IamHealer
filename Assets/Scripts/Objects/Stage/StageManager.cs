@@ -79,4 +79,8 @@ public class StageManager : MonoBehaviour
     //TeamB -> 컴퓨터
     //둘 다 동일한 TeamElimnateNotifier를 가지고 있음
     //그렇다면, 플레이어와 컴퓨터가 보내는 '우리 전멸했어' 신호를 어떻게 구분하는가?
+
+
+   
+
 }
