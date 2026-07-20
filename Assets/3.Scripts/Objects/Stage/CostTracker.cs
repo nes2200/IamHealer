@@ -8,10 +8,10 @@ public class CostTracker : MonoBehaviour
     //코스트 바뀌면 자동적으로 UI 바뀔 수 있게
     public static event CostChangeEvent OnCostChange;
 
-    [Header("스테이지 매니저")]
+    [Header("Stage Manager")]
     [SerializeField] StageManager stageManager;
 
-    [Header("코스트 리미트")]
+    [Header("Cost Limits")]
     [SerializeField] int[] costLimits;
 
     private FillValue costValue;
