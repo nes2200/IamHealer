@@ -426,6 +426,17 @@ public class SceneScannerWindow : EditorWindow
             }
         }
 
+        //유닛들의 내부 참조 해주기
+        Transform teamA = GameObject.Find("TeamA").transform;
+        foreach(Transform unit in parentContainer["TeamB"].transform)
+        {
+            TargetingModule targetModule = unit.GetComponent<TargetingModule>();
+            if (targetModule)
+            {
+                targetModule.SetHostileGroupParents(teamA);
+            }
+        }
+
         // 실행 기록을 하나의 Undo 그룹으로 병합
         Undo.CollapseUndoOperations(undoGroup);
         EditorUtility.DisplayDialog("로드 완료", $"'{fileName}' 데이터를 기반으로 배치를 정상적으로 복구했습니다.", "확인");

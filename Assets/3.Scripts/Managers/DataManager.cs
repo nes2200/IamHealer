@@ -50,6 +50,8 @@ public class DataManager : ManagerBase
         //새로운 타입의 무언가를 추가할 떄 마다 여기다 넣기
         loadString = "Load Game Objects";
         yield return LoadAllFromAssetBundle<GameObject>("Global", ProgressOnLoad).WaitForTask();
+        loadString = "Load Stage Datas";
+        yield return LoadAllFromAssetBundle<TextAsset>("Global", ProgressOnLoad).WaitForTask();
         loadString = "Load Pool Requests";
         yield return LoadAllFromAssetBundle<PoolRequest>("Global", ProgressOnLoad).WaitForTask();
         loadString = "Load Items";
@@ -116,7 +118,7 @@ public class DataManager : ManagerBase
             }
         }
         return null;
-    }
+    }   
     public static T LoadDataFile<T>(string fileName) where T : Object
     {
         T result = GetDataFromDictionary<T>(fileName);
