@@ -90,6 +90,8 @@ public class AnimationModule : CharacterModule
     }
     public void StopAnimationByEndBattle(StageState oldState, StageState newState)
     {
+        if (!anim) return;
+
         if(newState == StageState.Result)
         {
             anim.speed = 0f;

@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public delegate void InitializeEvent();
 public delegate void UpdateEvent(float deltaTime);
@@ -22,6 +21,7 @@ public class GameManager : MonoBehaviour
     AudioManager     _audio;
     CameraManager    _camera;
     InputManager     _input;
+    SceneLoadManager _load;
 
     public static UIManager        UI => Instance._ui;
     public static DBManager        DB => Instance._db;
@@ -33,6 +33,7 @@ public class GameManager : MonoBehaviour
     public static AudioManager     Audio => Instance._audio;
     public static CameraManager    Camera => Instance._camera;
     public static InputManager     Input => Instance._input;
+    public static SceneLoadManager Load => Instance._load;
 
     IEnumerator initializing;
 
@@ -118,6 +119,7 @@ public class GameManager : MonoBehaviour
         totalLoadCount += CreatManager(ref _audio).LoadCount;
         totalLoadCount += CreatManager(ref _camera).LoadCount;
         totalLoadCount += CreatManager(ref _input).LoadCount;
+        totalLoadCount += CreatManager(ref _load).LoadCount;
 
         yield return UI.Initialize(this); 
         UIBase loadingUI =  UIManager.ClaimOpenScreen(UIType.Loading); //UI가 연결됬으니 기능 실행해보기
@@ -148,6 +150,8 @@ public class GameManager : MonoBehaviour
         loadingProgress?.AddCurrent(1);
         yield return Input.Connect(this);
         loadingProgress?.AddCurrent(1);
+        yield return Load.Connect(this);
+        loadingProgress?.AddCurrent(1);
         yield return null;
 
         Pause();
@@ -166,6 +170,7 @@ public class GameManager : MonoBehaviour
 
     void DeleteManagers()
     {
+        Load?.Disconnect();
         Input?.Disconnect();
         ObjectM.Disconnect();
         Audio?.Disconnect();
@@ -345,11 +350,5 @@ public class GameManager : MonoBehaviour
 
         OnPhysicsCharacter?.Invoke(deltaTime);
         OnPhysicsObject?.Invoke(deltaTime);
-    }
-
-    public void LoadSceneAndSetup(string sceneName)
-    {
-        UIManager.ClaimOpenScreen(UIType.Stage, ScreenChangeType.SlideChanger);
-        SceneManager.LoadScene(sceneName, LoadSceneMode.Additive);
     }
 }

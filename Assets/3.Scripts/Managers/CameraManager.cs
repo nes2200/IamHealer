@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UIElements;
 
 public class CameraManager : ManagerBase
 {
@@ -9,6 +10,18 @@ public class CameraManager : ManagerBase
 
     CameraController _controller;
     public CameraController Controller => _controller;
+
+    //카메라 원래 위치 저장용 구조체
+    struct MainCameraTransform
+    {
+        public Vector3 position, scale;
+        public Quaternion rotation;
+    }
+    MainCameraTransform mainCameraDefaultPosition = new MainCameraTransform
+    {
+        position = new Vector3(0f, 10f, -20f),
+        scale = new Vector3(1f, 1f, 1f),
+    };
 
     protected override IEnumerator Onconnected(GameManager newManager)
     {
@@ -25,7 +38,7 @@ public class CameraManager : ManagerBase
     {
         MainCamera = wantCamera;
     }
-    
+
     public void GetRaycastResult(Vector2 screenPosition, List<RaycastResult> outResult)
     {
         EventSystem currentEvent = EventSystem.current;
@@ -54,6 +67,17 @@ public class CameraManager : ManagerBase
         Controller.UnsetCameraController();
         Destroy(_controller);
         _controller = null;
+    }
+
+    public void SetCameraDefaultPosition()
+    {
+        if (!MainCamera) return;
+
+        Transform mainCamTransform = MainCamera.transform;
+        mainCamTransform.position = mainCameraDefaultPosition.position;
+        mainCamTransform.rotation = mainCameraDefaultPosition.rotation;
+        mainCamTransform.localScale = mainCameraDefaultPosition.scale;
+
     }
 }
 

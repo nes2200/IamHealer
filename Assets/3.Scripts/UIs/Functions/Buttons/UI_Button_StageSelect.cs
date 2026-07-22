@@ -15,7 +15,7 @@ public class UI_Button_StageSelect : MonoBehaviour
 
     public void ChangeSceneToStage()
     {
-       GameManager.Instance.LoadSceneAndSetup("StageScene");
+       GameManager.Load.LoadSceneAndSetup("StageScene");
     }
 
 }
