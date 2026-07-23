@@ -6,17 +6,19 @@ public class UnitPlaceIndicator : MonoBehaviour
 {
     [Header("Settings")]
     [SerializeField] float navMeshCheckRadius = 0.1f;
+    [SerializeField] float heightOffset = 5f;
     [SerializeField] LayerMask floorLayer;
+    [SerializeField] LayerMask unitLayer;
 
     [Header("Indicator")]
     [SerializeField] GameObject indicator;
     [SerializeField] Material indicatorMat;
     [SerializeField] DecalProjector decal;
+    [SerializeField] BoxCollider indicatorCollider;
 
     Camera mainCam;
 
     readonly int tintColorPorpertyID = Shader.PropertyToID("_TintColor");
-    int floorLayerNum;
 
     float size;
     bool selected = false;
@@ -35,8 +37,14 @@ public class UnitPlaceIndicator : MonoBehaviour
         StageManager.OnBattleStart -= DisableIndicator;
         StageManager.OnBattleStart += DisableIndicator;
 
+        UI_StageScreen.OnMenuOpen -= UpdateIndicatorStatusByMenuOpen;
+        UI_StageScreen.OnMenuOpen += UpdateIndicatorStatusByMenuOpen;
+
+        UI_StageScreen.OnMenuClose -= UpdateIndicatorStatusByMenuClose;
+        UI_StageScreen.OnMenuClose += UpdateIndicatorStatusByMenuClose;
+
+
         indicatorMat.SetColor(tintColorPorpertyID, Color.gray);
-        floorLayerNum = LayerMask.NameToLayer("Floor");
 
         mainCam = Camera.main;
     }
@@ -45,6 +53,9 @@ public class UnitPlaceIndicator : MonoBehaviour
         InputManager.OnUnitSelect -= ChangeCurrentSelectedUnit;
         InputManager.OnMouseMove -= MoveToMouse;
         StageManager.OnBattleStart -= DisableIndicator;
+        UI_StageScreen.OnMenuOpen -= UpdateIndicatorStatusByMenuOpen;
+        UI_StageScreen.OnMenuClose -= UpdateIndicatorStatusByMenuClose;
+
     }
 
     void MoveToMouse(Vector2 screenPosition, Vector3 worldPosition)
@@ -56,14 +67,19 @@ public class UnitPlaceIndicator : MonoBehaviour
             _canSpawn = false;
             return;
         }
+        UpdateIndicatorStatus(screenPosition);
+    }
 
+    void UpdateIndicatorStatus(Vector2 screenPosition)
+    {
         Ray ray = mainCam.ScreenPointToRay(screenPosition);
 
-        if(Physics.Raycast(ray, out RaycastHit hit, 1000f, floorLayer))
+        if (Physics.Raycast(ray, out RaycastHit hit, 1000f, floorLayer))
         {
             SetIndicatorActive(true);
 
-            transform.position = hit.point + new Vector3 (0f, 5f, 0f);
+            transform.position = hit.point + new Vector3(0f, heightOffset, 0f);
+            indicatorCollider.center = new Vector3(0f, 0f, heightOffset);
             CheckSpawnable(hit.point);
         }
         else
@@ -81,22 +97,56 @@ public class UnitPlaceIndicator : MonoBehaviour
             return;
         }
 
-        bool SpawnableCheck = NavMesh.SamplePosition(floorPosition, out NavMeshHit hit, navMeshCheckRadius, NavMesh.AllAreas);
+        bool spawnableCheck = NavMesh.SamplePosition(floorPosition, out NavMeshHit hit, navMeshCheckRadius, NavMesh.AllAreas);
 
-        //마우스가 navMesh 위에는 있지만 적 진영이라 생성 불가하니까
+        //마우스가 navMesh 위에는 있지만 적 진영이라 생성 불가할 경우
         //indicator의 중심은 마우스이기에 x 기준을 0으로 하면 유닛 절반이 상대 진영으로 넘어가도 소환 가능함
         //그렇기에 유닛의 size 보정을 줘서 넘어가지 않게 해주기
-        if(SpawnableCheck && hit.position.x > -size)
+        if(spawnableCheck && hit.position.x > -size)
         {
-            SpawnableCheck = false;
+            spawnableCheck = false;
+        }
+        //인디케이터와 유닛 충돌 체크
+        if (spawnableCheck)
+        {
+            spawnableCheck = CheckUnitSpawnableOnCurrentLocation();
         }
 
         //이전 상태와 다를때 한 번만 색상이 바뀌게
-        if(_canSpawn != SpawnableCheck)
+        if(_canSpawn != spawnableCheck)
         {
-            _canSpawn = SpawnableCheck;
-            SetIndicatorColor(_canSpawn);
+            _canSpawn = spawnableCheck;
+            UpdateIndicatorColor(_canSpawn);
         }
+    }
+
+    //인디케이터와 유닛이 닿았는지 체크
+    public bool CheckUnitSpawnableOnCurrentLocation()
+    {
+        if (!indicatorCollider) return true; 
+
+        //박스 콜라이더 월드 좌표 중심 계산
+        Vector3 center = indicatorCollider.bounds.center;
+        //박스콜라이더의 반경
+        Vector3 halfExtents = indicatorCollider.bounds.extents;
+        //박스의 회전값
+        Quaternion orientation = indicatorCollider.transform.rotation;
+
+        //영역 내 'unitLayer'를 가진 콜라이더가 하나라도 있는지 검사
+        Collider[] hitColliders = Physics.OverlapBox(center, halfExtents, orientation, unitLayer);
+
+        return hitColliders.Length == 0;
+    }
+
+    //마우스 이동 업데이트가 멈췄을 경우 인디케이터 상태 강제 리프레시 해주기
+    public void RefreshIndicatorStatus()
+    {
+        MoveToMouse(InputManager.CursorScreenPosition, InputManager.CursorWorldPosition);
+    }
+
+    public Vector3 GetCurrentIndicatorLoaction()
+    {
+        return transform.position - new Vector3(0f, -heightOffset, 0f);
     }
 
     void SetIndicatorActive(bool visible)
@@ -106,7 +156,19 @@ public class UnitPlaceIndicator : MonoBehaviour
             indicator.SetActive(visible);
         }
     }
-    void SetIndicatorColor(bool canSpawn)
+
+    //스테이지 스크린에서 메뉴 토글시 강제로 상태 조정
+    void UpdateIndicatorStatusByMenuOpen()
+    {
+        SetIndicatorActive(false);
+        _canSpawn = false;
+    }
+    void UpdateIndicatorStatusByMenuClose()
+    {
+        UpdateIndicatorStatus(InputManager.CursorScreenPosition);
+    }
+
+    void UpdateIndicatorColor(bool canSpawn)
     {
         if (canSpawn)
         {
@@ -133,12 +195,15 @@ public class UnitPlaceIndicator : MonoBehaviour
         {
             decal.size = new Vector3(size * 2f, size * 2f, decal.size.z);
         }
-        _canSpawn = !NavMesh.SamplePosition(transform.position, out NavMeshHit hit, navMeshCheckRadius, NavMesh.AllAreas);
+        if (indicatorCollider)
+        {
+            indicatorCollider.size = new Vector3(size * 2f, size * 2f, indicatorCollider.size.z);
+        }
     }
 
+    //다시 로딩하지 않는 한 켜지지 않도록 꺼버리기(혹시나 몰라서, 나중에 필요하면 수정할꺼)
     void DisableIndicator()
     {
         gameObject.SetActive(false);
     }
-
 }

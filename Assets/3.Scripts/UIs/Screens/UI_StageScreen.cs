@@ -2,6 +2,10 @@ using UnityEngine;
 
 public class UI_StageScreen : UI_ScreenBase
 {
+    public static event System.Action OnMenuOpen;
+    public static event System.Action OnMenuClose;
+
+
     StageManager stageManager;
 
     [Header("º° ±×·ì")]
@@ -56,10 +60,12 @@ public class UI_StageScreen : UI_ScreenBase
         if (isMenuOpen)
         {
             GameManager.Pause();
+            OnMenuOpen?.Invoke();
         }
         else
         {
             GameManager.UnPause();
+            OnMenuClose?.Invoke();
         }
     }
 

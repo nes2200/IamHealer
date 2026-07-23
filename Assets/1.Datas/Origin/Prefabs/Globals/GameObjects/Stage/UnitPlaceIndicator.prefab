@@ -46,12 +46,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnitPlaceIndicator
   navMeshCheckRadius: 0.1
+  heightOffset: 5
   floorLayer:
     serializedVersion: 2
     m_Bits: 256
+  unitLayer:
+    serializedVersion: 2
+    m_Bits: 128
   indicator: {fileID: 2933332116235917065}
   indicatorMat: {fileID: 2100000, guid: d6d356ceb7531e848911940c5fc5a18d, type: 2}
   decal: {fileID: 5863335077707174349}
+  indicatorCollider: {fileID: 8907763973096195015}
 --- !u!1 &2933332116235917065
 GameObject:
   m_ObjectHideFlags: 0
@@ -62,6 +67,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8982034044170097977}
   - component: {fileID: 5863335077707174349}
+  - component: {fileID: 8907763973096195015}
   m_Layer: 0
   m_Name: Indicator
   m_TagString: Untagged
@@ -112,3 +118,24 @@ MonoBehaviour:
   m_FadeFactor: 1
   version: 1
   m_DecalLayerMask: 1
+--- !u!65 &8907763973096195015
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2933332116235917065}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}

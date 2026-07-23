@@ -55,7 +55,7 @@ public class PlacementManager : MonoBehaviour
         if (worldPosition.x > 0) return;
 
         //바닥에 맞았으면 유닛 생성
-        GameObject newUnit = ObjectManager.CreateObject(unitPrefab.name, worldPosition);
+        GameObject newUnit = ObjectManager.CreateObject(unitPrefab.name, indicator.GetCurrentIndicatorLoaction());
 
         //생성됬으면 등록하기
         if (newUnit)
@@ -117,4 +117,5 @@ public class PlacementManager : MonoBehaviour
     {
         return stageManager.IsCostEnoughToSpawn(unitCost);
     }
+
 }

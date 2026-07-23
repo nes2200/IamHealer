@@ -14,13 +14,13 @@ public class CameraManager : ManagerBase
     //카메라 원래 위치 저장용 구조체
     struct MainCameraTransform
     {
-        public Vector3 position, scale;
-        public Quaternion rotation;
+        public Vector3 position, rotation, scale;
     }
     MainCameraTransform mainCameraDefaultPosition = new MainCameraTransform
     {
         position = new Vector3(0f, 10f, -20f),
         scale = new Vector3(1f, 1f, 1f),
+        rotation = new Vector3(30f, 0f, 0f)
     };
 
     protected override IEnumerator Onconnected(GameManager newManager)
@@ -75,7 +75,7 @@ public class CameraManager : ManagerBase
 
         Transform mainCamTransform = MainCamera.transform;
         mainCamTransform.position = mainCameraDefaultPosition.position;
-        mainCamTransform.rotation = mainCameraDefaultPosition.rotation;
+        mainCamTransform.eulerAngles = mainCameraDefaultPosition.rotation;
         mainCamTransform.localScale = mainCameraDefaultPosition.scale;
 
     }

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2430214135130444051}
   - component: {fileID: 6582358805109048554}
   m_Layer: 5
-  m_Name: Button
+  m_Name: StageRestartButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -702,7 +702,7 @@ GameObject:
   - component: {fileID: 1870980102407057796}
   - component: {fileID: 7754021360925894838}
   m_Layer: 5
-  m_Name: Button
+  m_Name: BackToStageSelectButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1247,7 +1247,7 @@ GameObject:
   - component: {fileID: 2864325582890857590}
   - component: {fileID: 7689398715096181674}
   m_Layer: 5
-  m_Name: Button
+  m_Name: SettingButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1395,7 +1395,7 @@ GameObject:
   - component: {fileID: 3064579562199824369}
   - component: {fileID: 7100904263608515363}
   m_Layer: 5
-  m_Name: Button
+  m_Name: BackToTitleButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1543,7 +1543,7 @@ GameObject:
   - component: {fileID: 2438858137339421765}
   - component: {fileID: 7431859918650211077}
   m_Layer: 5
-  m_Name: Button
+  m_Name: BackToGameButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
