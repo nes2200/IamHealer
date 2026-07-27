@@ -11,7 +11,7 @@ public class TargetingModule : CharacterModule
     private List<CharacterBase> hostileCharacters = new List<CharacterBase>(100);
 
     float scanCooltime; //스캔 쿨타임
-    float scanInterval = 0.5f; //스캔 인터벌. 한번에 모든 유닛이 스캔하지 않도록 하기 위해서
+    float scanInterval = 0.4f; //스캔 인터벌. 한번에 모든 유닛이 스캔하지 않도록 하기 위해서
     bool _canScan;
     public bool CanScan => _canScan;
 
@@ -25,7 +25,7 @@ public class TargetingModule : CharacterModule
         base.OnRegistration(newOwner);
 
         //초기 쿨타임 세팅
-        scanCooltime = UnityEngine.Random.Range(0.1f, scanInterval);
+        scanCooltime = UpdateScanCooltime();
 
         StageManager.OnBattleStart -= OnBattleStart;
         StageManager.OnBattleStart += OnBattleStart;
@@ -133,7 +133,7 @@ public class TargetingModule : CharacterModule
         {
             _canScan = true;
             //모든 유닛이 한번에 스캔하여 갑자기 렉걸리는 사태를 막기위해
-            scanCooltime = UnityEngine.Random.Range(0.1f, scanInterval);
+            scanCooltime = UpdateScanCooltime();
         }
     }
 
@@ -141,6 +141,10 @@ public class TargetingModule : CharacterModule
     {
         _canScan = true;
         scanCooltime = 0f;
+    }
+    float UpdateScanCooltime()
+    {
+        return UnityEngine.Random.Range(0.05f, scanInterval);
     }
 
     //변화했는데 Battle이 시작됬다? -> 그럼 적 유닛 캐싱해
