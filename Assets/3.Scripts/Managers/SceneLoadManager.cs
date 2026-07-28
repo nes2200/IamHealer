@@ -14,12 +14,12 @@ public class SceneLoadManager : ManagerBase
 
     }
 
-    public void LoadSceneAndSetup(string sceneName)
+    public void LoadSceneAndSetup(string sceneName, TextAsset stageData)
     {
-        StartCoroutine(CoReloadSceneAndSetup(sceneName));
+        StartCoroutine(CoReloadSceneAndSetup(sceneName, stageData));
     }
 
-    private IEnumerator CoReloadSceneAndSetup(string sceneName)
+    private IEnumerator CoReloadSceneAndSetup(string sceneName, TextAsset stageData)
     {
         UIManager.ClaimOpenScreen(UIType.Stage, ScreenChangeType.SlideChanger);
 
@@ -48,8 +48,10 @@ public class SceneLoadManager : ManagerBase
         Scene newScene = SceneManager.GetSceneByName(sceneName);
         SceneManager.SetActiveScene(newScene);
 
-        //카메라 위치 초기화
-        GameManager.Camera.SetCameraDefaultPosition();
+        //로드한 씬에서 스테이지 업데이트하기
+        GameManager.StageLoad.LoadStage(stageData);
+
+ 
 
         yield return null;
     }

@@ -1,7 +1,6 @@
 #if UNITY_EDITOR
 using Newtonsoft.Json; 
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using Unity.AI.Navigation;
 using UnityEditor;
@@ -12,71 +11,6 @@ public class SceneScannerWindow : EditorWindow
 {
     private string inputFileName = "FileName_Default";
     private string calculatedSubPath = "1.Datas/Origin/StageData/Globals";
-
-    //저장할 데이터 전체를 담은 그릇
-    [System.Serializable]
-    public class SceneSaveData
-    {
-        public List<StageObject> probs = new List<StageObject>();
-    }
-
-    //소숫점 셋째 자리까지 반올림 해주는 함수
-    public static float RoundToThreeDecimals(float value)
-    {
-        return Mathf.Round(value * 1000f) / 1000f;
-    }
-
-    //Vectro3를 직렬화하여 저장할 컨테이너
-    [System.Serializable]
-    public struct SerializableVector3
-    {
-        public float x, y, z;
-
-        //변환이 쉽게 하기 위한 생성자
-        public SerializableVector3(Vector3 v3)
-        {
-            x = RoundToThreeDecimals(v3.x);
-            y = RoundToThreeDecimals(v3.y);
-            z = RoundToThreeDecimals(v3.z);
-        }
-
-        //형변환을 쉽게 하기 위한 연산자
-        public static implicit operator SerializableVector3(Vector3 v3) => new SerializableVector3(v3);
-        public static implicit operator Vector3(SerializableVector3 v3) => new Vector3(v3.x, v3.y, v3.z);
-    }
-    //회전 오차 방지를 위한 Quaternion 저장 컨테이너
-    [System.Serializable]
-    public struct SerializableQuaternion
-    {
-        public float x, y, z, w;
-
-        //변환이 쉽게 하기 위한 생성자
-        public SerializableQuaternion(Quaternion q)
-        {
-            x = RoundToThreeDecimals(q.x);
-            y = RoundToThreeDecimals(q.y);
-            z = RoundToThreeDecimals(q.z);
-            w = RoundToThreeDecimals(q.w);
-        }
-
-        //형변환을 쉽게 하기 위한 연산자
-        public static implicit operator SerializableQuaternion(Quaternion q) => new SerializableQuaternion(q);
-        public static implicit operator Quaternion(SerializableQuaternion sq) => new Quaternion(sq.x, sq.y, sq.z, sq.w);
-    }
-
-    //저장할 데이터에 대한 정보
-    [System.Serializable]
-    public class StageObject
-    {
-        public string name;
-        public string prefabName;
-        public string parentName;
-        public SerializableVector3 position;
-        public SerializableVector3 scale;
-        public SerializableQuaternion rotation;
-    }
-
-
 
     //유니티 상단 바에 메뉴 추가
     [MenuItem("Tools/Scene Scanner")]

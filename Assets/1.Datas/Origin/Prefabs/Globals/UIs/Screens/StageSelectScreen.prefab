@@ -895,6 +895,14 @@ PrefabInstance:
       propertyPath: chapter
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 6862131800163423973, guid: b71fb6df14e55fc4ea14a4f8b9e066b0, type: 3}
+      propertyPath: jsonFile
+      value: 
+      objectReference: {fileID: 4900000, guid: 0e1f5cbbb5d469d41844072f34d77da8, type: 3}
+    - target: {fileID: 6862131800163423973, guid: b71fb6df14e55fc4ea14a4f8b9e066b0, type: 3}
+      propertyPath: stageDataJson
+      value: 
+      objectReference: {fileID: 4900000, guid: 0e1f5cbbb5d469d41844072f34d77da8, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1016,6 +1024,14 @@ PrefabInstance:
       propertyPath: chapter
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6862131800163423973, guid: b71fb6df14e55fc4ea14a4f8b9e066b0, type: 3}
+      propertyPath: jsonFile
+      value: 
+      objectReference: {fileID: 4900000, guid: 150a7dd677e7cd249aac8cbf4e471bf3, type: 3}
+    - target: {fileID: 6862131800163423973, guid: b71fb6df14e55fc4ea14a4f8b9e066b0, type: 3}
+      propertyPath: stageDataJson
+      value: 
+      objectReference: {fileID: 4900000, guid: 150a7dd677e7cd249aac8cbf4e471bf3, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

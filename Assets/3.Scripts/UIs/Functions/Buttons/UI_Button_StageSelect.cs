@@ -1,3 +1,4 @@
+using Google.MiniJSON;
 using TMPro;
 using UnityEngine;
 
@@ -7,6 +8,7 @@ public class UI_Button_StageSelect : MonoBehaviour
 
     [Range(1, 5)]
     [SerializeField]int stage;
+    [SerializeField] TextAsset stageDataJson;    
 
     public void SetStageText(int chapter)
     {
@@ -15,7 +17,7 @@ public class UI_Button_StageSelect : MonoBehaviour
 
     public void ChangeSceneToStage()
     {
-       GameManager.Load.LoadSceneAndSetup("StageScene");
+       GameManager.SceneLoad.LoadSceneAndSetup("StageScene", stageDataJson);
     }
 
 }
