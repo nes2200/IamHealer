@@ -448,7 +448,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48209ad8a4e04f74f89c5619dc6d8369, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  startScreen: 7
+  startScreen: 6
 --- !u!4 &685763682
 Transform:
   m_ObjectHideFlags: 0

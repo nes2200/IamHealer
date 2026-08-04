@@ -172,12 +172,10 @@ public class UnitPlaceIndicator : MonoBehaviour
     {
         if (canSpawn)
         {
-            Debug.Log("스폰 가능");
             indicatorMat.SetColor(tintColorPorpertyID, new Color(0f, 1f, 0f, 0.6f));
         }
         else
         {
-            Debug.Log("불가능");
             indicatorMat.SetColor(tintColorPorpertyID, new Color(1f, 0f, 0f, 0.6f));
         }
     }

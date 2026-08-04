@@ -31,7 +31,7 @@ public class SceneLoadManager : ManagerBase
             AsyncOperation unloadOperation = SceneManager.UnloadSceneAsync(sceneName);
 
             //언로드 완료까지 대기
-            while(unloadOperation is null && !unloadOperation.isDone)
+            while(unloadOperation != null && !unloadOperation.isDone)
             {
                 yield return null;
             }
@@ -44,14 +44,12 @@ public class SceneLoadManager : ManagerBase
             yield return null;
         }
 
-        //로드하려느 씬은 게임 오브젝트들이 올라가있는 씬이기에 액티브 씬으로 지정해주기
+        //로드하려는 씬은 게임 오브젝트들이 올라가있는 씬이기에 액티브 씬으로 지정해주기
         Scene newScene = SceneManager.GetSceneByName(sceneName);
         SceneManager.SetActiveScene(newScene);
 
         //로드한 씬에서 스테이지 업데이트하기
-        GameManager.StageLoad.LoadStage(stageData);
-
- 
+        GameManager.StageLoad.LoadStage(stageData, newScene);
 
         yield return null;
     }

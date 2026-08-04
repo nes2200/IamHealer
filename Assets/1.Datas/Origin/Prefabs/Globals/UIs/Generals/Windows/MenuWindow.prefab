@@ -1651,9 +1651,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7431859918650211077}
-        m_TargetAssemblyTypeName: UI_Button_OpenUI, Assembly-CSharp
-        m_MethodName: Close
+      - m_Target: {fileID: 599621232652471858}
+        m_TargetAssemblyTypeName: UI_Button_MenuWindowBackground, Assembly-CSharp
+        m_MethodName: CloseMenuWindow
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

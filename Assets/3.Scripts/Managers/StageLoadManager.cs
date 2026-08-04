@@ -1,10 +1,11 @@
 using Newtonsoft.Json;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.AI.Navigation;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.SceneManagement;
 
 public class StageLoadManager : ManagerBase
 {
@@ -18,37 +19,82 @@ public class StageLoadManager : ManagerBase
 
     }
 
-    public void LoadStage(TextAsset stageData)
+    public void LoadStage(TextAsset stageData, Scene stageScene)
     {
-        ExecuteLoad(stageData);
+        ExecuteLoad(stageData, stageScene);
         //카메라 위치 초기화
         GameManager.Camera.SetCameraDefaultPosition();
     }
 
-    private void ExecuteLoad(TextAsset stageData)
+    private void ExecuteLoad(TextAsset stageData, Scene stageScene)
     {
+        //씬 유효성 검사
+        if(!stageScene.IsValid() || !stageScene.isLoaded)
+        {
+            Debug.LogError("[StageLoadManager] 유효한 스테이지 씬이 아닙니다.");
+            return;
+        }
+
+        //스테이지 데이터 자체가 없다면
+        if (!stageData)
+        {
+            Debug.LogError("[StageLoadManager] StageData가 null입니다.");
+            return;
+        }
+
         //제이슨 파일 읽고 역직렬화
         string jsonContent = stageData.text;
-        SceneSaveData loadData = JsonConvert.DeserializeObject<SceneSaveData>(jsonContent);
 
-        if (loadData is null || loadData.probs is null)
+        //스테이지 데이터를 읽었는데 비었다면
+        if (string.IsNullOrEmpty(jsonContent))
         {
-            EditorUtility.DisplayDialog("에러", "로드 데이터가 올바르지 않거나 비어있음", "확인");
+            Debug.LogError($"[StageLoadManager] '{stageData.name}'의 내용이 비어 있습니다.");
+            return;
+        }
+
+        SceneSaveData loadData;
+
+        //JSON 형식 검사
+        try
+        {
+            loadData = JsonConvert.DeserializeObject<SceneSaveData>(jsonContent);
+        }
+        catch(JsonException e)
+        {
+            Debug.LogError($"[StageLoadManager] '{stageData.name}'의 JSON 형식이 올바르지 않습니다.\n" + e.Message);
+            return;
+        }
+
+        //JSON 형식은 맞는데 loadData가 이상하다면
+        if(loadData == null)
+        {
+            Debug.LogError($"[StageLoadManager] '{stageData.name}'을 로드하지 못했습니다.");
+            return;
+        }
+
+        //loadData는 null이 아닌데 속이 비어있다면
+        if(loadData.probs == null)
+        {
+            Debug.LogError($"[StageLoadManager] '{stageData.name}'에 probs 데이터가 없습니다.");
             return;
         }
 
         //씬에 있는 주요 부모/관리자를 미리 검색하여 등록
         Dictionary<string, GameObject> parentContainer = new Dictionary<string, GameObject>();
-        string[] keyParent = { "Probs", "TeamB", "Terrain", "Floor" };
+        string[] keyParent = { "Probs", "TeamA", "TeamB", "Terrain", "Floor" };
+        GameObject[] rootObjects = stageScene.GetRootGameObjects();
         foreach (string parentName in keyParent)
         {
-            GameObject found = GameObject.Find(parentName);
-            if (found is not null)
+            GameObject found = FindRootObject(stageScene, parentName);
+           
+            if (found)
             {
                 parentContainer.Add(parentName, found);
             }
         }
-
+        //
+        List<NavMeshAgent> disabledNavAgents = new();
+        List<GameObject> spawnedObjects = new();
         //기존 자식 및 배치 오브젝트 청소
         //Probs, TeamB 아래 있는 기존 자식들을 일괄 제거
         foreach (var container in parentContainer)
@@ -56,10 +102,10 @@ public class StageLoadManager : ManagerBase
             //Terrain이나 Floor를 지우면 안되니까 자식만 특정하기
             if (container.Key == "Probs" || container.Key == "TeamB")
             {
-                List<GameObject> childrenToDestroy = new List<GameObject>();
-                foreach (Transform child in container.Value.transform)
+                Transform parent = container.Value.transform;
+                for(int i = parent.childCount - 1; i >= 0; i--)
                 {
-                    childrenToDestroy.Add(child.gameObject);
+                    ObjectManager.DestroyObject((parent.GetChild(i).gameObject));
                 }
             }
             else if (container.Key == "Terrain")
@@ -71,78 +117,55 @@ public class StageLoadManager : ManagerBase
         //데이터를 기반으로 에셋 폴더 내 프리팹을 검색하여 스폰 및 위치 복구
         foreach (StageObject data in loadData.probs)
         {
-            GameObject spawnObject = null;
-
-            //프로젝트 내 프리팹 검색
-            string[] guids = AssetDatabase.FindAssets($"{data.prefabName} t:Prefab");
-            GameObject prefabAsset = null;
-            if (guids.Length > 0)
+            GameObject spawnObject = ObjectManager.CreateObjectWithoutRegistration(data.prefabName);
+            if(!spawnObject)
             {
-                //정확히 일치하는 프리팹 찾기
-                foreach (string guid in guids)
-                {
-                    string assetPath = AssetDatabase.GUIDToAssetPath(guid);
-                    GameObject obj = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-                    if (obj && obj.name == data.prefabName)
-                    {
-                        prefabAsset = obj;
-                        break;
-                    }
-                }
+                Debug.LogWarning($"[StageLoadManager] '{data.prefabName}' 오브젝트를 생성하지 못했습니다.");
+                continue;
+            }
+           
+            spawnedObjects.Add(spawnObject);
+            spawnObject.name = data.name;
+
+            //내브메쉬 베이크시 오브젝트 위치가 찐빠나는 경우 대비
+            NavMeshAgent agent = spawnObject.GetComponent<NavMeshAgent>();
+            if (agent != null)
+            {
+                agent.enabled = false;
+                disabledNavAgents.Add(agent);
             }
 
-            //프리팹을 찾았다면 Prefab 연결을 유지하며 스폰
-            if (prefabAsset)
+            //부모 관계 복구  
+            if (data.parentName != "None" && parentContainer.TryGetValue(data.parentName, out GameObject parentObject))
             {
-                spawnObject = (GameObject)PrefabUtility.InstantiatePrefab(prefabAsset);
+                spawnObject.transform.SetParent(parentObject.transform, false);
             }
-            else
-            {
-                //프리팹을 못찾은 경우 기본 빈 오브젝트로 임시 생성하여 유실을 방지
-                spawnObject = new GameObject(data.name);
-                Debug.LogWarning($"[SceneScanner] '{data.prefabName}' 프리팹을 찾을 수 없어 기본 오브젝트로 대체됩니다;");
-            }
+            
 
-            if (spawnObject)
-            {
-                spawnObject.name = data.name;
+            // 트랜스폼 복구 (Local 값 적용)
+            spawnObject.transform.localPosition = data.position;
+            spawnObject.transform.localScale = data.scale;
+            spawnObject.transform.localRotation = data.rotation;
 
-                //부모 관계 복구
-                if (data.parentName != "None" && parentContainer.ContainsKey(data.parentName))
-                {
-                    spawnObject.transform.SetParent(parentContainer[data.parentName].transform);
-                }
-                else if (data.parentName == "Terrain" && data.name == "CrossLine")
-                {
-                    // Terrain의 자식인 CrossLine 예외 부모 설정
-                    if (parentContainer.ContainsKey("Terrain"))
-                    {
-                        spawnObject.transform.SetParent(parentContainer["Terrain"].transform);
-                    }
-                }
-
-                // 트랜스폼 복구 (Local 값 적용)
-                spawnObject.transform.localPosition = data.position;
-                spawnObject.transform.localScale = data.scale;
-                spawnObject.transform.localRotation = data.rotation;
-            }
+            ObjectManager.RegistrationObject(spawnObject);
+            
         }
 
         //Probs 폴더에서 자식들 세팅하기
         if (parentContainer.ContainsKey("Probs"))
         {
-            foreach (Transform child in parentContainer["Probs"].transform)
+            foreach (GameObject spawnedObject in spawnedObjects)
             {
-                GameObject probObj = child.gameObject;
+                if (spawnedObject.transform.parent != parentContainer["Probs"].transform)
+                    continue;
 
                 //자신과 자식들의 모든 상태 변경 
-                SetChildsStaticAndLayer(probObj, true, 9);
+                SetChildsStaticAndLayer(spawnedObject, true, 9);
 
-                NavMeshObstacle navObs = probObj.GetComponent<NavMeshObstacle>();
+                NavMeshObstacle navObs = spawnedObject.GetComponent<NavMeshObstacle>();
                 if (navObs == null)
                 {
-                    // Undo 지원용 컴포넌트 추가 기능 사용
-                    navObs = Undo.AddComponent<NavMeshObstacle>(probObj);
+                    navObs = spawnedObject.AddComponent<NavMeshObstacle>();
                 }
                 if (navObs)
                 {
@@ -159,9 +182,6 @@ public class StageLoadManager : ManagerBase
             {
                 // 실제 NavMesh 빌드(Bake) 실행!
                 navSurface.BuildNavMesh();
-
-                // 에디터 씬 뷰 갱신 유도
-                SceneView.RepaintAll();
             }
             else
             {
@@ -169,17 +189,47 @@ public class StageLoadManager : ManagerBase
             }
         }
 
+        //disable 해놨던 유닛들의 navmeshAgent 켜주기
+        foreach(NavMeshAgent agent in disabledNavAgents)
+        {
+            Vector3 targetPosition = agent.transform.position;
+            agent.enabled = true;
+        }
+
         //유닛들의 내부 참조 해주기
-        Transform teamA = GameObject.Find("TeamA").transform;
-        foreach (Transform unit in parentContainer["TeamB"].transform)
+        if(!parentContainer.TryGetValue("TeamA", out GameObject teamAObject))
+        {
+            Debug.LogError("[StageLoadManager] TeamA 오브젝트를 찾지 못했습니다.");
+            return;
+        }
+        if (!parentContainer.TryGetValue("TeamB", out GameObject teamBObject))
+        {
+            Debug.LogError("[StageLoadManager] TeamB 오브젝트를 찾지 못했습니다.");
+            return;
+        }
+        Transform teamATransform = teamAObject.transform;
+        foreach (Transform unit in teamBObject.transform)
         {
             TargetingModule targetModule = unit.GetComponent<TargetingModule>();
             if (targetModule)
             {
-                targetModule.SetHostileGroupParents(teamA);
+                targetModule.SetHostileGroupParents(teamATransform);
             }
         }
     }
+
+    private GameObject FindRootObject(Scene scene, string objectName)
+    {
+        foreach(GameObject rootOjbect in scene.GetRootGameObjects())
+        {
+            if(rootOjbect.name == objectName)
+            {
+                return rootOjbect;
+            }
+        }
+        return null;
+    }
+
 
     private void SetChildsStaticAndLayer(GameObject obj, bool isStatic, int layer)
     {

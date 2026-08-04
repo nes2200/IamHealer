@@ -15,34 +15,12 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: e7c4ecdab70fba0428886eb6d409772e
   m_SerializeEntries:
-  - m_GUID: 24c2a94ee47440c44b803a94b6f3e7c8
-    m_Address: Assets/LMHPOLY/Low Poly Nature Bundle/Vegetation/Vegetation Assets/Prefabs/Flowers/OneSided
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Global
-    - default
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 294ba042662f44f40b40542d094e7544
     m_Address: Origin/Prefabs/Globals
     m_ReadOnly: 0
     m_SerializedLabels:
     - Global
     - Origin
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 3d55f1a874220d345bf10e88f35a0233
-    m_Address: Assets/LMHPOLY/Low Poly Nature Bundle/Rocks/Rock Assets/Prefabs/With_Box_Colliders/1
-      Color
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Global
-    - default
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 56ab2a69b66d1f14698d26acb091d418
-    m_Address: Assets/LMHPOLY/Low Poly Nature Bundle/Trees/Tree Assets/Prefabs
-    m_ReadOnly: 0
-    m_SerializedLabels:
-    - Global
-    - default
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 66318b624c2ca1b43842a38a56e6b71b
     m_Address: Origin/Stages/Globals
@@ -55,6 +33,13 @@ MonoBehaviour:
     m_Address: Origin
     m_ReadOnly: 0
     m_SerializedLabels:
+    - Origin
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d0ce9a55ac539dd4f9d32a878fd6129c
+    m_Address: Assets/LMHPOLY/Low Poly Nature Bundle/Trees/Tree Assets/Prefabs/Trees/LOD/No_Bottoms/Acacia_Trees
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Global
     - Origin
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d4054bb4fa06790458d1725b496a7cb9

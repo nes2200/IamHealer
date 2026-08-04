@@ -50,8 +50,6 @@ public class ObjectManager : ManagerBase
     {
         GameObject result = null; ;
 
-        //wantName = wantName.ToLower();
-
         //이 이름으로 된 풀이 등록되어 있다면
         if (poolDictionary.TryGetValue(wantName, out ObjectPoolModule pool))
         {
@@ -79,6 +77,29 @@ public class ObjectManager : ManagerBase
         RegistrationObject(result);
         return result;
     }
+    public static GameObject CreateObjectWithoutRegistration(string wantName, Transform parent = null)
+    {
+        GameObject result = null; ;
+
+        //이 이름으로 된 풀이 등록되어 있다면
+        if (poolDictionary.TryGetValue(wantName, out ObjectPoolModule pool))
+        {
+            result = pool.CreateObject(parent);
+        }
+        else
+        {
+            //풀에 없는 야생의 오브젝트 만들기 => 데이터 있는지 확인해보기
+            if (DataManager.TryLoadDataFile<GameObject>(wantName, out GameObject prefab))
+            {
+                if (prefab) result = Instantiate(prefab, parent);
+            }
+        }
+
+        if (!result) UIManager.ClaimErrorMessage(SystemMessage.ObjectNameNotFound(wantName));
+
+        return result;
+    }
+
     public static GameObject CreateObject(string wantName, Vector3 position)
     {
         GameObject result = CreateObject(wantName);
