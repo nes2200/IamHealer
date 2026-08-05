@@ -323,15 +323,16 @@ public class GameManager : MonoBehaviour
                 //캐릭터를 업데이트
                 OnUpdateCharacter?.Invoke(deltaTime);
                 //오브젝트를 업데이트
-                OnUpdateObject?.Invoke(deltaTime);
+                OnUpdateObject?.Invoke(deltaTime);   
+                //카메라를 업데이트
+                OnUpdateCamera?.Invoke(deltaTime);
             }
         }
         //이 두개만 뺀 이유
-        //게임을 플레이 중 일시정지를 하더라도 카메라는 움직여야 하고, 메뉴를 누를 수 있는 UI 요소는 살아 있어야 하기 때문
+        //게임을 플레이 중 일시정지를 메뉴를 누를 수 있는 UI 요소는 살아 있어야 하기 때문
         //UI를 업데이트
         OnUpdateUI?.Invoke(deltaTime);
-        //카메라를 업데이트
-        OnUpdateCamera?.Invoke(deltaTime);
+     
 
 
         //오브젝트를 제거

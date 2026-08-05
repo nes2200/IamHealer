@@ -82,10 +82,9 @@ public class StageLoadManager : ManagerBase
         //씬에 있는 주요 부모/관리자를 미리 검색하여 등록
         Dictionary<string, GameObject> parentContainer = new Dictionary<string, GameObject>();
         string[] keyParent = { "Probs", "TeamA", "TeamB", "Terrain", "Floor" };
-        GameObject[] rootObjects = stageScene.GetRootGameObjects();
         foreach (string parentName in keyParent)
         {
-            GameObject found = FindRootObject(stageScene, parentName);
+            GameObject found = FindObjectInScene(stageScene, parentName);
            
             if (found)
             {
@@ -218,13 +217,18 @@ public class StageLoadManager : ManagerBase
         }
     }
 
-    private GameObject FindRootObject(Scene scene, string objectName)
+    private GameObject FindObjectInScene(Scene scene, string objectName)
     {
-        foreach(GameObject rootOjbect in scene.GetRootGameObjects())
+        foreach(GameObject rootObject in scene.GetRootGameObjects())
         {
-            if(rootOjbect.name == objectName)
+            //비활성화된 자식도 훑어보게 true 넣기
+            Transform[] transforms = rootObject.GetComponentsInChildren<Transform>(true); 
+            foreach(Transform target in transforms)
             {
-                return rootOjbect;
+                if(target.name == objectName)
+                {
+                    return target.gameObject;
+                }
             }
         }
         return null;
