@@ -53,6 +53,7 @@ MonoBehaviour:
   unitLayer:
     serializedVersion: 2
     m_Bits: 128
+  placementManager: {fileID: 0}
   indicator: {fileID: 2933332116235917065}
   indicatorMat: {fileID: 2100000, guid: d6d356ceb7531e848911940c5fc5a18d, type: 2}
   decal: {fileID: 5863335077707174349}
@@ -111,7 +112,7 @@ MonoBehaviour:
   m_UVBias: {x: 0, y: 0}
   m_RenderingLayerMask:
     serializedVersion: 0
-    m_Bits: 1
+    m_Bits: 2
   m_ScaleMode: 0
   m_Offset: {x: 0, y: 0, z: 5}
   m_Size: {x: 1, y: 1, z: 10}

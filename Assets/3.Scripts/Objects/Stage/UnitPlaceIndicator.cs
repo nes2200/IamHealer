@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Rendering.Universal;
@@ -9,6 +10,7 @@ public class UnitPlaceIndicator : MonoBehaviour
     [SerializeField] float heightOffset = 5f;
     [SerializeField] LayerMask floorLayer;
     [SerializeField] LayerMask unitLayer;
+    [SerializeField] PlacementManager placementManager;
 
     [Header("Indicator")]
     [SerializeField] GameObject indicator;
@@ -43,6 +45,12 @@ public class UnitPlaceIndicator : MonoBehaviour
         UI_StageScreen.OnMenuClose -= UpdateIndicatorStatusByMenuClose;
         UI_StageScreen.OnMenuClose += UpdateIndicatorStatusByMenuClose;
 
+        placementManager.OnUnitSpawn -= OnUnitSpawned;
+        placementManager.OnUnitSpawn += OnUnitSpawned;
+
+        placementManager.OnUnitDespawn -= OnUnitDespawned;
+        placementManager.OnUnitDespawn += OnUnitDespawned;
+
 
         indicatorMat.SetColor(tintColorPorpertyID, Color.gray);
 
@@ -55,11 +63,18 @@ public class UnitPlaceIndicator : MonoBehaviour
         StageManager.OnBattleStart -= DisableIndicator;
         UI_StageScreen.OnMenuOpen -= UpdateIndicatorStatusByMenuOpen;
         UI_StageScreen.OnMenuClose -= UpdateIndicatorStatusByMenuClose;
-
+        placementManager.OnUnitSpawn -= OnUnitSpawned;
+        placementManager.OnUnitDespawn -= OnUnitDespawned;
     }
 
     void MoveToMouse(Vector2 screenPosition, Vector3 worldPosition)
     {
+        //게임이 멈춘 상태라면 갱신 안함
+        if (!GameManager.Instance.IsPlaying)
+        {
+            return;
+        }
+
         //UI위에 있으면 그냥 사라질거임
         if(GameManager.Input.IsMouseOverUI)
         {
@@ -144,9 +159,28 @@ public class UnitPlaceIndicator : MonoBehaviour
         MoveToMouse(InputManager.CursorScreenPosition, InputManager.CursorWorldPosition);
     }
 
+    public void OnUnitSpawned()
+    {
+        _canSpawn = false;
+        UpdateIndicatorColor(false);
+    }
+    public void OnUnitDespawned()
+    {
+        StartCoroutine(CoRefreshAfterDespawn());
+    }
+    IEnumerator CoRefreshAfterDespawn()
+    {
+        //오브젝트 Destroy가 프레임 종료로 실제로 처리되기까지 대기
+        yield return null;
+
+        //transfomr과 collider 변경을 물리시스템에 적용
+        Physics.SyncTransforms();
+        RefreshIndicatorStatus();
+    }
+
     public Vector3 GetCurrentIndicatorLoaction()
     {
-        return transform.position - new Vector3(0f, -heightOffset, 0f);
+        return transform.position - new Vector3(0f, heightOffset, 0f); 
     }
 
     void SetIndicatorActive(bool visible)
@@ -156,12 +190,9 @@ public class UnitPlaceIndicator : MonoBehaviour
             indicator.SetActive(visible);
         }
     }
-
-    //스테이지 스크린에서 메뉴 토글시 강제로 상태 조정
     void UpdateIndicatorStatusByMenuOpen()
     {
-        SetIndicatorActive(false);
-        _canSpawn = false;
+        //일단은 빈칸
     }
     void UpdateIndicatorStatusByMenuClose()
     {

@@ -71,8 +71,7 @@ public class AnimationModule : CharacterModule
         foreach (Rigidbody rigid in ragdollRigidbodies) { rigid.isKinematic = true; }
         //메인 콜라이더가 꺼져있다면 켜주기
         mainCollider.enabled = true;
-        //메인 rigidbody의 isKinematic이 켜져있다면 꺼주기
-        mainRigid.isKinematic = false;
+        mainRigid.isKinematic = true;
     }
 
     //hp가 0이 되면 실행해야 할 기능

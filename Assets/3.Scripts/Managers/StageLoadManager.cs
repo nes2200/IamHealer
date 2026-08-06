@@ -80,18 +80,25 @@ public class StageLoadManager : ManagerBase
         }
 
         //씬에 있는 주요 부모/관리자를 미리 검색하여 등록
-        Dictionary<string, GameObject> parentContainer = new Dictionary<string, GameObject>();
-        string[] keyParent = { "Probs", "TeamA", "TeamB", "Terrain", "Floor" };
-        foreach (string parentName in keyParent)
+        StageManager stageManager = FindStageManager(stageScene);
+        if(!stageManager)
         {
-            GameObject found = FindObjectInScene(stageScene, parentName);
-           
-            if (found)
-            {
-                parentContainer.Add(parentName, found);
-            }
+            Debug.LogError("[StageLoadManager] StageManager를 찾지 못했습니다.");
+            return;
         }
-        //
+        if(!stageManager.Floor || !stageManager.Probs || !stageManager.TeamA || !stageManager.TeamB)
+        {
+            Debug.LogError("[StageLoadManager] StageManager의 컨테이너 참조가 설정되지 않았습니다.");
+            return;
+        }
+        Dictionary<string, Transform> parentContainer = new Dictionary<string, Transform> 
+        {
+            { "Floor", stageManager.Floor},
+            { "Probs", stageManager.Probs},
+            { "TeamA", stageManager.TeamA},
+            { "TeamB", stageManager.TeamB}
+        };
+        
         List<NavMeshAgent> disabledNavAgents = new();
         List<GameObject> spawnedObjects = new();
         //기존 자식 및 배치 오브젝트 청소
@@ -101,7 +108,7 @@ public class StageLoadManager : ManagerBase
             //Terrain이나 Floor를 지우면 안되니까 자식만 특정하기
             if (container.Key == "Probs" || container.Key == "TeamB")
             {
-                Transform parent = container.Value.transform;
+                Transform parent = container.Value;
                 for(int i = parent.childCount - 1; i >= 0; i--)
                 {
                     ObjectManager.DestroyObject((parent.GetChild(i).gameObject));
@@ -109,7 +116,7 @@ public class StageLoadManager : ManagerBase
             }
             else if (container.Key == "Terrain")
             {
-                Transform crossLine = container.Value.transform.Find("CrossLine");
+                Transform crossLine = container.Value.Find("CrossLine");
             }
         }
 
@@ -135,9 +142,9 @@ public class StageLoadManager : ManagerBase
             }
 
             //부모 관계 복구  
-            if (data.parentName != "None" && parentContainer.TryGetValue(data.parentName, out GameObject parentObject))
+            if (data.parentName != "None" && parentContainer.TryGetValue(data.parentName, out Transform parentTransform))
             {
-                spawnObject.transform.SetParent(parentObject.transform, false);
+                spawnObject.transform.SetParent(parentTransform, false);
             }
             
 
@@ -196,18 +203,17 @@ public class StageLoadManager : ManagerBase
         }
 
         //유닛들의 내부 참조 해주기
-        if(!parentContainer.TryGetValue("TeamA", out GameObject teamAObject))
+        if(!parentContainer.TryGetValue("TeamA", out Transform teamATransform))
         {
             Debug.LogError("[StageLoadManager] TeamA 오브젝트를 찾지 못했습니다.");
             return;
         }
-        if (!parentContainer.TryGetValue("TeamB", out GameObject teamBObject))
+        if (!parentContainer.TryGetValue("TeamB", out Transform teamBTransform))
         {
             Debug.LogError("[StageLoadManager] TeamB 오브젝트를 찾지 못했습니다.");
             return;
         }
-        Transform teamATransform = teamAObject.transform;
-        foreach (Transform unit in teamBObject.transform)
+        foreach (Transform unit in teamBTransform)
         {
             TargetingModule targetModule = unit.GetComponent<TargetingModule>();
             if (targetModule)
@@ -230,6 +236,16 @@ public class StageLoadManager : ManagerBase
                     return target.gameObject;
                 }
             }
+        }
+        return null;
+    }
+
+    private StageManager FindStageManager(Scene scene)
+    {
+        foreach(GameObject rootObject in scene.GetRootGameObjects())
+        {
+            StageManager stageManager = rootObject.GetComponentInChildren<StageManager>(true);
+            if (stageManager) return stageManager;
         }
         return null;
     }

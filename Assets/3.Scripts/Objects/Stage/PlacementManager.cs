@@ -1,5 +1,7 @@
 using UnityEngine;
 
+public delegate void UnitSpawnEvent();
+
 public class PlacementManager : MonoBehaviour
 {
     [Header("StageManager")]
@@ -14,6 +16,9 @@ public class PlacementManager : MonoBehaviour
 
     [Header("Indicator")]
     [SerializeField] UnitPlaceIndicator indicator;
+
+    public event UnitSpawnEvent OnUnitSpawn;
+    public event UnitSpawnEvent OnUnitDespawn;
 
     private void OnEnable()
     {
@@ -36,6 +41,9 @@ public class PlacementManager : MonoBehaviour
 
     private void TryUnitSpawn(bool value, Vector2 screenPosition, Vector3 worldPosition)
     {
+        //게임이 멈춰있다면 생성 안함
+        if (!GameManager.Instance.IsPlaying) return;
+
         //마우스 뗄떼는 유닛 생성 안함
         if (!value) return;
 
@@ -55,18 +63,18 @@ public class PlacementManager : MonoBehaviour
         if (worldPosition.x > 0) return;
 
         //바닥에 맞았으면 유닛 생성
-        GameObject newUnit = ObjectManager.CreateObject(unitPrefab.name, indicator.GetCurrentIndicatorLoaction());
+        GameObject newUnit = ObjectManager.CreateObjectWithoutRegistration(unitPrefab.name);
 
         //생성됬으면 등록하기
         if (newUnit)
         {
             Transform unitParent = teamA_Parent;
             //유닛의 부모 설정으로 팀 배정
-            newUnit.transform.SetParent(unitParent);
+            newUnit.transform.SetParent(unitParent, false);
+            newUnit.transform.position = indicator.GetCurrentIndicatorLoaction();
             newUnit.transform.rotation = Quaternion.Euler(0f, 90f, 0f);
-
-            //생성한놈 등록하기
             ObjectManager.RegistrationObject(newUnit);
+          
             //추적할 적 유닛 등록하기
             TargetingModule targetModule = newUnit.GetComponent<TargetingModule>();
             if (targetModule)
@@ -82,11 +90,14 @@ public class PlacementManager : MonoBehaviour
                 int unitCost = targetCharacter.Status.cost;
                 stageManager.CostIncreasByUnitSpawn(unitCost);
             }
+            OnUnitSpawn?.Invoke();
         }
     }
 
     private void TryUnitDespawn(bool value, Vector2 screenPosition, Vector3 worldPosition)
     {
+        if (!GameManager.Instance.IsPlaying) return;
+
         if (!value) return;
 
         if (worldPosition.x > 0) return;
@@ -104,6 +115,7 @@ public class PlacementManager : MonoBehaviour
             stageManager.CostDecreaseByUnitDespawn(unitCost);
             ObjectManager.DestroyObject(mouseOverObj);
         }
+        OnUnitDespawn?.Invoke();
     }
 
     //유닛 선택 버튼 클릭시 해당 유닛 정보를 받아오는 기능

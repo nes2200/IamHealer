@@ -69,6 +69,11 @@ public class UI_StageScreen : UI_ScreenBase
         }
     }
 
+    public static void ClaimOnMenuClose()
+    {
+        OnMenuClose?.Invoke();
+    }
+
     private void SetCostLimitText(int[] costLimits)
     {
         starController.SetAllCostLimitText(costLimits);

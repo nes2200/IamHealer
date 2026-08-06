@@ -25,6 +25,19 @@ public class StageManager : MonoBehaviour
     [SerializeField] PlacementManager placementManager;
     [SerializeField] CostTracker costTracker;
 
+    [Header("Initial Objects")]
+    [SerializeField] Transform floor;
+    [SerializeField] Transform probs;
+    [SerializeField] Transform teamA;
+    [SerializeField] Transform teamB;
+
+
+    public Transform Floor => floor;
+    public Transform Probs => probs;
+    public Transform TeamA => teamA;
+    public Transform TeamB => teamB;
+
+
     //스테이지 상태 변경
     public void ChangeState(StageState newState)
     {

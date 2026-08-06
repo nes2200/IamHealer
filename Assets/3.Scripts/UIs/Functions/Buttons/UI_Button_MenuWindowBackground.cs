@@ -6,5 +6,6 @@ public class UI_Button_MenuWindowBackground : MonoBehaviour
     {
         UIManager.ClaimToggleUI(UIType.Menu);
         GameManager.UnPause();
+        UI_StageScreen.ClaimOnMenuClose();
     }
 }

@@ -67,8 +67,9 @@ public class GameManager : MonoBehaviour
 
     public static bool is2D = false;
     bool isLoading = true;
-    bool isPlaying = true;
+    bool _isPlaying = true;
     bool _isBattleStart = false;
+    public bool IsPlaying => _isPlaying;
     public bool IsBattleStart => _isBattleStart;
 
     //Awake     : 시작할 때 (아침에 눈을 뜸)
@@ -166,7 +167,7 @@ public class GameManager : MonoBehaviour
 
         loadingProgress.SetComplete();
 
-        yield return new WaitUntil(() => isPlaying);
+        yield return new WaitUntil(() => _isPlaying);
         UIManager.ClaimOpenScreen(startScreen, ScreenChangeType.ScreenChanger);
         InputManager.OnAnyKey -= UnPause;
 
@@ -221,13 +222,13 @@ public class GameManager : MonoBehaviour
     public static void Pause()
     {
         if (!Instance) return;
-        Instance.isPlaying = false;
+        Instance._isPlaying = false;
         Time.timeScale = 0f;
     }
     public static void UnPause()
     {
         if (!Instance) return;
-        Instance.isPlaying = true;
+        Instance._isPlaying = true;
         Time.timeScale = 1f;
     }
     public static void ResetBattle()
@@ -254,15 +255,15 @@ public class GameManager : MonoBehaviour
         switch (newState)
         {
             case StageState.Ready:
-                Instance.isPlaying = true;
+                Instance._isPlaying = true;
                 Time.timeScale = 1f;
                 break;
             case StageState.Battle:
-                Instance.isPlaying = true;
+                Instance._isPlaying = true;
                 Time.timeScale = 1f;
                 break;
             case StageState.Result:
-                Instance.isPlaying = false;
+                Instance._isPlaying = false;
                 Time.timeScale = 0f;
                 break;
         }
@@ -310,7 +311,7 @@ public class GameManager : MonoBehaviour
 
 
         float deltaTime = Time.deltaTime;
-        if (isPlaying)
+        if (_isPlaying)
         {
             //매니저를 업데이트
             OnUpdateManager?.Invoke(deltaTime);
@@ -324,15 +325,15 @@ public class GameManager : MonoBehaviour
                 OnUpdateCharacter?.Invoke(deltaTime);
                 //오브젝트를 업데이트
                 OnUpdateObject?.Invoke(deltaTime);   
-                //카메라를 업데이트
-                OnUpdateCamera?.Invoke(deltaTime);
+                
             }
         }
         //이 두개만 뺀 이유
         //게임을 플레이 중 일시정지를 메뉴를 누를 수 있는 UI 요소는 살아 있어야 하기 때문
         //UI를 업데이트
         OnUpdateUI?.Invoke(deltaTime);
-     
+        //카메라를 업데이트
+        OnUpdateCamera?.Invoke(deltaTime);
 
 
         //오브젝트를 제거
@@ -351,7 +352,7 @@ public class GameManager : MonoBehaviour
     private void FixedUpdate()
     {
         //물리 작용을 하지 않는 타이밍
-        if (isLoading || !isPlaying || !IsBattleStart) return;
+        if (isLoading || !_isPlaying || !IsBattleStart) return;
 
         float deltaTime = Time.fixedDeltaTime;
 
