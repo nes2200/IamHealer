@@ -98,6 +98,8 @@ public class PlacementManager : MonoBehaviour
     {
         if (!GameManager.Instance.IsPlaying) return;
 
+        if (!indicator.isActiveAndEnabled) return;
+
         if (!value) return;
 
         if (worldPosition.x > 0) return;

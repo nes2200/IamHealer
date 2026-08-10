@@ -31,7 +31,6 @@ public class AttackModule : CharacterModule
     {
         if (isAttackCooldown)
         {
-            AttackCooldownUpdate(Time.deltaTime);
             return;
         }
 
@@ -43,6 +42,8 @@ public class AttackModule : CharacterModule
             instigator = attackInfo.instigator,
             damageAmount = attackInfo.damageAmount
         });
+        AnimationModule animModule = Owner.GetModule<AnimationModule>();
+        animModule.TriggerAnimation("Attack");
         AttackCooldownStart();
     }
 

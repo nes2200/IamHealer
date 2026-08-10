@@ -1,33 +1,28 @@
+using System;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class MovementModule : CharacterModule, IRunnable
 {
-    protected Vector3? targetDirection = null;
-    protected Vector3? targetDestination = null;
-    protected Vector3? targetRotation = null;
-    protected float targetTolerance;
-    protected float mainColliderRadius;
-
-
-    [Header("¿Ãµø º”µµ")]
+    [Header("Ïù¥Îèô ÏÜçÎèÑ")]
     [SerializeField] float moveSpeed = 2.0f;
     [SerializeField] float rotateSpeed = 2.0f;
 
-    [Header("« ºˆ ∫Œº”«∞µÈ")]
+    [Header("ÌïÑÏàò Î∂ÄÏÜçÌíàÎì§")]
     [SerializeField] NavMeshAgent navAgent;
     [SerializeField] TargetingModule targetModule;
-    
 
-    //¿Ã∑± ∞≈¥Î«— ∏µ‚¿ª ∏∏µÈ ∂ßø° «— π¯ "¥Î∫–∑˘"∑Œ ∫–∑˘«œ±‚
+    //ÌöåÏ†ÑÏö©
+    Vector3? targetRotationDirection;
+
     public sealed override System.Type RegistrationType => typeof(MovementModule);
 
     public override void OnRegistration(CharacterBase newOwner)
     {
         base.OnRegistration(newOwner);
+
         GameManager.OnPhysicsCharacter -= MovementUpdate;
         GameManager.OnPhysicsCharacter += MovementUpdate;
-
         SetNavmeshAgent();
 
         targetModule.OnTargetScanned -= SetDestination;
@@ -36,11 +31,12 @@ public class MovementModule : CharacterModule, IRunnable
         newOwner.OnFaint -= StopAllMovementByFaint;
         newOwner.OnFaint += StopAllMovementByFaint;
     }
+
     public override void OnUnregistration(CharacterBase oldOwner)
     {
         base.OnUnregistration(oldOwner);
-        //GameManager.OnPhysicsCharacter -= MovementUpdate;
 
+        GameManager.OnPhysicsCharacter -= MovementUpdate;
         targetModule.OnTargetScanned -= SetDestination;
         oldOwner.OnFaint -= StopAllMovementByFaint;
     }
@@ -53,8 +49,12 @@ public class MovementModule : CharacterModule, IRunnable
         navAgent.speed = moveSpeed;
         navAgent.angularSpeed = rotateSpeed;
     }
+
+    // Ïã§Ï†ú Î™©Ï†ÅÏßÄÎäî TargetingModuleÏù¥ Ïä§Ï∫îÌïú ÏúÑÏπòÎ°ú Í≥ÑÏÜç Í∞±Ïã†ÌïúÎã§.
     public void SetDestination(Vector3 targetPosition)
     {
+        if (!navAgent || !navAgent.isOnNavMesh) return;
+
         navAgent.SetDestination(targetPosition);
     }
 
@@ -62,136 +62,55 @@ public class MovementModule : CharacterModule, IRunnable
     {
         if (!navAgent || !navAgent.isOnNavMesh) return;
 
+        UpdateRotation(deltaTime);
+
         Vector3 positionDelta = navAgent.velocity * deltaTime;
         Owner.MovementNotify(positionDelta);
-
-        //Vector3 originPosition = transform.position; //¿Ãµø ¿¸ ¿ßƒ° ¿˙¿Â
-        //PhysicsUpdate(deltaTime); // ¿Ãµø
-        //Vector3 positionDelta = transform.position - originPosition; //¿Ãµø∑Æ ¿˙¿Â
-        //Owner.MovementNotify(positionDelta); //¿Ãµø∑Æø° µ˚∂Û æ÷¥œ∏ﬁ¿Ãº« Ω««‡
-
-        //Vector3? moveDelta = targetDirection.Value + targetRotation.Value;
-        //PhysicsUpdate(deltaTime);
-        //Owner.MovementNotify(moveDelta.Value.normalized);
-    }
-    
-    public void PhysicsUpdate(float deltaTime)
-    {
-        //UpdateToDirection(deltaTime);
-        UpdateToDestination(deltaTime);
-        UpdateMove(deltaTime);
-        UpdateRotate(deltaTime);
     }
 
-    public virtual float GetMoveSpeed() => moveSpeed;
-    public virtual float GetMoveSpeed(float deltaTime) => GetMoveSpeed() * deltaTime;
-    public virtual float GetRotateSpeed() => rotateSpeed;
-    public virtual float GetRotateSpeed(float deltTime) => GetRotateSpeed() * deltTime;
-
-    public virtual void Translate(Vector3 delta)
-    {
-        transform.position += delta;
-    }
-
-    public void UpdateToDirection(float deltaTime)
-    {
-        if (targetDirection is null) return;
-
-        Vector3 localDirection = transform.TransformDirection(targetDirection.Value).normalized;
-
-        float currentMoveSpeed = GetMoveSpeed(deltaTime);
-        Translate(currentMoveSpeed * localDirection);
-    }
-    public void UpdateToDestination(float deltaTime)
-    {
-        if (targetDestination is null) return;
-        //«ÿ¥Á ¿ßƒ°∑Œ ∞°¥¬ πÊ«‚
-        Vector3 currentMoveDirection = (targetDestination.Value - transform.position);
-        //æÛ∏∂≥™ ≥≤æ“≥™ ∞≈∏Æ √¯¡§
-        float distance = currentMoveDirection.magnitude;
-
-        //∞≈∏Æ∞° ¿Œ¡§ π¸¿ß π€ø° ¿÷¥Ÿ
-        if (distance >= targetTolerance)
-        {
-            //πÊ«‚ ¿‚±‚
-            currentMoveDirection.Normalize();
-
-            //«— π¯ ¿Ãµø«“ ∂ß ∞≈∏Æ
-            float currentMoveSpeed = GetMoveSpeed(deltaTime);
-            //¿Ãµø«“ ∞≈∏ÆøÕ ≥≤¿∫ ∞≈∏Æ∏¶ ∫Ò±≥«œø©, ¥ı ¬™¿∫ ∞≈∏Æ∏¶ ∞°∏È µ»¥Ÿ
-            float resultMoveSpeed = Mathf.Min(currentMoveSpeed, distance);
-
-
-            Translate(resultMoveSpeed * currentMoveDirection);
-        }
-    }
-
-    public void UpdateRotate(float deltaTime)
-    {
-        if (targetRotation is null || targetRotation == Vector3.zero) return;
-
-        //πﬁæ∆ø¬ πÊ«‚¿ª ∑Œƒ√∑Œ πŸ≤Ÿ±‚
-        //Vector3 localRotation = transform.TransformDirection(targetRotation.Value).normalized;
-        //∑Œƒ√ πÊ«‚¿ª ∞°¡ˆ∞Ì »∏¿¸ ª˝º∫
-        Quaternion targetLocalRotation = Quaternion.LookRotation(targetRotation.Value);
-        //πﬁæ∆ø¬ »∏¿¸¿ª ∫ŒµÂ∑¥∞‘ √≥∏Æ«œø© µπ∏Æ±‚
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetLocalRotation, GetRotateSpeed(deltaTime));
-    }
-    
-    public void UpdateMove(float deltaTime)
-    {
-        if (targetDirection is null) return;
-
-        Vector3 localDirection = transform.TransformDirection(targetDirection.Value).normalized;
-
-        float currentMoveSpeed = GetMoveSpeed(deltaTime);
-        Translate(currentMoveSpeed * localDirection);
-    }
-
+    // destinationÏùÄ TargetingModuleÏù¥ Îã¥ÎãπÌïòÍ≥†, Ïù¥ Î™ÖÎ†πÏùÄ Ï†ïÏßÄ ÌóàÏö© Í±∞Î¶¨Îßå ÏÑ§Ï†ïÌïúÎã§.
     public void MoveToDestination(Vector3 destination, float tolerance)
     {
-        targetDirection = null;
-        targetDestination = destination;
-        targetRotation = destination - transform.position;
-        targetTolerance = tolerance;
+        if (!navAgent) return;
 
-        //∏Ò¿˚¡ˆ∏¶ πﬁæ“¥Ÿ
-        //∏Ò¿˚¡ˆ πÊ«‚¿∏∑Œ rotate «ÿæﬂ«—¥Ÿ.
-        //∏Ò¿˚¡ˆ±Ó¡ˆ move «ÿæﬂ«—¥Ÿ.
+        //ÏÉà Ïù¥Îèô ÏãúÏûëÏãú navMeshÏùò ÏûêÎèô ÌöåÏ†ÑÍ≥º Ï∂©ÎèåÌïòÏßÄ ÏïäÎèÑÎ°ù Ìï¥Ï†úÌïòÍ∏∞
+        targetRotationDirection = null;
+        navAgent.stoppingDistance = Mathf.Max(0f, tolerance);
     }
-    public void MoveToDirection(Vector3 direction)
-    {
-        targetDestination = null;
-        targetDirection = direction.normalized;
-    }
-    public void StopMovement()
-    {
-        targetDirection = null;
-        targetDestination = null;
-        targetRotation = null;
-    }
+
+    //ÌöåÏ†Ñ Í¥ÄÎ†®
     public void Rotate(Vector3 direction)
     {
-        targetRotation = direction;
+        direction.y = 0f;
+
+        targetRotationDirection = direction.sqrMagnitude > Mathf.Epsilon ? direction.normalized : null;
     }
-    public void Move(Vector3 direction)
+    private void UpdateRotation(float deltaTime)
     {
-        targetDirection = direction;
+        if (targetRotationDirection is null) return;
+
+        Quaternion targetRotation = Quaternion.LookRotation(targetRotationDirection.Value);
+
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotateSpeed * deltaTime);
     }
+
+    // Î∞©Ìñ• Í∏∞Î∞ò Î¨ºÎ¶¨ Ïù¥ÎèôÏùÄ LegacyPhysicsMovementModule.cs.txtÏóê Î≥¥Í¥ÄÌïúÎã§.
+    public void MoveToDirection(Vector3 direction) { }
+
+    public void StopMovement()
+    {
+        if (!navAgent || !navAgent.isOnNavMesh) return;
+
+        navAgent.ResetPath();
+    }
+
+    public void Move(Vector3 direction) { }
 
     public void StopAllMovementByFaint()
     {
         StopMovement();
         GameManager.OnPhysicsCharacter -= MovementUpdate;
-        navAgent.enabled = false;
-    }
 
-    protected void SetMainColliderRadius()
-    {
-        mainColliderRadius = Owner.GetModule<AnimationModule>().MainCollider.radius;
-    }
-    public float GetMainColliderRadius()
-    {
-         return mainColliderRadius;
+        if (navAgent) navAgent.enabled = false;
     }
 }

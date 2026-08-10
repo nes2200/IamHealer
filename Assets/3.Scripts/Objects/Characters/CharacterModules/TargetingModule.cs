@@ -11,7 +11,7 @@ public class TargetingModule : CharacterModule
     private List<CharacterBase> hostileCharacters = new List<CharacterBase>(100);
 
     float scanCooltime; //스캔 쿨타임
-    float scanInterval = 0.4f; //스캔 인터벌. 한번에 모든 유닛이 스캔하지 않도록 하기 위해서
+    float scanInterval = 0.2f; //스캔 인터벌. 한번에 모든 유닛이 스캔하지 않도록 하기 위해서
     bool _canScan;
     public bool CanScan => _canScan;
 

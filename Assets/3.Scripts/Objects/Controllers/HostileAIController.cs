@@ -9,6 +9,10 @@ public class HostileAIController : AIController
 
     TeamEliminateNotifier teamEliminateNotifier;
 
+    [Header("Attack Distance")]
+    [SerializeField] float attackDistance = 0.5f;
+    [SerializeField] float approachMargin = 0.05f;
+    
     protected override void OnPossess(CharacterBase newCharacter)
     {
         GameManager.OnUpdateController -= Think;
@@ -32,48 +36,49 @@ public class HostileAIController : AIController
         base.OnFocusTargetChanged(oldTarget, newTarget);
         if (newTarget != null)
         {
-            //¸Å ÇÁ·¹ÀÓ¸¶´Ù Å¸°ÙÀÇ radius¸¦ °¡Á®¿À¸é ÀÏÀÌ ³Ê¹« ¸¹À» °Í °°¾Æ¼­, Å¸°ÙÀÌ ¹Ù²ğ ¶§ ÀÌ¸¦ ÀúÀåÇÑ´Ù
+            //ë§¤ í”„ë ˆì„ë§ˆë‹¤ íƒ€ê²Ÿì˜ radiusë¥¼ ê°€ì ¸ì˜¤ë©´ ì¼ì´ ë„ˆë¬´ ë§ì„ ê²ƒ ê°™ì•„ì„œ, íƒ€ê²Ÿì´ ë°”ë€” ë•Œ ì´ë¥¼ ì €ì¥í•œë‹¤
             targetRadius = newTarget.GetComponent<CharacterBase>().Status.colliderRadius;
             targetHPModule = newTarget.GetComponent<HitPointModule>();
         }
         else
         {
-            //Å¸°ÙÀÌ nullÀÌ´Ï hpmoduleµµ ÃÊ±âÈ­
+            //íƒ€ê²Ÿì´ nullì´ë‹ˆ hpmoduleë„ ì´ˆê¸°í™”
             targetHPModule = null;
         }
     }
 
     protected override void Think(float deltaTime)
     {
-        //³ª Á×¾úÀ¸¸é »ı°¢À» ÁßÁö
+        //ë‚˜ ì£½ì—ˆìœ¼ë©´ ìƒê°ì„ ì¤‘ì§€
         if (!Character || !Character.IsAlive) return;
 
-        //targetÀÌ Á×¾ú´ÂÁö »ì¾Ò´ÂÁö Ã¼Å©
+        //targetì´ ì£½ì—ˆëŠ”ì§€ ì‚´ì•˜ëŠ”ì§€ ì²´í¬
         if (!IsTargetAlive())
         {
-            //¿ì¼± ºñ¿öÁÖ±â
+            //ìš°ì„  ë¹„ì›Œì£¼ê¸°
             SetFocusTarget(null);
+            //ê·¸ë¦¬ê³  ê°•ì œ ìŠ¤ìº” ëŒë¦¬ê¸°
             targetModule.ForceScanReady();
         }
 
-        //½ºÄµ ÁÖ±â¸¶´Ù ½ºÄµ ½Ãµµ
+        //ìŠ¤ìº” ì£¼ê¸°ë§ˆë‹¤ ìŠ¤ìº” ì‹œë„
         if (targetModule.TryGetNewTarget(deltaTime, out GameObject newTarget))
         {
-            //½ºÄµ½Ãµµ ‰çÀ¸¸é ±âÁ¸ ¸ñÇ¥¿Í °°ÀºÁö Ã¼Å©, ´Ù¸£¸é ±×¶§ ³Ö±â
+            //ìŠ¤ìº”ì‹œë„ ë¬ìœ¼ë©´ ê¸°ì¡´ ëª©í‘œì™€ ê°™ì€ì§€ ì²´í¬, ë‹¤ë¥´ë©´ ê·¸ë•Œ ë„£ê¸°
             if(newTarget != FocusTarget)
             {
                 SetFocusTarget(newTarget);
             }
         }
 
-        //¸ñÇ¥°¡ ¾ø¾î? ±×·³ ¿©±â¼­ ³¡. °¡¸¸È÷ ÀÖ¾î
+        //ëª©í‘œê°€ ì—†ì–´? ê·¸ëŸ¼ ì—¬ê¸°ì„œ ë. ê°€ë§Œíˆ ìˆì–´
         if (!FocusTarget) 
         {
             CommandStop();
             return;
         }
 
-        //¶§¸®´øÁö ¿òÁ÷ÀÌµçÁö ÇØ¶ó
+        //ë•Œë¦¬ë˜ì§€ ì›€ì§ì´ë“ ì§€ í•´ë¼
         AttackOrMove();
     }
 
@@ -88,40 +93,47 @@ public class HostileAIController : AIController
 
     protected void AttackOrMove()
     {
-        //¾ÈÀüÀåÄ¡
+        //ì•ˆì „ì¥ì¹˜
         if (!FocusTarget)
         {
             CommandStop();
             return;
         }
 
-        //°ø°İ °¡´ÉÇÏ³Ä?
-        //³ª¿Í Å¸°ÙÀÇ °Å¸® Â÷ÀÌ. ±× Áß Ä¸½¶ Äİ¶óÀÌ´õÀÇ radius¸¦ »©¸é Å¸°Ù°ú ³ªÀÇ ½ÇÁ¦ °Å¸® Â÷ÀÌ°¡ ³ª¿Â´Ù
-        //ÀÌ¶§, ¿ÏÀüÈ÷ µü ºÙ´Â°ÍÀ» ¹æÁöÇÏ±â À§ÇØ ¾ÆÁÖ ¾à°¾ÀÇ ¿©À¯°ø°£À» µÎ°í ±× ¾È¿¡ µé¾î¿À¸é °ø°İ °¡´ÉÇÏ´Ù
 
-        //»ç°Å¸® ³» Àû µé¾î¿À¸é °ø°İ, ¾ÈµÇ¸é ÀÌµ¿ ½Ãµµ
+        //ê³µê²© ê°€ëŠ¥í•˜ëƒ?
+        //ë‚˜ì™€ íƒ€ê²Ÿì˜ ê±°ë¦¬ ì°¨ì´. ê·¸ ì¤‘ ìº¡ìŠ ì½œë¼ì´ë”ì˜ radiusë¥¼ ë¹¼ë©´ íƒ€ê²Ÿê³¼ ë‚˜ì˜ ì‹¤ì œ ê±°ë¦¬ ì°¨ì´ê°€ ë‚˜ì˜¨ë‹¤
+        //ì´ë•Œ, ì™„ì „íˆ ë”± ë¶™ëŠ”ê²ƒì„ ë°©ì§€í•˜ê¸° ìœ„í•´ ì•„ì£¼ ì•½ê°¼ì˜ ì—¬ìœ ê³µê°„ì„ ë‘ê³  ê·¸ ì•ˆì— ë“¤ì–´ì˜¤ë©´ ê³µê²© ê°€ëŠ¥í•˜ë‹¤
 
-        //½ÇÁ¦ °Å¸® °è»ê
-        float targetDistance = Vector3.Distance(transform.position, FocusTarget.transform.position);
-        //³ª¿Í »ó´ëÀÇ radius¸¸Å­À» »©±â
-        float attackRange = targetDistance - (Character.Status.colliderRadius + targetRadius);
+        //ì‚¬ê±°ë¦¬ ë‚´ ì  ë“¤ì–´ì˜¤ë©´ ê³µê²©, ì•ˆë˜ë©´ ì´ë™ ì‹œë„
 
-        //¸¸¾à ¿©À¯°ø°£ ¸¸Å­ µé¾î¿Ô´Ù¸é °ø°İ, ¾Æ´Ï¸é ÀÌµ¿
-        if (attackRange < 0.5f)
+        //ìƒëŒ€ì™€ ë‚˜ì˜ í¬ê¸° ê°’
+        float combineRadius = Character.Status.colliderRadius + targetRadius;
+        //ìƒëŒ€ì™€ ë‚˜ì˜ ê±°ë¦¬
+        float centerDistance = Vector3.Distance(transform.position, FocusTarget.transform.position);
+        //ìƒëŒ€ì™€ ë‚˜ì˜ ê±°ë¦¬ì—ì„œ í¬ê¸°ë¥¼ ëº€ ì‹¤ì œ ê±°ë¦¬ê°’
+        float surfaceDistance = centerDistance - combineRadius;
+
+        //ë§Œì•½ ì—¬ìœ ê³µê°„ ë§Œí¼ ë“¤ì–´ì™”ë‹¤ë©´ ê³µê²©, ì•„ë‹ˆë©´ ì´ë™
+        if (surfaceDistance <= attackDistance)
         {
-            //¿©À¯°ø°£ ¸¸Å­ µé¾î¿Ô´Ù¸é ÀÚµ¿À¸·Î ÀÌµ¿Àº ¾ÈÇÏ°ÔµÈ´Ù
+            // ì´ë™ ê²½ë¡œë¥¼ ëŠì–´ë„ ì ì„ í–¥í•œ íšŒì „ì€ ê³„ì† ê°±ì‹ í•œë‹¤.
+            CommandStop();
+            CommandRotateToDirection(FocusTarget.transform.position - transform.position);
             TryAttack();
+            return;
         }
-        else
-        {
-            CommandMoveToDestination(FocusTarget.transform.position, 0.5f);
-        }
+
+        //NavMeshì˜ ëª©ì ì§€ëŠ” ëŒ€ìƒì˜ ì¤‘ì‹¬ì´ë¯€ë¡œ ë°˜ì§€ë¦„ì„ ë‹¤ì‹œ ë”í•´ì„œ ì •ì§€ê±°ë¦¬ë¥¼ ë§Œë“¤ì–´ì¤€ë‹¤
+        float stoppingDistance = combineRadius + attackDistance - approachMargin;
+        CommandMoveToDestination(FocusTarget.transform.position, stoppingDistance);
+        
     }
 
-    //Å¸°Ù°ú °¡±î¿ö Á³À»¶§ È£Ãâ
+    //íƒ€ê²Ÿê³¼ ê°€ê¹Œì›Œ ì¡Œì„ë•Œ í˜¸ì¶œ
     public void TryAttack()
     {
-        //°ø°İ ÄğÅ¸ÀÓÀÌ ¾Æ´Ï¸é °ø°İÇÏ±â
+        //ê³µê²© ì¿¨íƒ€ì„ì´ ì•„ë‹ˆë©´ ê³µê²©í•˜ê¸°
         if (!atkModule.IsAttackCooldown)
         {
             atkModule.AttackTarget(new AttackInfo
@@ -133,7 +145,7 @@ public class HostileAIController : AIController
         }
     }
 
-    //Á×¾úÀ» ¶§, ³» ¸ğµç È°µ¿À» Á¤ÁöÇØ¾ßÇÑ´Ù
+    //ì£½ì—ˆì„ ë•Œ, ë‚´ ëª¨ë“  í™œë™ì„ ì •ì§€í•´ì•¼í•œë‹¤
     public void OnFaint()
     {
         CommandStop();

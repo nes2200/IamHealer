@@ -1,0 +1,111 @@
+// 과거 물리 기반 이동 구현 보관본.
+// Unity에서 컴파일되지 않도록 .cs.txt 확장자를 사용한다.
+// 다른 프로젝트에서 사용할 때 기반 타입과 이벤트를 해당 프로젝트 구조에 맞게 조정한다.
+
+using UnityEngine;
+
+public class LegacyPhysicsMovementModule : CharacterModule, IRunnable
+{
+    protected Vector3? targetDirection;
+    protected Vector3? targetDestination;
+    protected Vector3? targetRotation;
+    protected float targetTolerance;
+
+    [SerializeField] float moveSpeed = 2.0f;
+    [SerializeField] float rotateSpeed = 2.0f;
+
+    public override System.Type RegistrationType => typeof(LegacyPhysicsMovementModule);
+
+    public override void OnRegistration(CharacterBase newOwner)
+    {
+        base.OnRegistration(newOwner);
+        GameManager.OnPhysicsCharacter -= MovementUpdate;
+        GameManager.OnPhysicsCharacter += MovementUpdate;
+    }
+
+    public override void OnUnregistration(CharacterBase oldOwner)
+    {
+        base.OnUnregistration(oldOwner);
+        GameManager.OnPhysicsCharacter -= MovementUpdate;
+    }
+
+    public void MovementUpdate(float deltaTime)
+    {
+        Vector3 originPosition = transform.position;
+        PhysicsUpdate(deltaTime);
+        Owner.MovementNotify(transform.position - originPosition);
+    }
+
+    public void PhysicsUpdate(float deltaTime)
+    {
+        UpdateToDestination(deltaTime);
+        UpdateMove(deltaTime);
+        UpdateRotate(deltaTime);
+    }
+
+    public virtual float GetMoveSpeed() => moveSpeed;
+    public virtual float GetMoveSpeed(float deltaTime) => GetMoveSpeed() * deltaTime;
+    public virtual float GetRotateSpeed() => rotateSpeed;
+    public virtual float GetRotateSpeed(float deltaTime) => GetRotateSpeed() * deltaTime;
+
+    public virtual void Translate(Vector3 delta)
+    {
+        transform.position += delta;
+    }
+
+    public void UpdateToDestination(float deltaTime)
+    {
+        if (targetDestination is null) return;
+
+        Vector3 moveDirection = targetDestination.Value - transform.position;
+        float distance = moveDirection.magnitude;
+        if (distance < targetTolerance) return;
+
+        moveDirection.Normalize();
+        float moveDistance = Mathf.Min(GetMoveSpeed(deltaTime), distance);
+        Translate(moveDistance * moveDirection);
+    }
+
+    public void UpdateRotate(float deltaTime)
+    {
+        if (targetRotation is null || targetRotation == Vector3.zero) return;
+
+        Quaternion targetLocalRotation = Quaternion.LookRotation(targetRotation.Value);
+        transform.rotation = Quaternion.Slerp(
+            transform.rotation,
+            targetLocalRotation,
+            GetRotateSpeed(deltaTime));
+    }
+
+    public void UpdateMove(float deltaTime)
+    {
+        if (targetDirection is null) return;
+
+        Vector3 localDirection = transform.TransformDirection(targetDirection.Value).normalized;
+        Translate(GetMoveSpeed(deltaTime) * localDirection);
+    }
+
+    public void MoveToDestination(Vector3 destination, float tolerance)
+    {
+        targetDirection = null;
+        targetDestination = destination;
+        targetRotation = destination - transform.position;
+        targetTolerance = tolerance;
+    }
+
+    public void MoveToDirection(Vector3 direction)
+    {
+        targetDestination = null;
+        targetDirection = direction.normalized;
+    }
+
+    public void StopMovement()
+    {
+        targetDirection = null;
+        targetDestination = null;
+        targetRotation = null;
+    }
+
+    public void Rotate(Vector3 direction) => targetRotation = direction;
+    public void Move(Vector3 direction) => targetDirection = direction;
+}

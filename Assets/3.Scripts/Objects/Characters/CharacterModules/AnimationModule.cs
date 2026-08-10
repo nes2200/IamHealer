@@ -2,13 +2,14 @@ using UnityEngine;
 
 public class AnimationModule : CharacterModule
 {
+    [Header("Animation Settings")]
     [SerializeField] Animator anim;
     [SerializeField] bool isRotationByMovement;
-
     [SerializeField] CapsuleCollider mainCollider;
-    public CapsuleCollider MainCollider => mainCollider;
     [SerializeField] Rigidbody mainRigid;
+
     Rigidbody[] ragdollRigidbodies;
+    public CapsuleCollider MainCollider => mainCollider;
 
     public sealed override System.Type RegistrationType => typeof(AnimationModule);
 
@@ -28,7 +29,6 @@ public class AnimationModule : CharacterModule
         //모든 rigid를 가져와 isKineatic을 true로 바꾼다
         GetAllRigidbody();
         SetRigidbodyAndCollier();
-        
     }
     public override void OnUnregistration(CharacterBase oldOwner)
     {
@@ -96,4 +96,10 @@ public class AnimationModule : CharacterModule
             anim.speed = 0f;
         }
     }
+
+    public void TriggerAnimation(string wantAnim)
+    {
+        anim.SetTrigger(wantAnim);
+    }
+   
 }
