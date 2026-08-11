@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using UnityEngine;
 
 public struct DamageStruct
@@ -27,12 +26,16 @@ public class HitPointModule : CharacterModule
     public bool IsFullHealth => fill.IsMax;
     public bool IsEmpty => fill.IsEmpyt;
 
+    AttackModule atkModule;
+
     public override void OnRegistration(CharacterBase newOwner)
     {
         base.OnRegistration(newOwner);
         SetFillValue(Owner.Status);
         fill.OnChanged -= FaintCheck;
         fill.OnChanged += FaintCheck;
+        atkModule = Owner.GetModule<AttackModule>();
+        Debug.Log($"{Owner.name} AttackModule: {atkModule}");
     }
     public override void OnUnregistration(CharacterBase oldOwner)
     {
@@ -47,6 +50,13 @@ public class HitPointModule : CharacterModule
     public int TakeDamage(in DamageStruct damageInfo)
     {
         fill.DecreaseCurrent(damageInfo.damageAmount);
+
+        if (Owner.IsAlive && !atkModule.IsAttacking)
+        {
+            AnimationModule animModule = Owner.GetModule<AnimationModule>();
+            animModule?.TriggerAnimation("Damaged");
+        }
+
         return damageInfo.damageAmount;
     }
     public int TakeRestore(in RestoreStruct restoreInfo)

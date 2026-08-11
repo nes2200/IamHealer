@@ -12,15 +12,29 @@ public struct AttackInfo
 //hit과 같은 '맞는 역할'은 HitPointModule이 담당한다.
 public class AttackModule : CharacterModule
 {
+    //공격 쿨다운
     bool isAttackCooldown = false;
     public bool IsAttackCooldown => isAttackCooldown;
     float attackCooldownCurrent;
+
+    //공격 진행
+    float hitNormalizedTime;
+    bool hasAppliedAttack = false;
+    AttackInfo currentAttackInfo;
+    bool isAttacking = false;
+    public bool IsAttacking => isAttacking;
+
+
+    //애니메이션 모듈
+    AnimationModule animModule;
 
     public override Type RegistrationType => typeof(AttackModule);
 
     public override void OnRegistration(CharacterBase newOwner)
     {
         base.OnRegistration(newOwner);
+        animModule = Owner.GetModule<AnimationModule>();
+        hitNormalizedTime = Owner.Status.hitNormalizedTime;
     }
     public override void OnUnregistration(CharacterBase oldOwner)
     {
@@ -29,11 +43,36 @@ public class AttackModule : CharacterModule
 
     public void AttackTarget(in AttackInfo attackInfo)
     {
-        if (isAttackCooldown)
-        {
-            return;
-        }
+        if (isAttackCooldown || isAttacking) return;
 
+        isAttacking = true;
+        animModule.SetBool("IsAttacking", true);
+        animModule.TriggerAnimation("Attack");
+
+        currentAttackInfo = attackInfo;
+        hasAppliedAttack = false;
+
+        GameManager.OnUpdateCharacter -= UpdateAttack;
+        GameManager.OnUpdateCharacter += UpdateAttack;
+    }
+
+    void UpdateAttack(float deltaTime)
+    {
+        if (!isAttacking || hasAppliedAttack) return;
+
+        if (!animModule.TryGetNormalizedTime(out float normalizedProgress)) return;
+
+        if (normalizedProgress < hitNormalizedTime) return;
+        
+        hasAppliedAttack = true;
+        GameManager.OnUpdateCharacter -= UpdateAttack;
+
+        ApplyAttack(currentAttackInfo);
+    }
+
+    void ApplyAttack(AttackInfo attackInfo)
+    {
+        //적 체력 감소
         HitPointModule targetHPModule = attackInfo.target.GetComponent<HitPointModule>();
         if (!targetHPModule) return;
         targetHPModule.TakeDamage(new DamageStruct
@@ -42,8 +81,15 @@ public class AttackModule : CharacterModule
             instigator = attackInfo.instigator,
             damageAmount = attackInfo.damageAmount
         });
-        AnimationModule animModule = Owner.GetModule<AnimationModule>();
-        animModule.TriggerAnimation("Attack");
+    }
+
+    public void OnAttackAnimationEnd()
+    {
+        if (!isAttacking) return;
+
+        isAttacking = false;
+        animModule.SetBool("IsAttacking", false);
+
         AttackCooldownStart();
     }
 
@@ -59,7 +105,6 @@ public class AttackModule : CharacterModule
         attackCooldownCurrent = 0f;
         isAttackCooldown = false;
     }
-
     void AttackCooldownUpdate(float deltaTime)
     {
         attackCooldownCurrent += deltaTime;

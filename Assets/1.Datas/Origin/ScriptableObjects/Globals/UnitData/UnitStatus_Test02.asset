@@ -16,6 +16,7 @@ MonoBehaviour:
   cost: 12
   maxHP: 300
   damage: 2
-  attackSpeed: 2
+  attackSpeed: 1.75
   moveSpeed: 2
+  hitNormalizedTime: 0.33
   colliderRadius: 0.384

@@ -18,4 +18,5 @@ MonoBehaviour:
   damage: 8
   attackSpeed: 2
   moveSpeed: 2
+  hitNormalizedTime: 0.33
   colliderRadius: 0.32

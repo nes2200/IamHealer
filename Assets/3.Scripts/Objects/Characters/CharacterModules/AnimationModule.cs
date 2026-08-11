@@ -97,9 +97,36 @@ public class AnimationModule : CharacterModule
         }
     }
 
+    public bool TryGetNormalizedTime(out float normalizedTime, int layerIndex = 0)
+    {
+        AnimatorStateInfo stateInfo;
+
+        if (anim.IsInTransition(layerIndex))
+        {
+            stateInfo = anim.GetNextAnimatorStateInfo(layerIndex);
+        }
+        else
+        {
+            stateInfo = anim.GetCurrentAnimatorStateInfo(layerIndex);
+        }
+
+        if (!stateInfo.IsTag("Attack"))
+        {
+            normalizedTime = 0f;
+            return false;
+        }
+        normalizedTime = stateInfo.normalizedTime;
+        return true;
+
+    }
+
     public void TriggerAnimation(string wantAnim)
     {
         anim.SetTrigger(wantAnim);
     }
-   
+    public void SetBool(string parameter, bool value)
+    {
+        anim.SetBool(parameter, value);
+    }
+
 }

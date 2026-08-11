@@ -52,13 +52,21 @@ public class CharacterBase : MonoBehaviour
             wantModule.OnRegistration(this);
         }
     }
+    public void AddModuleWithoutRegistration(System.Type wantType, CharacterModule wantModule)
+    {
+        moduleDictionary.TryAdd(wantType, wantModule);
+    }
     public void AddAllModuleFromObject(GameObject target)
     {
         if (!target) return;
 
         foreach(CharacterModule currentModule in target.GetComponentsInChildren<CharacterModule>())
         {
-            AddModule(currentModule.RegistrationType, currentModule);
+            AddModuleWithoutRegistration(currentModule.RegistrationType, currentModule);
+        }
+        foreach(CharacterModule currentModule in moduleDictionary.Values)
+        {
+            currentModule.OnRegistration(this);
         }
     }
     public void RemoveModule(System.Type wantType)
