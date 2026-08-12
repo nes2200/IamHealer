@@ -15,6 +15,7 @@ public class MovementModule : CharacterModule, IRunnable
     //회전용
     Vector3? targetRotationDirection;
 
+
     public sealed override System.Type RegistrationType => typeof(MovementModule);
 
     public override void OnRegistration(CharacterBase newOwner)

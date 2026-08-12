@@ -73,7 +73,7 @@ public class StageLoadManager : ManagerBase
         }
 
         //loadData는 null이 아닌데 속이 비어있다면
-        if(loadData.probs == null)
+        if(loadData.objects == null)
         {
             Debug.LogError($"[StageLoadManager] '{stageData.name}'에 probs 데이터가 없습니다.");
             return;
@@ -121,7 +121,7 @@ public class StageLoadManager : ManagerBase
         }
 
         //데이터를 기반으로 에셋 폴더 내 프리팹을 검색하여 스폰 및 위치 복구
-        foreach (StageObject data in loadData.probs)
+        foreach (StageObject data in loadData.objects)
         {
             GameObject spawnObject = ObjectManager.CreateObjectWithoutRegistration(data.prefabName);
             if(!spawnObject)

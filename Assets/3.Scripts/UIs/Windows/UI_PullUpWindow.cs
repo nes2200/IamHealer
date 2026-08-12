@@ -12,5 +12,4 @@ public class UI_PullUpWindow : MonoBehaviour, IPointerDownHandler
     {
         transform.SetAsLastSibling();
     }
-
 }

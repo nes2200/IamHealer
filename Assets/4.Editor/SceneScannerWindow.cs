@@ -21,7 +21,7 @@ public class SceneScannerWindow : EditorWindow
 
     //현재 탭을 나타낼 정보들
     private int seletedTab = 0;
-    private string[] tabNames = { "Save Stage (Scan)", "Load Stage" };
+    private string[] tabNames = { "Save Stage (Scan)", "Load Stage", "Clean Scene" };
 
     //그리기
     private void OnGUI()
@@ -109,7 +109,7 @@ public class SceneScannerWindow : EditorWindow
                 ExecuteScan(inputFileName, calculatedSubPath);
             }
         }
-        else //로드 화면
+        else if(seletedTab == 1)//로드 화면
         {
             GUI.backgroundColor = new Color(0.7f, 1f, 0.7f); // 연녹
             if (GUILayout.Button("Load JSON to Scene", GUILayout.Height(40)))
@@ -123,7 +123,17 @@ public class SceneScannerWindow : EditorWindow
                 bool proceed = EditorUtility.DisplayDialog("씬 초기화 및 로드 경고",
                     $"정말로 기존 배치를 지우고 '{inputFileName}.json' 데이터를 새로 로드하시겠습니까?\n이 작업은 되돌릴 수 없습니다.",
                     "예, 새로 로드합니다", "아니오");
+                if (!proceed) return;
                 ExecuteLoad(inputFileName, calculatedSubPath);
+            }
+        }
+        else if(seletedTab == 2)
+        {
+            GUI.backgroundColor = new Color(1f, 0.7f, 0.7f);
+            EditorGUILayout.HelpBox("현재 씬의 Probs와 TeamB 아래에 배치된 모든 자식을 제거합니다.", MessageType.Warning);
+
+            if (GUILayout.Button("Clean Stage Objects", GUILayout.Height(40)))
+            {
             }
         }
         GUI.backgroundColor = Color.white;
@@ -176,7 +186,7 @@ public class SceneScannerWindow : EditorWindow
                 scale = obj.transform.localScale,
                 rotation = obj.transform.localRotation
             };
-            saveData.probs.Add(data);
+            saveData.objects.Add(data);
         }
 
         string jsonResult = JsonConvert.SerializeObject(saveData, Formatting.Indented);
@@ -201,7 +211,7 @@ public class SceneScannerWindow : EditorWindow
         string jsonContent = File.ReadAllText(targetPath);
         SceneSaveData loadData = JsonConvert.DeserializeObject<SceneSaveData>(jsonContent);
 
-        if (loadData is null || loadData.probs is null)
+        if (loadData is null || loadData.objects is null || loadData.objects.Count == 0)
         {
             EditorUtility.DisplayDialog("에러", "로드 데이터가 올바르지 않거나 비어있음", "확인");
             return;
@@ -252,7 +262,7 @@ public class SceneScannerWindow : EditorWindow
         }
 
         //데이터를 기반으로 에셋 폴더 내 프리팹을 검색하여 스폰 및 위치 복구
-        foreach (StageObject data in loadData.probs)
+        foreach (StageObject data in loadData.objects)
         {
             GameObject spawnObject = null;
 

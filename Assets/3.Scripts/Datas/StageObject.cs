@@ -11,3 +11,9 @@ public class StageObject
     public SerializableVector3 scale;
     public SerializableQuaternion rotation;
 }
+
+[System.Serializable]
+public class StageUnitEntry
+{
+    public string unitPrefabName;
+}

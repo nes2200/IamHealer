@@ -11,6 +11,8 @@ public class AnimationModule : CharacterModule
     Rigidbody[] ragdollRigidbodies;
     public CapsuleCollider MainCollider => mainCollider;
 
+    bool isMoving;
+
     public sealed override System.Type RegistrationType => typeof(AnimationModule);
 
     public override void OnRegistration(CharacterBase newOwner)
@@ -22,6 +24,8 @@ public class AnimationModule : CharacterModule
         newOwner.OnMovement += AnimationByMovement;
         newOwner.OnFaint -= AnimationByFaint;
         newOwner.OnFaint += AnimationByFaint;
+        newOwner.OnDamage -= AnimationByDamaged;
+        newOwner.OnDamage += AnimationByDamaged;
 
         StageManager.OnStageStateChange -= StopAnimationByEndBattle;
         StageManager.OnStageStateChange += StopAnimationByEndBattle;
@@ -37,6 +41,7 @@ public class AnimationModule : CharacterModule
         oldOwner.OnMovement -= AnimationByMovement;
         oldOwner.OnFaint -= AnimationByFaint;
         StageManager.OnStageStateChange -= StopAnimationByEndBattle;
+        oldOwner.OnDamage -= AnimationByDamaged;
     }
 
     public void AnimationByLookRotation(Vector3 lookRotation)
@@ -50,12 +55,42 @@ public class AnimationModule : CharacterModule
     public void AnimationByMovement(Vector3 moveDelta)
     {
         if (!anim) return;
-        if (isRotationByMovement && moveDelta.sqrMagnitude > 0)
+        isMoving = moveDelta.sqrMagnitude > 0.01f;
+        if (isRotationByMovement && isMoving)
         {
             AnimationByLookRotation(moveDelta);
         }
         anim.SetFloat("MoveSpeed", moveDelta.magnitude / Time.fixedDeltaTime);
     }
+
+    public void AnimationByFaint()
+    {
+        if (!anim) return;
+
+        anim.enabled = false;
+        mainCollider.enabled = false;
+        foreach (Rigidbody rigid in ragdollRigidbodies) 
+        { 
+            rigid.isKinematic = false; 
+        }
+        mainRigid.isKinematic = true;
+    }
+
+    public void AnimationByDamaged(in DamageStruct info)
+    {
+        AttackModule atkModule = Owner.GetModule<AttackModule>();
+        if (atkModule && atkModule.IsAttacking) return;
+
+        if (isMoving)
+        {
+            anim.SetTrigger("MovingDamaged");
+        }
+        else
+        {
+            anim.SetTrigger("FullBodyDamaged");
+        }
+    }
+
 
     //모든 하위 rigidbody 가져오기
     public void GetAllRigidbody()
@@ -75,18 +110,6 @@ public class AnimationModule : CharacterModule
     }
 
     //hp가 0이 되면 실행해야 할 기능
-    public void AnimationByFaint()
-    {
-        if (!anim) return;
-
-        anim.enabled = false;
-        mainCollider.enabled = false;
-        foreach (Rigidbody rigid in ragdollRigidbodies) 
-        { 
-            rigid.isKinematic = false; 
-        }
-        mainRigid.isKinematic = true;
-    }
     public void StopAnimationByEndBattle(StageState oldState, StageState newState)
     {
         if (!anim) return;

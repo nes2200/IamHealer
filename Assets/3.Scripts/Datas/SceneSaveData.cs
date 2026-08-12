@@ -4,5 +4,6 @@ using System.Collections.Generic;
 [System.Serializable]
 public class SceneSaveData
 {
-    public List<StageObject> probs = new List<StageObject>();
+    public List<StageObject> objects = new();
+    public List<StageUnitEntry> selectableUnits = new();
 }

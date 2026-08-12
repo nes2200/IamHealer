@@ -80,6 +80,7 @@ Transform:
   m_Children:
   - {fileID: 8654407847892812325}
   - {fileID: 7736320530004945934}
+  - {fileID: 3944030041748925788}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7563474414963169350
@@ -96,6 +97,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StageManager
   placementManager: {fileID: 6300853097538958855}
   costTracker: {fileID: 1931213985482458964}
+  floor: {fileID: 0}
+  probs: {fileID: 0}
+  teamA: {fileID: 0}
+  teamB: {fileID: 0}
 --- !u!114 &6300853097538958855
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -126,6 +131,50 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CostTracker
   stageManager: {fileID: 7563474414963169350}
   costLimits: 320000003c00000046000000
+--- !u!1 &8384626448469070446
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3944030041748925788}
+  - component: {fileID: 4976969630288757795}
+  m_Layer: 0
+  m_Name: StageDataAuthoring
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3944030041748925788
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8384626448469070446}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6104927051464653871}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4976969630288757795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8384626448469070446}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12297f07345566d438e4f597db8d67b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StageDataAuthoring
 --- !u!1 &8947404172712272602
 GameObject:
   m_ObjectHideFlags: 0

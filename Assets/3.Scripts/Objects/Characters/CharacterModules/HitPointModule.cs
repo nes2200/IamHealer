@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public struct DamageStruct
@@ -35,7 +36,6 @@ public class HitPointModule : CharacterModule
         fill.OnChanged -= FaintCheck;
         fill.OnChanged += FaintCheck;
         atkModule = Owner.GetModule<AttackModule>();
-        Debug.Log($"{Owner.name} AttackModule: {atkModule}");
     }
     public override void OnUnregistration(CharacterBase oldOwner)
     {
@@ -51,13 +51,10 @@ public class HitPointModule : CharacterModule
     {
         fill.DecreaseCurrent(damageInfo.damageAmount);
 
-        if (Owner.IsAlive && !atkModule.IsAttacking)
-        {
-            AnimationModule animModule = Owner.GetModule<AnimationModule>();
-            animModule?.TriggerAnimation("Damaged");
-        }
+        if (Owner.IsAlive) Owner.DamageNotify(damageInfo);
 
         return damageInfo.damageAmount;
+
     }
     public int TakeRestore(in RestoreStruct restoreInfo)
     {

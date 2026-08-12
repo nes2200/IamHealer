@@ -3,26 +3,22 @@ using UnityEngine;
 
 public delegate void MovementEvent  (Vector3 move);
 public delegate void LookAtEvent    (Vector3 direction);
-//                              실제 데미지를 제공한 사물     데미지를 주라고 시킨놈
-public delegate void DamageEvent(in DamageStruct info);
-public delegate void RestoreEvent(in RestoreStruct info);
+public delegate void DamageEvent    (in DamageStruct info);
+public delegate void RestoreEvent   (in RestoreStruct info);
 public delegate void FaintEvent();
 
 public class CharacterBase : MonoBehaviour
 {
-    public event MovementEvent OnMovement;
+    public event MovementEvent  OnMovement;
+    public event LookAtEvent    OnLookAt;
+    public event DamageEvent    OnDamage;
+    public event RestoreEvent   OnRestore;
+    public event FaintEvent     OnFaint;
+
     public void MovementNotify(Vector3 move)         => OnMovement?.Invoke(move);
-
-    public event LookAtEvent   OnLookAt;
     public void LookAtNotify(Vector3 direction)      => OnLookAt?.Invoke(direction);
-
-    public event DamageEvent   OnDamage;
     public void DamageNotify(in DamageStruct info)   => OnDamage?.Invoke(info);
-
-    public event RestoreEvent OnRestore;
     public void RestoreNotify(in RestoreStruct info) => OnRestore?.Invoke(info);
-
-    public event FaintEvent OnFaint;
     public void FaintNotify()                        => OnFaint?.Invoke();
 
     ControllerBase _controller;
