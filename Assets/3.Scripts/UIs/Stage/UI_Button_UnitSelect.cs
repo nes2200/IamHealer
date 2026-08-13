@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UI_Button_UnitSelect : MonoBehaviour
+public class UI_Button_UnitSelect : UIBase
 {
     //버튼을 누르면 유닛 프리팹과 비용이 임시로 저장됨
     //바닥을 클릭하면 프리팹 복사본을 생성
@@ -18,14 +18,23 @@ public class UI_Button_UnitSelect : MonoBehaviour
     [SerializeField] TextMeshProUGUI unitCostText;
     [SerializeField] Image unitImage;
 
-    private void OnEnable()
+    public void Initialize(GameObject newUnitPrefab)
     {
-        Initialize();
-    }
+        if(!newUnitPrefab)
+        {
+            Debug.LogError("[UI_Button_UnitSelect] 유닛 프리팹이 없습니다.");
+            return;
+        }
+        CharacterBase character = newUnitPrefab.GetComponent<CharacterBase>();
+        if (!character || !character.Status)
+        {
+            Debug.LogError($"[UI_Button_UnitSelect] '{newUnitPrefab.name}'의 캐릭터 정보를 찾지 못했습니다.");
+            return;
+        }
 
-    private void Initialize()
-    {
-        status = unitPrefab.GetComponent<CharacterBase>().Status;
+        unitPrefab = newUnitPrefab;
+        status = character.Status;
+
         unitNameText.text = status.unitName;
         unitCostText.text = status.cost.ToString();
     }

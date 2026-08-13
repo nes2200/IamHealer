@@ -39,6 +39,16 @@ public class AttackModule : CharacterModule
     public override void OnUnregistration(CharacterBase oldOwner)
     {
         base.OnUnregistration(oldOwner);
+        GameManager.OnUpdateCharacter -= UpdateAttack;
+        GameManager.OnUpdateCharacter -= AttackCooldownUpdate;
+
+        isAttacking = false;
+        isAttackCooldown = false;
+        hasAppliedAttack = false;
+        attackCooldownCurrent = 0f;
+
+        currentAttackInfo = default;
+        animModule = null;
     }
 
     public void AttackTarget(in AttackInfo attackInfo)
@@ -58,6 +68,12 @@ public class AttackModule : CharacterModule
 
     void UpdateAttack(float deltaTime)
     {
+        if(!animModule)
+        {
+            GameManager.OnUpdateCharacter -= UpdateAttack;
+            isAttacking = false;
+            return;
+        }
         if (!isAttacking || hasAppliedAttack) return;
 
         if (!animModule.TryGetNormalizedTime(out float normalizedProgress)) return;

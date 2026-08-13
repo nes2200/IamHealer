@@ -6,6 +6,8 @@ using Unity.AI.Navigation;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEditor.SceneManagement;
+using UnityEngine.SceneManagement;
 
 public class SceneScannerWindow : EditorWindow
 {
@@ -20,7 +22,7 @@ public class SceneScannerWindow : EditorWindow
     }
 
     //현재 탭을 나타낼 정보들
-    private int seletedTab = 0;
+    private int selectedTab = 0;
     private string[] tabNames = { "Save Stage (Scan)", "Load Stage", "Clean Scene" };
 
     //그리기
@@ -32,7 +34,7 @@ public class SceneScannerWindow : EditorWindow
         GUILayout.Space(10); //여백
 
         //상단 탭 구분
-        seletedTab = GUILayout.Toolbar(seletedTab, tabNames, GUILayout.Height(30));
+        selectedTab = GUILayout.Toolbar(selectedTab, tabNames, GUILayout.Height(30));
 
         GUILayout.Space(15);
 
@@ -82,7 +84,7 @@ public class SceneScannerWindow : EditorWindow
         GUILayout.Space(20);
 
         //선택된 탭에 따라 버튼 화면을 분기처리 및 안전 팝업
-        if (seletedTab == 0)
+        if (selectedTab == 0)
         {
             //save 화면
             GUI.backgroundColor = new Color(0.7f, 0.8f, 1f);
@@ -109,7 +111,7 @@ public class SceneScannerWindow : EditorWindow
                 ExecuteScan(inputFileName, calculatedSubPath);
             }
         }
-        else if(seletedTab == 1)//로드 화면
+        else if(selectedTab == 1)//로드 화면
         {
             GUI.backgroundColor = new Color(0.7f, 1f, 0.7f); // 연녹
             if (GUILayout.Button("Load JSON to Scene", GUILayout.Height(40)))
@@ -121,19 +123,24 @@ public class SceneScannerWindow : EditorWindow
                 }
 
                 bool proceed = EditorUtility.DisplayDialog("씬 초기화 및 로드 경고",
-                    $"정말로 기존 배치를 지우고 '{inputFileName}.json' 데이터를 새로 로드하시겠습니까?\n이 작업은 되돌릴 수 없습니다.",
+                    $"정말로 기존 배치를 지우고 '{inputFileName}.json' 데이터를 새로 로드하시겠습니까?",
                     "예, 새로 로드합니다", "아니오");
                 if (!proceed) return;
                 ExecuteLoad(inputFileName, calculatedSubPath);
             }
         }
-        else if(seletedTab == 2)
+        else if(selectedTab == 2)
         {
             GUI.backgroundColor = new Color(1f, 0.7f, 0.7f);
             EditorGUILayout.HelpBox("현재 씬의 Probs와 TeamB 아래에 배치된 모든 자식을 제거합니다.", MessageType.Warning);
 
             if (GUILayout.Button("Clean Stage Objects", GUILayout.Height(40)))
             {
+                bool proceed = EditorUtility.DisplayDialog("씬 청소",
+                    "Probs와 TeamB의 모든 자식을 제거하시겠습니까?\nCtrl+Z로 복구할 수 있습니다.", "제거", "취소");
+                if (!proceed) return;
+
+                ExecuteClean();
             }
         }
         GUI.backgroundColor = Color.white;
@@ -141,14 +148,17 @@ public class SceneScannerWindow : EditorWindow
 
     private void ExecuteScan(string fileName, string subPath)
     {
-        GameObject[] allObjects = GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None);
-        SceneSaveData saveData = new SceneSaveData();
+        GameObject[] allObjects = FindObjectsByType<GameObject>(FindObjectsSortMode.None);
+        SceneSaveData saveData = new();
 
         //필터링된 오브젝트만 담을 리스트
-        List<GameObject> targetObjects = new List<GameObject>();
+        List<GameObject> targetObjects = new();
 
+        Scene activeScene = EditorSceneManager.GetActiveScene();
         foreach (GameObject obj in allObjects)
         {
+            if (obj.scene != activeScene) continue;
+
             //예외 처리
             if (obj.name == "Terrain" || obj.name == "CrossLine")
             {
@@ -189,6 +199,43 @@ public class SceneScannerWindow : EditorWindow
             saveData.objects.Add(data);
         }
 
+        //내가 사용할 유닛 데이터 저장소
+
+        StageDataAuthoring authoring = FindStageDataAuthoring();
+        if (!authoring)
+        {
+            EditorUtility.DisplayDialog("저장 실패", "StageDataAuthoring을 찾지 못했습니다.", "확인");
+            return;
+        }
+        HashSet<string> savedUnitNames = new();
+
+        foreach (GameObject unitPrefab in authoring.SelectableUnitsEntry)
+        {
+            if (!unitPrefab)
+            {
+                Debug.LogWarning("[SceneScanner] Selectable Units Entry에 비어 있는 항목이 있습니다.");
+                continue;
+            }
+            if (!PrefabUtility.IsPartOfPrefabAsset(unitPrefab))
+            {
+                Debug.LogWarning($"[SceneScanner] '{unitPrefab.name}'은 프리팹 에셋이 아니므로 저장하지 않습니다.");
+                continue;
+            }
+
+            string prefabName = unitPrefab.name;
+
+            if (!savedUnitNames.Add(prefabName))
+            {
+                Debug.LogWarning($"[SceneScanner] 중복 유닛 '{prefabName}'은 한 번만 저장합니다.");
+                continue;
+            }
+
+            saveData.selectableUnits.Add(new StageUnitEntry
+            {
+                unitPrefabName = prefabName
+            });
+        }
+
         string jsonResult = JsonConvert.SerializeObject(saveData, Formatting.Indented);
         string directoryPath = Path.Combine(Application.dataPath, subPath);
 
@@ -208,13 +255,86 @@ public class SceneScannerWindow : EditorWindow
         string targetPath = Path.Combine(Application.dataPath, subPath, fileName);
 
         //제이슨 파일 읽고 역직렬화
-        string jsonContent = File.ReadAllText(targetPath);
-        SceneSaveData loadData = JsonConvert.DeserializeObject<SceneSaveData>(jsonContent);
+        if (!File.Exists(targetPath))
+        {
+            EditorUtility.DisplayDialog( "로드 실패", $"파일을 찾지 못했습니다.\n{targetPath}", "확인");
+            return;
+        }
+        SceneSaveData loadData;
+        try
+        {
+            string jsonContent = File.ReadAllText(targetPath);
+            loadData = JsonConvert.DeserializeObject<SceneSaveData>(jsonContent);
+        }
+        catch (JsonException exception)
+        {
+            Debug.LogException(exception);
+            EditorUtility.DisplayDialog("로드 실패", "JSON 형식이 올바르지 않습니다.", "확인");
+            return;
+        }
+        catch (IOException exception)
+        {
+            Debug.LogException(exception);
+            EditorUtility.DisplayDialog( "로드 실패", "파일을 읽지 못했습니다.", "확인");
+            return;
+        }
 
-        if (loadData is null || loadData.objects is null || loadData.objects.Count == 0)
+        if (loadData is null || loadData.objects is null)
         {
             EditorUtility.DisplayDialog("에러", "로드 데이터가 올바르지 않거나 비어있음", "확인");
             return;
+        }
+
+        StageDataAuthoring authoring = FindStageDataAuthoring();
+        if (!authoring)
+        {
+            EditorUtility.DisplayDialog("로드 실패", "StageDataAuthoring을 찾지 못했습니다.", "확인");
+            return;
+        }
+
+        List<GameObject> selectableUnitPrefabs = new();
+
+        if (loadData.selectableUnits != null)
+        {
+            HashSet<string> loadedUnitNames = new();
+            foreach (StageUnitEntry entry in loadData.selectableUnits)
+            {
+                if (entry == null || string.IsNullOrWhiteSpace(entry.unitPrefabName))
+                {
+                    Debug.LogWarning("[SceneScanner] selectableUnits에 잘못된 항목이 있습니다.");
+                    continue;
+                }
+
+                if (!loadedUnitNames.Add(entry.unitPrefabName))
+                {
+                    Debug.LogWarning($"중복 유닛 '{entry.unitPrefabName}'은 제외합니다.");
+                    continue;
+                }
+
+                GameObject unitPrefab = FindPrefabAsset(entry.unitPrefabName);
+
+                if (!unitPrefab)
+                {
+                    Debug.LogWarning($"[SceneScanner] 선택 가능 유닛 프리팹 '{entry.unitPrefabName}'을 찾지 못했습니다.");
+                    continue;
+                }
+               
+                selectableUnitPrefabs.Add(unitPrefab);
+            }
+        }
+
+        //씬에 있는 주요 부모/관리자를 미리 검색하여 등록   
+        string[] requiredNames ={ "Probs", "TeamA", "TeamB", "Terrain", "Floor"};
+        Dictionary<string, GameObject> parentContainer = new();
+        foreach (string objectName in requiredNames)
+        {
+            GameObject found = GameObject.Find(objectName);
+            if (!found)
+            {
+                EditorUtility.DisplayDialog("로드 실패", $"현재 씬에서 '{objectName}'을 찾지 못했습니다.", "확인");
+                return;
+            }
+            parentContainer.Add(objectName, found);
         }
 
         //Undo(되돌리기) 등록을 위한 그룹 ID 생성
@@ -222,67 +342,47 @@ public class SceneScannerWindow : EditorWindow
         int undoGroup = Undo.GetCurrentGroup();
         Undo.SetCurrentGroupName("Load Stage Object");
 
-        //씬에 있는 주요 부모/관리자를 미리 검색하여 등록
-        Dictionary<string, GameObject> parentContainer = new Dictionary<string, GameObject>();
-        string[] keyParent = { "Probs", "TeamB", "Terrain", "Floor" };
-        foreach (string parentName in keyParent)
-        {
-            GameObject found = GameObject.Find(parentName);
-            if (found is not null)
-            {
-                parentContainer.Add(parentName, found);
-            }
-        }
-
         //기존 자식 및 배치 오브젝트 청소
         //Probs, TeamB 아래 있는 기존 자식들을 일괄 제거
-        foreach (var container in parentContainer)
+        if (parentContainer.TryGetValue("Probs", out GameObject probs))
         {
-            //Terrain이나 Floor를 지우면 안되니까 자식만 특정하기
-            if (container.Key == "Probs" || container.Key == "TeamB")
+            ClearContainerChildren(probs);
+        }
+        if (parentContainer.TryGetValue("TeamB", out GameObject TeamB))
+        {
+            ClearContainerChildren(TeamB);
+        }
+
+        //Terrain이나 Floor를 지우면 안되니까 자식만 특정하기
+        if (parentContainer.TryGetValue("Terrain", out GameObject terrain))
+        {
+            Transform crossLine = terrain.transform.Find("CrossLine");
+
+            if (crossLine)
             {
-                List<GameObject> childrenToDestroy = new List<GameObject>();
-                foreach (Transform child in container.Value.transform)
-                {
-                    childrenToDestroy.Add(child.gameObject);
-                }
-                foreach (GameObject child in childrenToDestroy)
-                {
-                    Undo.DestroyObjectImmediate(child);
-                }
-            }
-            else if (container.Key == "Terrain")
-            {
-                Transform crossLine = container.Value.transform.Find("CrossLine");
-                if (crossLine is not null) 
-                {
-                    Undo.DestroyObjectImmediate(crossLine.gameObject);
-                }
+                Undo.DestroyObjectImmediate(crossLine.gameObject);
             }
         }
+        
 
         //데이터를 기반으로 에셋 폴더 내 프리팹을 검색하여 스폰 및 위치 복구
         foreach (StageObject data in loadData.objects)
         {
+            if (data.name == "Terrain")
+            {
+                Undo.RecordObject(terrain.transform, "Restore Terrain Transform");
+
+                terrain.transform.localPosition = data.position;
+                terrain.transform.localScale = data.scale;
+                terrain.transform.localRotation = data.rotation;
+
+                continue;
+            }
+
             GameObject spawnObject = null;
 
             //프로젝트 내 프리팹 검색
-            string[] guids = AssetDatabase.FindAssets($"{data.prefabName} t:Prefab");
-            GameObject prefabAsset = null;
-            if (guids.Length > 0)
-            {
-                //정확히 일치하는 프리팹 찾기
-                foreach (string guid in guids)
-                {
-                    string assetPath = AssetDatabase.GUIDToAssetPath(guid);
-                    GameObject obj = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
-                    if (obj && obj.name == data.prefabName)
-                    {
-                        prefabAsset = obj;
-                        break;
-                    }
-                }
-            }
+            GameObject prefabAsset = FindPrefabAsset(data.prefabName);
 
             //프리팹을 찾았다면 Prefab 연결을 유지하며 스폰
             if (prefabAsset)
@@ -303,17 +403,9 @@ public class SceneScannerWindow : EditorWindow
                 spawnObject.name = data.name;
 
                 //부모 관계 복구
-                if (data.parentName != "None" && parentContainer.ContainsKey(data.parentName))
+                if (data.parentName != "None" && parentContainer.TryGetValue(   data.parentName, out GameObject parent))
                 {
-                    spawnObject.transform.SetParent(parentContainer[data.parentName].transform);
-                }
-                else if (data.parentName == "Terrain" && data.name == "CrossLine")
-                {
-                    // Terrain의 자식인 CrossLine 예외 부모 설정
-                    if (parentContainer.ContainsKey("Terrain"))
-                    {
-                        spawnObject.transform.SetParent(parentContainer["Terrain"].transform);
-                    }
+                    spawnObject.transform.SetParent(parent.transform, false);
                 }
 
                 // 트랜스폼 복구 (Local 값 적용)
@@ -329,10 +421,7 @@ public class SceneScannerWindow : EditorWindow
             foreach(Transform child in parentContainer["Probs"].transform)
             {
                 GameObject probObj = child.gameObject;
-
-                // 변경사항을 Undo 시스템에 등록 (Ctrl+Z 지원을 위해 변경 직전 상태 기록)
-                Undo.RegisterCompleteObjectUndo(probObj, "Set Static & Add Obstacle");
-
+              
                 //자신과 자식들의 모든 상태 변경 
                 SetChildsStaticAndLayer(probObj, true, 9);
 
@@ -344,6 +433,7 @@ public class SceneScannerWindow : EditorWindow
                 }
                 if (navObs)
                 {
+                    Undo.RecordObject(navObs, "Enable Obstacle Carving");
                     navObs.carving = true;
                 }
             }
@@ -366,13 +456,15 @@ public class SceneScannerWindow : EditorWindow
             }
             else
             {
-                UnityEngine.Debug.LogWarning("[SceneScanner] Terrain 오브젝트에서 NavMeshSurface 컴포넌트를 찾을 수 없습니다.");
+                Debug.LogWarning("[SceneScanner] Terrain 오브젝트에서 NavMeshSurface 컴포넌트를 찾을 수 없습니다.");
             }
         }
 
+
         //유닛들의 내부 참조 해주기
-        Transform teamA = GameObject.Find("TeamA").transform;
-        foreach(Transform unit in parentContainer["TeamB"].transform)
+        Transform teamA = parentContainer["TeamA"].transform;
+        Transform teamB = parentContainer["TeamB"].transform;
+        foreach (Transform unit in teamB)
         {
             TargetingModule targetModule = unit.GetComponent<TargetingModule>();
             if (targetModule)
@@ -381,9 +473,80 @@ public class SceneScannerWindow : EditorWindow
             }
         }
 
+        ApplySelectableUnits(authoring, selectableUnitPrefabs, "Load Selectable Units");
+
         // 실행 기록을 하나의 Undo 그룹으로 병합
         Undo.CollapseUndoOperations(undoGroup);
         EditorUtility.DisplayDialog("로드 완료", $"'{fileName}' 데이터를 기반으로 배치를 정상적으로 복구했습니다.", "확인");
+    }
+
+    void ExecuteClean()
+    {
+        Undo.IncrementCurrentGroup();
+        int undoGroup = Undo.GetCurrentGroup();
+        Undo.SetCurrentGroupName("Clean Stage Objects");
+
+        int removedCount = 0;
+
+        //Probs와 TeamB 비워주기
+        removedCount += ClearContainerChildren(GameObject.Find("Probs"));
+        removedCount += ClearContainerChildren(GameObject.Find("TeamB"));
+
+        //사용할 유닛 데이터 비워주기
+        StageDataAuthoring authoring = FindStageDataAuthoring();
+        bool unitsCleared = ApplySelectableUnits(authoring, null, "Clear Selectable Units");
+
+
+        Undo.CollapseUndoOperations(undoGroup);
+        SceneView.RepaintAll();
+
+        string selectableUnitMessage = unitsCleared ? "Selectable Units Entry를 초기화했습니다." 
+            : "StageDataAuthoring을 찾지 못해 Selectable Units Entry는 초기화하지 못했습니다.";
+
+        EditorUtility.DisplayDialog("씬 청소 완료",
+            $"Probs와 TeamB에서 총 {removedCount}개의 오브젝트를 제거했습니다.\n" + selectableUnitMessage, "확인");
+    }
+
+    private StageDataAuthoring FindStageDataAuthoring()
+    {
+        StageManager stageManager = FindFirstObjectByType<StageManager>(FindObjectsInactive.Include);
+
+        if (!stageManager) return null;
+
+        return stageManager.GetComponentInChildren<StageDataAuthoring>(true);
+    }
+
+    private GameObject FindPrefabAsset(string prefabName)
+    {
+        if (string.IsNullOrEmpty(prefabName)) return null;
+
+        string[] guids = AssetDatabase.FindAssets($"{prefabName} t:Prefab");
+
+        foreach(string guid in guids)
+        {
+            string assetPath = AssetDatabase.GUIDToAssetPath(guid);
+            GameObject prefabAsset = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
+
+            if(prefabAsset && prefabAsset.name == prefabName)
+            {
+                return prefabAsset;
+            }
+        }
+        return null;
+    }
+
+    private bool ApplySelectableUnits(StageDataAuthoring authoring, IEnumerable<GameObject> unitPrefabs, string undoName)
+    {
+        if (!authoring) return false;
+
+        Undo.RecordObject(authoring, undoName);
+        authoring.SetSelectableUnits(unitPrefabs);
+        EditorUtility.SetDirty(authoring);
+        if (PrefabUtility.IsPartOfPrefabInstance(authoring))
+        {
+            PrefabUtility.RecordPrefabInstancePropertyModifications(authoring);
+        }
+        return true;
     }
 
     private void SetChildsStaticAndLayer(GameObject obj, bool isStatic, int layer)
@@ -400,6 +563,22 @@ public class SceneScannerWindow : EditorWindow
         {
             SetChildsStaticAndLayer(child.gameObject, isStatic, layer);
         }
+    }
+
+    private int ClearContainerChildren(GameObject container)
+    {
+        if (!container) return 0;
+
+        int removedCount = 0;
+
+        for (int i = container.transform.childCount - 1; i >= 0; i--)
+        {
+            GameObject child = container.transform.GetChild(i).gameObject;
+
+            Undo.DestroyObjectImmediate(child);
+            removedCount++;
+        }
+        return removedCount;
     }
 }
 #endif

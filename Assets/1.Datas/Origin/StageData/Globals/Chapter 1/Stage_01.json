@@ -43,24 +43,24 @@
       }
     },
     {
-      "name": "Acacia_Tree_l_03_LOD (1)",
-      "prefabName": "Acacia_Tree_l_03_LOD",
-      "parentName": "Probs",
+      "name": "Terrain",
+      "prefabName": "Terrain",
+      "parentName": "Floor",
       "position": {
-        "x": 17.02,
-        "y": 0.028,
-        "z": 3.3
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
       },
       "scale": {
-        "x": 1.0,
-        "y": 1.0,
-        "z": 1.0
+        "x": 48.037,
+        "y": 0.055,
+        "z": 34.167
       },
       "rotation": {
         "x": 0.0,
-        "y": 0.735,
+        "y": 0.0,
         "z": 0.0,
-        "w": 0.678
+        "w": 1.0
       }
     },
     {
@@ -85,25 +85,30 @@
       }
     },
     {
-      "name": "Terrain",
-      "prefabName": "Terrain",
-      "parentName": "Floor",
+      "name": "Acacia_Tree_l_03_LOD (1)",
+      "prefabName": "Acacia_Tree_l_03_LOD",
+      "parentName": "Probs",
       "position": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
+        "x": 17.02,
+        "y": 0.028,
+        "z": 3.3
       },
       "scale": {
-        "x": 48.037,
-        "y": 0.055,
-        "z": 34.167
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
       },
       "rotation": {
         "x": 0.0,
-        "y": 0.0,
+        "y": 0.735,
         "z": 0.0,
-        "w": 1.0
+        "w": 0.678
       }
+    }
+  ],
+  "selectableUnits": [
+    {
+      "unitPrefabName": "SM_Chr_Male_01_1H"
     }
   ]
 }

@@ -6,9 +6,16 @@ using Unity.AI.Navigation;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 public class StageLoadManager : ManagerBase
 {
+    //내 유닛 로드시 StageScreen에서 버튼 생성하도록 명령 내리기
+    public event Action<IReadOnlyList<GameObject>> OnSelectableUnitsLoaded;
+
+    private readonly List<GameObject> selectableUnitPrefabs = new();
+    public IReadOnlyList<GameObject> SelectableUnitPrefabs => selectableUnitPrefabs;
+
     protected override IEnumerator Onconnected(GameManager newManager)
     {
         yield return null;
@@ -16,7 +23,8 @@ public class StageLoadManager : ManagerBase
 
     protected override void OnDisconnected()
     {
-
+        selectableUnitPrefabs.Clear();
+        OnSelectableUnitsLoaded = null;
     }
 
     public void LoadStage(TextAsset stageData, Scene stageScene)
@@ -79,6 +87,9 @@ public class StageLoadManager : ManagerBase
             return;
         }
 
+        LoadSelectableUnits(loadData.selectableUnits);
+       
+
         //씬에 있는 주요 부모/관리자를 미리 검색하여 등록
         StageManager stageManager = FindStageManager(stageScene);
         if(!stageManager)
@@ -91,9 +102,16 @@ public class StageLoadManager : ManagerBase
             Debug.LogError("[StageLoadManager] StageManager의 컨테이너 참조가 설정되지 않았습니다.");
             return;
         }
+        Transform terrain = stageManager.Floor.Find("Terrain");
+        if (!terrain)
+        {
+            Debug.LogError("[StageLoadManager] Floor 아래에서 Terrain을 찾지 못했습니다.");
+            return;
+        }
         Dictionary<string, Transform> parentContainer = new Dictionary<string, Transform> 
         {
             { "Floor", stageManager.Floor},
+            { "Terrain", terrain },
             { "Probs", stageManager.Probs},
             { "TeamA", stageManager.TeamA},
             { "TeamB", stageManager.TeamB}
@@ -117,12 +135,27 @@ public class StageLoadManager : ManagerBase
             else if (container.Key == "Terrain")
             {
                 Transform crossLine = container.Value.Find("CrossLine");
+                if (crossLine)
+                {
+                    ObjectManager.DestroyObject(crossLine.gameObject);
+                }
             }
         }
 
         //데이터를 기반으로 에셋 폴더 내 프리팹을 검색하여 스폰 및 위치 복구
         foreach (StageObject data in loadData.objects)
         {
+            if(data.name == "Terrain" && data.parentName == "Floor")
+            {
+                Transform existingTerrain = parentContainer["Terrain"];
+                
+                existingTerrain.localPosition = data.position;
+                existingTerrain.localScale = data.scale;
+                existingTerrain.localRotation = data.rotation;
+                
+                continue;
+            }
+
             GameObject spawnObject = ObjectManager.CreateObjectWithoutRegistration(data.prefabName);
             if(!spawnObject)
             {
@@ -221,6 +254,7 @@ public class StageLoadManager : ManagerBase
                 targetModule.SetHostileGroupParents(teamATransform);
             }
         }
+        OnSelectableUnitsLoaded?.Invoke(SelectableUnitPrefabs);
     }
 
     private GameObject FindObjectInScene(Scene scene, string objectName)
@@ -250,7 +284,6 @@ public class StageLoadManager : ManagerBase
         return null;
     }
 
-
     private void SetChildsStaticAndLayer(GameObject obj, bool isStatic, int layer)
     {
         if (obj == null) return;
@@ -263,4 +296,35 @@ public class StageLoadManager : ManagerBase
             SetChildsStaticAndLayer(child.gameObject, isStatic, layer);
         }
     }
+
+    private void LoadSelectableUnits(IReadOnlyList<StageUnitEntry> entries)
+    {
+        selectableUnitPrefabs.Clear();
+        if (entries == null) return;
+
+        HashSet<string> loadedUnitNames = new();
+
+        foreach (StageUnitEntry entry in entries)
+        {
+            if (entry == null || string.IsNullOrWhiteSpace(entry.unitPrefabName))
+            {
+                Debug.LogWarning("[StageLoadManager] selectableUnits에 잘못된 항목이 있습니다.");
+                continue;
+            }
+
+            if (!loadedUnitNames.Add(entry.unitPrefabName))
+            {
+                Debug.LogWarning($"[StageLoadManager] 중복 유닛 '{entry.unitPrefabName}'은 제외합니다.");
+                continue;
+            }
+
+            if (!DataManager.TryLoadDataFile(entry.unitPrefabName, out GameObject unitPrefab))
+            {
+                Debug.LogWarning($"[StageLoadManager] 유닛 프리팹 '{entry.unitPrefabName}'을 찾지 못했습니다.");
+                continue;
+            }
+            selectableUnitPrefabs.Add(unitPrefab);
+        }
+    }
+    
 }

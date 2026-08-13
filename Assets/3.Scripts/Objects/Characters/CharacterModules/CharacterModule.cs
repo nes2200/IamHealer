@@ -15,6 +15,6 @@ public class CharacterModule : MonoBehaviour
     }
     public virtual void OnUnregistration(CharacterBase oldOwner)
     {
-        _owner = oldOwner;
+        _owner = null;
     }
 }

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 874852707419224719}
   - component: {fileID: 3316758184888079845}
   - component: {fileID: 1297463819938771422}
+  - component: {fileID: 1765151521813457838}
   m_Layer: 5
   m_Name: WeaponUnitSelectArea
   m_TagString: Untagged
@@ -107,6 +108,20 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1765151521813457838
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 851718823883334047}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45d1a56fb2b10184dbec81f6ba867b67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_UnitSelectArea
+  buttonPrefab: {fileID: 4752071938508217745, guid: 82327580522dbb949b4670581fc1e242, type: 3}
+  buttonParent: {fileID: 986164264129728844}
 --- !u!1 &3818715030129467586
 GameObject:
   m_ObjectHideFlags: 0
@@ -117,7 +132,6 @@ GameObject:
   m_Component:
   - component: {fileID: 986164264129728844}
   - component: {fileID: 7549036007812758698}
-  - component: {fileID: 663052722275142311}
   m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
@@ -170,19 +184,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &663052722275142311
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3818715030129467586}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45d1a56fb2b10184dbec81f6ba867b67, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UI_UnitSelectArea
-  stageScreen: {fileID: 0}
 --- !u!1 &8357419762830603314
 GameObject:
   m_ObjectHideFlags: 0

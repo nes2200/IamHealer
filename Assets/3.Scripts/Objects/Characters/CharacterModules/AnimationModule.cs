@@ -1,3 +1,4 @@
+using Autodesk.Fbx;
 using UnityEngine;
 
 public class AnimationModule : CharacterModule
@@ -122,6 +123,12 @@ public class AnimationModule : CharacterModule
 
     public bool TryGetNormalizedTime(out float normalizedTime, int layerIndex = 0)
     {
+        if(!anim || !anim.isActiveAndEnabled)
+        {
+            normalizedTime = 0f;
+            return false;
+        }
+
         AnimatorStateInfo stateInfo;
 
         if (anim.IsInTransition(layerIndex))
