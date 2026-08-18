@@ -9,6 +9,8 @@ public delegate void FaintEvent();
 
 public class CharacterBase : MonoBehaviour
 {
+    public event System.Action<CharacterBase> OnCharacterReady;
+    public event System.Action<CharacterBase> OnCharacterRemoved;
     public event MovementEvent  OnMovement;
     public event LookAtEvent    OnLookAt;
     public event DamageEvent    OnDamage;
@@ -28,8 +30,14 @@ public class CharacterBase : MonoBehaviour
     public Vector3 LookRotation => _lookRotation;
 
     //유닛 스테이터스가 담인 스크립터블 오브젝트
+    [Header("Unit Status")]
     [SerializeField] UnitStatus _status;
     public UnitStatus Status => _status;
+
+    [Header("UI Anchors")]
+    [SerializeField] Transform hpBarAnchor;
+    public Transform HPBarAnchor => hpBarAnchor;
+
 
     bool _isAlive = true;
     public bool IsAlive => _isAlive;
@@ -95,12 +103,15 @@ public class CharacterBase : MonoBehaviour
         _controller = from;
         AddAllModuleFromObject(gameObject);
         OnPossessed(Controller);
+        OnCharacterReady?.Invoke(this);
+
         return Controller;
     }
 
     public virtual void OnUnpossessed(ControllerBase oldController) {}
     public void Unpossessed()
     {
+        OnCharacterRemoved?.Invoke(this);
         if(Controller) OnUnpossessed(Controller);
         RemoveAllModule();
         _controller = null;

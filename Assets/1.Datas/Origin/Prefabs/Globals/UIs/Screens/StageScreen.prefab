@@ -463,6 +463,55 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   m_IsOn: 1
+--- !u!1 &2386251390841448125
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1706317405007974579}
+  - component: {fileID: 784913772255004051}
+  m_Layer: 5
+  m_Name: HPBarGroup
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1706317405007974579
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2386251390841448125}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2850758950612327728}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &784913772255004051
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2386251390841448125}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1cbf3f0028ca3a4da0dea071eb77866, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_HPBars
+  hpBarPrefab: {fileID: 2519093345148555123, guid: a45e0aa25525a3d47b93af71eed710fb, type: 3}
 --- !u!1 &2395959802721744356
 GameObject:
   m_ObjectHideFlags: 0
@@ -1396,6 +1445,7 @@ RectTransform:
   - {fileID: 3628432605184826561}
   - {fileID: 6502730823849260078}
   - {fileID: 934958885866455044}
+  - {fileID: 1706317405007974579}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1435,7 +1485,7 @@ MonoBehaviour:
   closeWithScreen: 05000000
   starController: {fileID: 4095887824672729739}
   starPrefab: {fileID: 5357776831520545780, guid: c2ae4760d40ecc14a85d4df0fd4c6484, type: 3}
-  unitSelectArea: {fileID: 3188341460730144471}
+  hpBarGroup: {fileID: 784913772255004051}
 --- !u!1 &7905621148645317202
 GameObject:
   m_ObjectHideFlags: 0
@@ -1993,17 +2043,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &3188341460730144471 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 663052722275142311, guid: d9d2cd646e3f4f540b7985cb057d9396, type: 3}
-  m_PrefabInstance: {fileID: 2669756457530469488}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1293144747982408882}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45d1a56fb2b10184dbec81f6ba867b67, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UI_UnitSelectArea
 --- !u!1 &3376864760061283823 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 851718823883334047, guid: d9d2cd646e3f4f540b7985cb057d9396, type: 3}

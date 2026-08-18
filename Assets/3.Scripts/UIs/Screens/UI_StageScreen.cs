@@ -14,8 +14,8 @@ public class UI_StageScreen : UI_ScreenBase
     [Header("별 프리팹")]
     [SerializeField] GameObject starPrefab;
 
-    [Header("유닛/무기 선택 영역")]
-    [SerializeField] UI_UnitSelectArea unitSelectArea;
+    [Header("HPBar Group")]
+    [SerializeField] UI_HPBarGroup hpBarGroup;
 
     public override void Registration(UIManager manager)
     {
@@ -30,6 +30,9 @@ public class UI_StageScreen : UI_ScreenBase
     public override void Open()
     {
         base.Open();
+
+        hpBarGroup.ClearAllHPBars();
+
         GameManager.Camera.AddCameraController();
         GameManager.ResetBattle();
 
@@ -50,6 +53,8 @@ public class UI_StageScreen : UI_ScreenBase
 
         InputManager.OnCancel -= ToggleMenu;
         StageManager.OnBattleEnd -= OpenBattleResult;
+
+        hpBarGroup.ClearAllHPBars();
     }
 
     public void ToggleMenu(bool value)

@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
@@ -27,6 +28,9 @@ public class CameraController : MonoBehaviour
 
         InputManager.OnMouseWheelScroll -= CameraZoom;
         InputManager.OnMouseWheelScroll += CameraZoom;
+
+        InputManager.OnMouseWheelButton -= CameraZoomReset;
+        InputManager.OnMouseWheelButton += CameraZoomReset;
     }
 
     public void UnsetCameraController()
@@ -41,6 +45,7 @@ public class CameraController : MonoBehaviour
         InputManager.OnMouseRightButton -= CameraRotatingCheck;
         InputManager.OnCameraRotate -= CameraRotate;
         InputManager.OnMouseWheelScroll -= CameraZoom;
+        InputManager.OnMouseWheelButton -= CameraZoomReset;
     }
 
     private void CameraMove(Vector2 direction)
@@ -59,7 +64,10 @@ public class CameraController : MonoBehaviour
     {
         CameraMover.SetZoomDirection(value);
     }
-
+    private void CameraZoomReset(bool value, Vector2 _, Vector3 __)
+    {
+        CameraMover.ResetZoom();
+    }
 }
 
 //스테이지 스크린에 들어가면 카메라 입력을 받아야 한다

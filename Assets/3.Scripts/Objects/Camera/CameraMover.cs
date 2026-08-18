@@ -12,6 +12,8 @@ public class CameraMover : MonoBehaviour
     [SerializeField] float minFov = 20f;
     [SerializeField] float maxFov = 70f;
     [SerializeField] float lerpSpeed = 500f;
+    float mainFov = 40f;
+
 
     Vector2 moveDirection;
     Vector2 rotateDirection;
@@ -94,5 +96,9 @@ public class CameraMover : MonoBehaviour
     public void SetZoomDirection(Vector2 value)
     {
         zoomDirection = value;
+    }
+    public void ResetZoom()
+    {
+        mainCamera.fieldOfView = mainFov;
     }
 }

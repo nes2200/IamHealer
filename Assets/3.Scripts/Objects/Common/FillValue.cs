@@ -24,8 +24,8 @@ public struct FillValue
     public int Max => _max;
     public float Percent => (float)Current / Max;
 
-    public bool IsEmpyt => Current <= Min;
-    public bool IsMax => Current >= Max;
+    public bool IsEmpyt     => Current <= Min;
+    public bool IsMax       => Current >= Max;
     public bool IsUnderZero => Current <= 0;
 
     public FillValue(int current, int max, int min = 0)

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 public struct DamageStruct
@@ -7,8 +6,6 @@ public struct DamageStruct
     public GameObject from;
     public ControllerBase instigator;
     public int damageAmount;
-    //public bool critical;
-    //public ElemantalType damageType;
 }
 public struct RestoreStruct
 {
@@ -22,12 +19,18 @@ public class HitPointModule : CharacterModule
     protected FillValue fill; /*= new FillValue(20, 20);*/
     public override Type RegistrationType => typeof(HitPointModule);
 
-    public int Max => fill.Max;
-    public int Min => fill.Min;
+    public int HPMax => fill.Max;
+    public int HPMin => fill.Min;
+    public float HPPercent => fill.Percent;
     public bool IsFullHealth => fill.IsMax;
-    public bool IsEmpty => fill.IsEmpyt;
+    public bool IsHPEmpty => fill.IsEmpyt;
 
-    AttackModule atkModule;
+    //이벤트 중계자
+    public event FillValueChangeEvent OnHPChanged
+    {
+        add => fill.OnChanged += value;
+        remove => fill.OnChanged -= value;
+    }
 
     public override void OnRegistration(CharacterBase newOwner)
     {
@@ -35,7 +38,6 @@ public class HitPointModule : CharacterModule
         SetFillValue(Owner.Status);
         fill.OnChanged -= FaintCheck;
         fill.OnChanged += FaintCheck;
-        atkModule = Owner.GetModule<AttackModule>();
     }
     public override void OnUnregistration(CharacterBase oldOwner)
     {
@@ -64,7 +66,7 @@ public class HitPointModule : CharacterModule
 
     public void FaintCheck()
     {
-        if(IsEmpty)
+        if(IsHPEmpty)
         {
             Owner.SetAlive(false);
             Owner.FaintNotify();

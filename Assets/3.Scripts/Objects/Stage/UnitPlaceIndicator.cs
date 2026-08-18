@@ -45,11 +45,11 @@ public class UnitPlaceIndicator : MonoBehaviour
         UI_StageScreen.OnMenuClose -= UpdateIndicatorStatusByMenuClose;
         UI_StageScreen.OnMenuClose += UpdateIndicatorStatusByMenuClose;
 
-        placementManager.OnUnitSpawn -= OnUnitSpawned;
-        placementManager.OnUnitSpawn += OnUnitSpawned;
+        PlacementManager.OnUnitSpawn -= OnUnitSpawned;
+        PlacementManager.OnUnitSpawn += OnUnitSpawned;
 
-        placementManager.OnUnitDespawn -= OnUnitDespawned;
-        placementManager.OnUnitDespawn += OnUnitDespawned;
+        PlacementManager.OnUnitDespawn -= OnUnitDespawned;
+        PlacementManager.OnUnitDespawn += OnUnitDespawned;
 
 
         indicatorMat.SetColor(tintColorPorpertyID, Color.gray);
@@ -63,8 +63,8 @@ public class UnitPlaceIndicator : MonoBehaviour
         StageManager.OnBattleStart -= DisableIndicator;
         UI_StageScreen.OnMenuOpen -= UpdateIndicatorStatusByMenuOpen;
         UI_StageScreen.OnMenuClose -= UpdateIndicatorStatusByMenuClose;
-        placementManager.OnUnitSpawn -= OnUnitSpawned;
-        placementManager.OnUnitDespawn -= OnUnitDespawned;
+        PlacementManager.OnUnitSpawn -= OnUnitSpawned;
+        PlacementManager.OnUnitDespawn -= OnUnitDespawned;
     }
 
     void MoveToMouse(Vector2 screenPosition, Vector3 worldPosition)
@@ -159,12 +159,12 @@ public class UnitPlaceIndicator : MonoBehaviour
         MoveToMouse(InputManager.CursorScreenPosition, InputManager.CursorWorldPosition);
     }
 
-    public void OnUnitSpawned()
+    public void OnUnitSpawned(CharacterBase _)
     {
         _canSpawn = false;
         UpdateIndicatorColor(false);
     }
-    public void OnUnitDespawned()
+    public void OnUnitDespawned(CharacterBase _)
     {
         StartCoroutine(CoRefreshAfterDespawn());
     }

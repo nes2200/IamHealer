@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public delegate void UnitSpawnEvent();
+public delegate void UnitSpawnEvent(CharacterBase targetUnit);
 
 public class PlacementManager : MonoBehaviour
 {
@@ -17,8 +17,8 @@ public class PlacementManager : MonoBehaviour
     [Header("Indicator")]
     [SerializeField] UnitPlaceIndicator indicator;
 
-    public event UnitSpawnEvent OnUnitSpawn;
-    public event UnitSpawnEvent OnUnitDespawn;
+    public static event UnitSpawnEvent OnUnitSpawn;
+    public static event UnitSpawnEvent OnUnitDespawn;
 
     private void OnEnable()
     {
@@ -44,8 +44,8 @@ public class PlacementManager : MonoBehaviour
         //게임이 멈춰있다면 생성 안함
         if (!GameManager.Instance.IsPlaying) return;
 
-        //마우스 뗄떼는 유닛 생성 안함
-        if (!value) return;
+        //마우스 누를때는 유닛 생성 안함
+        if (value) return;
 
         //준비 상태 아니라면 소환 안하기
         if (stageManager.CurrentState != StageState.Ready) return;
@@ -90,7 +90,7 @@ public class PlacementManager : MonoBehaviour
                 int unitCost = targetCharacter.Status.cost;
                 stageManager.CostIncreasByUnitSpawn(unitCost);
             }
-            OnUnitSpawn?.Invoke();
+            OnUnitSpawn?.Invoke(targetCharacter);
         }
     }
 
@@ -115,9 +115,9 @@ public class PlacementManager : MonoBehaviour
         {
             int unitCost = targetCharacter.Status.cost;
             stageManager.CostDecreaseByUnitDespawn(unitCost);
+            OnUnitDespawn?.Invoke(targetCharacter);
             ObjectManager.DestroyObject(mouseOverObj);
         }
-        OnUnitDespawn?.Invoke();
     }
 
     //유닛 선택 버튼 클릭시 해당 유닛 정보를 받아오는 기능
