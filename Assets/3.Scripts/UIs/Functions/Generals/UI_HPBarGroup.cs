@@ -5,19 +5,37 @@ public class UI_HPBarGroup : MonoBehaviour
 {
     [SerializeField] GameObject hpBarPrefab;
     Dictionary<CharacterBase, UI_HPBar> hpBars = new();
+    StageCharacterRegistry connectedRegistry;
 
-    private void OnEnable()
+    public void Connect(StageCharacterRegistry registry)
     {
-        PlacementManager.OnUnitSpawn -= CreateHPBar;
-        PlacementManager.OnUnitSpawn += CreateHPBar;
+        if (connectedRegistry == registry) return;
 
-        PlacementManager.OnUnitDespawn -= RemoveHPBar;
-        PlacementManager.OnUnitDespawn += RemoveHPBar;
+        Disconnect();
+        ClearAllHPBars();
+
+        connectedRegistry = registry;
+        if (!connectedRegistry) return;
+
+        connectedRegistry.OnCharacterAdded -= CreateHPBar;
+        connectedRegistry.OnCharacterAdded += CreateHPBar;
+
+        connectedRegistry.OnCharacterRemoved -= RemoveHPBar;
+        connectedRegistry.OnCharacterRemoved += RemoveHPBar;
+
+        foreach(CharacterBase character in connectedRegistry.Characters)
+        {
+            CreateHPBar(character);
+        }
     }
-    private void OnDisable()
+    
+    public void Disconnect()
     {
-        PlacementManager.OnUnitSpawn -= CreateHPBar;
-        PlacementManager.OnUnitDespawn -= RemoveHPBar;
+        if (!connectedRegistry) return;
+
+        connectedRegistry.OnCharacterAdded -= CreateHPBar;
+        connectedRegistry.OnCharacterRemoved -= RemoveHPBar;
+        connectedRegistry = null;
     }
 
     public void CreateHPBar(CharacterBase connectedCharacter)
@@ -42,7 +60,7 @@ public class UI_HPBarGroup : MonoBehaviour
     {
         foreach(UI_HPBar hpBar in hpBars.Values)
         {
-            if (!hpBar) return;
+            if (!hpBar) continue;
 
             hpBar.Remove();
             ObjectManager.DestroyObject(hpBar.gameObject);

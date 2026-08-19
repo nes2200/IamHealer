@@ -19,8 +19,8 @@ public class UI_HPBar : MonoBehaviour
         mainCamera = GameManager.Camera.MainCamera;
         UpdateScreenPosition(0f);
 
-        GameManager.OnUpdateCharacter -= UpdateScreenPosition;
-        GameManager.OnUpdateCharacter += UpdateScreenPosition;
+        GameManager.OnUpdateUI -= UpdateScreenPosition;
+        GameManager.OnUpdateUI += UpdateScreenPosition;
 
         hpModule.OnHPChanged -= ChangeSlider;
         hpModule.OnHPChanged += ChangeSlider;
@@ -28,7 +28,7 @@ public class UI_HPBar : MonoBehaviour
     }
     public void Remove()
     {
-        GameManager.OnUpdateCharacter -= UpdateScreenPosition;
+        GameManager.OnUpdateUI -= UpdateScreenPosition;
         if (hpModule) hpModule.OnHPChanged -= ChangeSlider;
 
         owner = null;

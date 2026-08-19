@@ -22,6 +22,7 @@ public class StageManager : MonoBehaviour
     public StageState CurrentState => _currentState;
 
     [Header("Stage Components")]
+    [SerializeField] StageCharacterRegistry characterRegistry;
     [SerializeField] PlacementManager placementManager;
     [SerializeField] CostTracker costTracker;
 
@@ -36,6 +37,8 @@ public class StageManager : MonoBehaviour
     public Transform Probs => probs;
     public Transform TeamA => teamA;
     public Transform TeamB => teamB;
+
+    public StageCharacterRegistry CharacterRegistry => characterRegistry;
 
 
     //스테이지 상태 변경
@@ -87,13 +90,4 @@ public class StageManager : MonoBehaviour
     {
         return costTracker.IsCostEnoughToSpawn(unitCost);
     }
-
-    //TeamA -> 플레이어
-    //TeamB -> 컴퓨터
-    //둘 다 동일한 TeamElimnateNotifier를 가지고 있음
-    //그렇다면, 플레이어와 컴퓨터가 보내는 '우리 전멸했어' 신호를 어떻게 구분하는가?
-
-
-   
-
 }

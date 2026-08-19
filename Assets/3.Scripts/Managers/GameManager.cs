@@ -325,7 +325,6 @@ public class GameManager : MonoBehaviour
                 OnUpdateCharacter?.Invoke(deltaTime);
                 //오브젝트를 업데이트
                 OnUpdateObject?.Invoke(deltaTime);   
-                
             }
         }
         //이 두개만 뺀 이유

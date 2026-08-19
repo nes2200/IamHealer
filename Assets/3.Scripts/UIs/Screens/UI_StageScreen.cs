@@ -20,18 +20,22 @@ public class UI_StageScreen : UI_ScreenBase
     public override void Registration(UIManager manager)
     {
         base.Registration(manager);
+        GameManager.StageLoad.OnStageLoaded -= ConnectStage;
+        GameManager.StageLoad.OnStageLoaded += ConnectStage;
     }
 
     public override void Unregistration(UIManager manager)
     {
         base.Unregistration(manager);
+        GameManager.StageLoad.OnStageLoaded -= ConnectStage;
+
+        hpBarGroup.Disconnect();
+        hpBarGroup.ClearAllHPBars();
     }
 
     public override void Open()
     {
         base.Open();
-
-        hpBarGroup.ClearAllHPBars();
 
         GameManager.Camera.AddCameraController();
         GameManager.ResetBattle();
@@ -41,9 +45,6 @@ public class UI_StageScreen : UI_ScreenBase
 
         StageManager.OnBattleEnd -= OpenBattleResult;
         StageManager.OnBattleEnd += OpenBattleResult;
-
-        stageManager = GameObject.Find("StageManager").GetComponent<StageManager>();
-        SetCostLimitText(stageManager.GetCostLimits());
     }
     public override void Close()
     {
@@ -90,5 +91,12 @@ public class UI_StageScreen : UI_ScreenBase
         UI_BattleResultWindow resultWindow = instance as UI_BattleResultWindow;
 
         resultWindow.SetResult(isPlayerLoose, starController.GetStageResult());
+    }
+
+    private void ConnectStage(StageManager newStageManager)
+    {
+        stageManager = newStageManager;
+        hpBarGroup.Connect(stageManager.CharacterRegistry);
+        SetCostLimitText(stageManager.GetCostLimits());
     }
 }

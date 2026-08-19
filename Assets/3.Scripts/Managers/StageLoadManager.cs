@@ -12,6 +12,7 @@ public class StageLoadManager : ManagerBase
 {
     //내 유닛 로드시 StageScreen에서 버튼 생성하도록 명령 내리기
     public event Action<IReadOnlyList<GameObject>> OnSelectableUnitsLoaded;
+    public event Action<StageManager> OnStageLoaded;
 
     private readonly List<GameObject> selectableUnitPrefabs = new();
     public IReadOnlyList<GameObject> SelectableUnitPrefabs => selectableUnitPrefabs;
@@ -188,6 +189,11 @@ public class StageLoadManager : ManagerBase
 
             ObjectManager.RegistrationObject(spawnObject);
             
+            if(spawnObject.TryGetComponent<CharacterBase>(out CharacterBase character))
+            {
+                stageManager.CharacterRegistry.Register(character);
+            }
+            
         }
 
         //Probs 폴더에서 자식들 세팅하기
@@ -255,6 +261,7 @@ public class StageLoadManager : ManagerBase
             }
         }
         OnSelectableUnitsLoaded?.Invoke(SelectableUnitPrefabs);
+        OnStageLoaded?.Invoke(stageManager);
     }
 
     private GameObject FindObjectInScene(Scene scene, string objectName)

@@ -87,6 +87,8 @@ public class PlacementManager : MonoBehaviour
             CharacterBase targetCharacter = newUnit.GetComponent<CharacterBase>();
             if (targetCharacter)
             {
+                stageManager.CharacterRegistry.Register(targetCharacter);
+
                 int unitCost = targetCharacter.Status.cost;
                 stageManager.CostIncreasByUnitSpawn(unitCost);
             }
@@ -116,6 +118,7 @@ public class PlacementManager : MonoBehaviour
             int unitCost = targetCharacter.Status.cost;
             stageManager.CostDecreaseByUnitDespawn(unitCost);
             OnUnitDespawn?.Invoke(targetCharacter);
+            stageManager.CharacterRegistry.Unregister(targetCharacter);
             ObjectManager.DestroyObject(mouseOverObj);
         }
     }

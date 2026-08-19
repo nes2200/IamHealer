@@ -44,7 +44,7 @@ public class TeamEliminateNotifier : MonoBehaviour
     //내 팀 유닛들이 전부 죽었는지 체크
     public void TeamEliminateCheck()
     {
-        for(int i = 0; i < teamCharacters.Count - 1; i++)
+        for(int i = 0; i < teamCharacters.Count; i++)
         {
             if (teamCharacters[i].IsAlive) return;
         }

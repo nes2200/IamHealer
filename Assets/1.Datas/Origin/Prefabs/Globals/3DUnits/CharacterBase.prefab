@@ -1,36 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &6126481925229845381
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5347703922549319849}
-  m_Layer: 7
-  m_Name: HPBarAnchor
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &5347703922549319849
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6126481925229845381}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 7483986782168271495}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2083942869012640733
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -47,10 +16,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: CharacterBase
       objectReference: {fileID: 0}
-    - target: {fileID: 8563346422020298631, guid: 735c578458551124d932d8c8d7ee2416, type: 3}
-      propertyPath: hpBarAnchor
-      value: 
-      objectReference: {fileID: 5347703922549319849}
     - target: {fileID: 8878794627829676378, guid: 735c578458551124d932d8c8d7ee2416, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.58013
@@ -93,20 +58,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 8878794627829676378, guid: 735c578458551124d932d8c8d7ee2416, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5347703922549319849}
+    m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8105353431706723296, guid: 735c578458551124d932d8c8d7ee2416, type: 3}
       insertIndex: -1
       addedObject: {fileID: 353491530870218635}
   m_SourcePrefab: {fileID: 100100000, guid: 735c578458551124d932d8c8d7ee2416, type: 3}
---- !u!4 &7483986782168271495 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8878794627829676378, guid: 735c578458551124d932d8c8d7ee2416, type: 3}
-  m_PrefabInstance: {fileID: 2083942869012640733}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &7824906491934773309 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8105353431706723296, guid: 735c578458551124d932d8c8d7ee2416, type: 3}
