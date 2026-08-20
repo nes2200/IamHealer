@@ -27,26 +27,27 @@ public class InputManager : ManagerBase
 {
     //그냥 대리자는 누구나 등록하고 시전할 수 있지만
     //event 대리자는 누구나 등록하고 나만 시전할 수 있음
-    public static event MouseButtonEvent OnMouseLeftButton;
-    public static event MouseButtonEvent OnMouseRightButton;
-    public static event MouseButtonEvent OnMouseWheelButton;
+    public static event MouseButtonEvent    OnMouseLeftButton;
+    public static event MouseButtonEvent    OnMouseRightButton;
+    public static event MouseButtonEvent    OnMouseWheelButton;
 
-    public static event MouseMoveEvent   OnMouseMove;
-    public static event MouseHoverEvent  OnMouseHover;
+    public static event MouseMoveEvent      OnMouseMove;
+    public static event MouseHoverEvent     OnMouseHover;
 
-    public static event MouseWheelEvent  OnMouseWheelScroll;
+    public static event MouseWheelEvent     OnMouseWheelScroll;
 
-    public static event ButtonEvent      OnCancel;
-    public static event ButtonEvent      OnShowStatus;
+    public static event ButtonEvent         OnCancel;
+    public static event ButtonEvent         OnHPBarToggle;
+    public static event ButtonEvent         OnShowStatus;
 
-    public static event VectorEvent      OnMove;
-    public static event VectorEvent      OnRotate;
-    public static event VectorEvent      OnCameraMove;
-    public static event VectorEvent      OnCameraRotate;
+    public static event VectorEvent         OnMove;
+    public static event VectorEvent         OnRotate;
+    public static event VectorEvent         OnCameraMove;
+    public static event VectorEvent         OnCameraRotate;
 
     public static event Action           OnAnyKey;
 
-    public static event ButtonEvent OnShift;
+    public static event ButtonEvent     OnShift;
     public static bool IsShift { get; private set; } = false;
     void ShiftInput(bool value)
     {
@@ -203,6 +204,9 @@ public class InputManager : ManagerBase
                                                   
         InitializeAction("ShowStatusButton"     , (context) => OnShowStatus      ?.Invoke(true)
                                                 , (context) => OnShowStatus      ?.Invoke(false));
+
+        InitializeAction("HPBarToggle"          , (context) => OnHPBarToggle     ?.Invoke(true)
+                                                , (context) => OnHPBarToggle     ?.Invoke(false));
 
         InitializeAction("MouseWheelScroll"     , (context) => OnMouseWheelScroll?.Invoke(GetVector2Value(context))
                                                 , (context) => OnMouseWheelScroll?.Invoke(Vector2.zero));

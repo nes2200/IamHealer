@@ -15,5 +15,6 @@ public class UI_Button_BattleStart : MonoBehaviour
         {
             stage.StartBattle();
         }
+        gameObject.SetActive(false);
     }
 }

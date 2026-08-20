@@ -5,17 +5,17 @@ public class UI_StageScreen : UI_ScreenBase
     public static event System.Action OnMenuOpen;
     public static event System.Action OnMenuClose;
 
-
     StageManager stageManager;
 
-    [Header("별 그룹")]
+    [Header("Star")]
     [SerializeField] UI_CostStarController starController;
-
-    [Header("별 프리팹")]
     [SerializeField] GameObject starPrefab;
 
     [Header("HPBar Group")]
     [SerializeField] UI_HPBarGroup hpBarGroup;
+
+    [Header("Components")]
+    [SerializeField] GameObject startButton;
 
     public override void Registration(UIManager manager)
     {
@@ -45,6 +45,8 @@ public class UI_StageScreen : UI_ScreenBase
 
         StageManager.OnBattleEnd -= OpenBattleResult;
         StageManager.OnBattleEnd += OpenBattleResult;
+
+        startButton.SetActive(true);
     }
     public override void Close()
     {

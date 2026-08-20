@@ -191,7 +191,13 @@ public class StageLoadManager : ManagerBase
             
             if(spawnObject.TryGetComponent<CharacterBase>(out CharacterBase character))
             {
-                stageManager.CharacterRegistry.Register(character);
+                TeamID team = data.parentName switch
+                {
+                    "TeamA" => TeamID.TeamA,
+                    "TeamB" => TeamID.TeamB,
+                    _ => TeamID.None
+                };
+                stageManager.CharacterRegistry.Register(character, team);
             }
             
         }

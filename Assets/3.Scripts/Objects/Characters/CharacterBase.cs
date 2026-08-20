@@ -7,6 +7,11 @@ public delegate void DamageEvent    (in DamageStruct info);
 public delegate void RestoreEvent   (in RestoreStruct info);
 public delegate void FaintEvent();
 
+public enum TeamID
+{
+    None, TeamA, TeamB
+}
+
 public class CharacterBase : MonoBehaviour
 {
     public event System.Action<CharacterBase> OnCharacterReady;
@@ -41,6 +46,10 @@ public class CharacterBase : MonoBehaviour
 
     bool _isAlive = true;
     public bool IsAlive => _isAlive;
+
+    //ÆÀ ±¸ºÐ¿ë
+    TeamID _team;
+    public TeamID Team => _team;
 
     public virtual string DisplayName => Status.unitName;
 
@@ -127,5 +136,10 @@ public class CharacterBase : MonoBehaviour
     public void SetAlive(bool value)
     {
         _isAlive = value;
+    }
+
+    public void SetTeam(TeamID newTeam)
+    {
+        _team = newTeam;
     }
 }

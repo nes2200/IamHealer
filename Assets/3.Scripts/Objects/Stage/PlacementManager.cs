@@ -87,7 +87,7 @@ public class PlacementManager : MonoBehaviour
             CharacterBase targetCharacter = newUnit.GetComponent<CharacterBase>();
             if (targetCharacter)
             {
-                stageManager.CharacterRegistry.Register(targetCharacter);
+                stageManager.CharacterRegistry.Register(targetCharacter, TeamID.TeamA);
 
                 int unitCost = targetCharacter.Status.cost;
                 stageManager.CostIncreasByUnitSpawn(unitCost);

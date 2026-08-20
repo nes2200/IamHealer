@@ -66,10 +66,9 @@ public class HitPointModule : CharacterModule
 
     public void FaintCheck()
     {
-        if(IsHPEmpty)
-        {
-            Owner.SetAlive(false);
-            Owner.FaintNotify();
-        }
+        if (!IsHPEmpty || !Owner.IsAlive) return;
+      
+        Owner.SetAlive(false);
+        Owner.FaintNotify();
     }
 }

@@ -10,9 +10,11 @@ public class StageCharacterRegistry : MonoBehaviour
     readonly List<CharacterBase> characters = new();
     public IReadOnlyList<CharacterBase> Characters => characters;
 
-    public void Register(CharacterBase character)
+    public void Register(CharacterBase character, TeamID team)
     {
         if (!character || characters.Contains(character)) return;
+
+        character.SetTeam(team);
 
         characters.Add(character);
         OnCharacterAdded?.Invoke(character);

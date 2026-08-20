@@ -3,6 +3,11 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Rendering.Universal;
 
+public enum UnitPlacementMode
+{
+    Place, Remove
+}
+
 public class UnitPlaceIndicator : MonoBehaviour
 {
     [Header("Settings")]
@@ -17,6 +22,11 @@ public class UnitPlaceIndicator : MonoBehaviour
     [SerializeField] Material indicatorMat;
     [SerializeField] DecalProjector decal;
     [SerializeField] BoxCollider indicatorCollider;
+    [SerializeField] UnitPlacementMode currentMode = UnitPlacementMode.Place;
+
+    //현재 유닛 설치모드인가 제거모드인가
+    public UnitPlacementMode CurrentMode => currentMode;
+    public bool IsRemoveMode => currentMode == UnitPlacementMode.Remove;
 
     Camera mainCam;
 
@@ -87,6 +97,15 @@ public class UnitPlaceIndicator : MonoBehaviour
 
     void UpdateIndicatorStatus(Vector2 screenPosition)
     {
+        switch (currentMode)
+        {
+            case UnitPlacementMode.Place:
+                UpdatePlaceIndicator(screenPosition);
+                break;
+        }
+    }
+    void UpdatePlaceIndicator(Vector2 screenPosition)
+    {
         Ray ray = mainCam.ScreenPointToRay(screenPosition);
 
         if (Physics.Raycast(ray, out RaycastHit hit, 1000f, floorLayer))
@@ -101,6 +120,27 @@ public class UnitPlaceIndicator : MonoBehaviour
         {
             SetIndicatorActive(false);
         }
+    }
+    void UpdateRemoveIndicator()
+    {
+        GameObject target = InputManager.CursorHoverObject;
+
+        if(!target || target.layer != LayerMask.NameToLayer("Character"))
+        {
+            SetIndicatorActive(false);
+            return;
+        }
+        CharacterBase character = target.GetComponent<CharacterBase>();
+        if(!character)
+        {
+            SetIndicatorActive(false);
+            return;
+        }
+
+        SetIndicatorActive(true);
+        transform.position = character.transform.position + Vector3.up * heightOffset;
+
+        UpdateIndicatorColor(false);
     }
 
     void CheckSpawnable(Vector3 floorPosition)
@@ -151,6 +191,19 @@ public class UnitPlaceIndicator : MonoBehaviour
         Collider[] hitColliders = Physics.OverlapBox(center, halfExtents, orientation, unitLayer);
 
         return hitColliders.Length == 0;
+    }
+
+    //설치 제거 토글
+    public void ToggleMode()
+    {
+        SetMode(CurrentMode == UnitPlacementMode.Place ? UnitPlacementMode.Remove : UnitPlacementMode.Place);
+    }
+    public void SetMode(UnitPlacementMode newMode)
+    {
+        currentMode = newMode;
+
+        _canSpawn = false;
+        RefreshIndicatorStatus();
     }
 
     //마우스 이동 업데이트가 멈췄을 경우 인디케이터 상태 강제 리프레시 해주기
@@ -217,6 +270,7 @@ public class UnitPlaceIndicator : MonoBehaviour
         UnitStatus status = selectedObject.GetComponent<CharacterBase>().Status;
         if (!status) return;
 
+        currentMode = UnitPlacementMode.Place;
         selected = true;
         size = status.colliderRadius;
 
