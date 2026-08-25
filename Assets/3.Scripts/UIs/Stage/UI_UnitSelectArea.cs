@@ -3,9 +3,11 @@ using UnityEngine;
 
 public class UI_UnitSelectArea : MonoBehaviour
 {
-    [Header("버튼생성기")]
+    [Header("Unit Button")]
     [SerializeField] UI_Button_UnitSelect buttonPrefab;
     [SerializeField] Transform buttonParent;
+
+    [SerializeField] GameObject contentRoot;
 
     readonly List<UI_Button_UnitSelect> createdButtons = new();
 
@@ -47,7 +49,11 @@ public class UI_UnitSelectArea : MonoBehaviour
                 Destroy(button.gameObject);
             }
         }
-
         createdButtons.Clear();
+    }
+
+    public void SetVisible(bool value)
+    {
+        contentRoot.SetActive(value);
     }
 }

@@ -39,6 +39,7 @@ public class StageManager : MonoBehaviour
     public Transform TeamB => teamB;
 
     public StageCharacterRegistry CharacterRegistry => characterRegistry;
+    public UnitPlaceIndicator Indicator => placementManager.Indicator;
 
 
     //스테이지 상태 변경

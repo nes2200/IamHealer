@@ -16,27 +16,39 @@ public class PlacementManager : MonoBehaviour
 
     [Header("Indicator")]
     [SerializeField] UnitPlaceIndicator indicator;
+    public UnitPlaceIndicator Indicator => indicator;
 
     public static event UnitSpawnEvent OnUnitSpawn;
     public static event UnitSpawnEvent OnUnitDespawn;
 
     private void OnEnable()
     {
-        InputManager.OnMouseLeftButton -= TryUnitSpawn;
-        InputManager.OnMouseLeftButton += TryUnitSpawn;
-
-        InputManager.OnMouseRightButton -= TryUnitDespawn;
-        InputManager.OnMouseRightButton += TryUnitDespawn;
+        InputManager.OnMouseLeftButton -= HandlePlacementClick;
+        InputManager.OnMouseLeftButton += HandlePlacementClick;
 
         InputManager.OnUnitSelect -= ChangeCurrentSelectedUnit;
         InputManager.OnUnitSelect += ChangeCurrentSelectedUnit;
     }
     private void OnDisable()
     {
-        InputManager.OnMouseLeftButton -= TryUnitSpawn;
-        InputManager.OnMouseRightButton -= TryUnitDespawn;
+        InputManager.OnMouseLeftButton -= HandlePlacementClick;
         InputManager.OnUnitSelect -= ChangeCurrentSelectedUnit;
+    }
 
+    private void HandlePlacementClick(bool value, Vector2 screenPosition, Vector3 worldPosition)
+    {
+        if (value) return;
+        if (GameManager.Input.IsMouseOverUI) return;
+
+        switch (indicator.CurrentMode)
+        {
+            case UnitPlacementMode.Place:
+                TryUnitSpawn(value, screenPosition, worldPosition);
+                break;
+            case UnitPlacementMode.Remove:
+                TryUnitDespawn(value, screenPosition, worldPosition);
+                break;
+        }
     }
 
     private void TryUnitSpawn(bool value, Vector2 screenPosition, Vector3 worldPosition)
@@ -44,8 +56,8 @@ public class PlacementManager : MonoBehaviour
         //게임이 멈춰있다면 생성 안함
         if (!GameManager.Instance.IsPlaying) return;
 
-        //마우스 누를때는 유닛 생성 안함
-        if (value) return;
+        ////마우스 누를때는 유닛 생성 안함
+        //if (value) return;
 
         //준비 상태 아니라면 소환 안하기
         if (stageManager.CurrentState != StageState.Ready) return;
@@ -102,7 +114,7 @@ public class PlacementManager : MonoBehaviour
 
         if (!indicator.isActiveAndEnabled) return;
 
-        if (!value) return;
+        if (value) return;
 
         if (worldPosition.x > 0) return;
 
@@ -134,5 +146,5 @@ public class PlacementManager : MonoBehaviour
     {
         return stageManager.IsCostEnoughToSpawn(unitCost);
     }
-
+    
 }

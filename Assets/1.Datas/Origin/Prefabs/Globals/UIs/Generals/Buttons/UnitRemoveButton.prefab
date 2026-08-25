@@ -149,8 +149,9 @@ GameObject:
   - component: {fileID: 4215271866479745088}
   - component: {fileID: 7220386194797699444}
   - component: {fileID: 8298506766361935573}
+  - component: {fileID: 71577200573362269}
   m_Layer: 5
-  m_Name: UnitDeleteButton
+  m_Name: UnitRemoveButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -257,4 +258,28 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7220386194797699444}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 71577200573362269}
+        m_TargetAssemblyTypeName: UI_Button_UnitRemove, Assembly-CSharp
+        m_MethodName: ToggleRemoveMode
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &71577200573362269
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9080047038915645780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39590e462521f124aa2e9450a5b93cc2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_Button_UnitRemove

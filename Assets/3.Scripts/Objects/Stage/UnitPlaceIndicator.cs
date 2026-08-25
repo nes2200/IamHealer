@@ -102,6 +102,9 @@ public class UnitPlaceIndicator : MonoBehaviour
             case UnitPlacementMode.Place:
                 UpdatePlaceIndicator(screenPosition);
                 break;
+            case UnitPlacementMode.Remove:
+                UpdateRemoveIndicator(screenPosition);
+                break;
         }
     }
     void UpdatePlaceIndicator(Vector2 screenPosition)
@@ -121,7 +124,7 @@ public class UnitPlaceIndicator : MonoBehaviour
             SetIndicatorActive(false);
         }
     }
-    void UpdateRemoveIndicator()
+    void UpdateRemoveIndicator(Vector2 screenPosition)
     {
         GameObject target = InputManager.CursorHoverObject;
 
@@ -131,7 +134,7 @@ public class UnitPlaceIndicator : MonoBehaviour
             return;
         }
         CharacterBase character = target.GetComponent<CharacterBase>();
-        if(!character)
+        if (!character || character.Team == TeamID.TeamB)
         {
             SetIndicatorActive(false);
             return;
@@ -270,7 +273,7 @@ public class UnitPlaceIndicator : MonoBehaviour
         UnitStatus status = selectedObject.GetComponent<CharacterBase>().Status;
         if (!status) return;
 
-        currentMode = UnitPlacementMode.Place;
+        SetMode(UnitPlacementMode.Place);
         selected = true;
         size = status.colliderRadius;
 

@@ -16,6 +16,8 @@ public class UI_StageScreen : UI_ScreenBase
 
     [Header("Components")]
     [SerializeField] GameObject startButton;
+    [SerializeField] CanvasGroup SelectArea;
+    [SerializeField] UI_Button_UnitRemove unitRemoveButton;
 
     public override void Registration(UIManager manager)
     {
@@ -31,6 +33,7 @@ public class UI_StageScreen : UI_ScreenBase
 
         hpBarGroup.Disconnect();
         hpBarGroup.ClearAllHPBars();
+        unitRemoveButton.Disconnect();
     }
 
     public override void Open()
@@ -43,10 +46,15 @@ public class UI_StageScreen : UI_ScreenBase
         InputManager.OnCancel -= ToggleMenu;
         InputManager.OnCancel += ToggleMenu;
 
+        StageManager.OnBattleStart -= HidePreparationUI;
+        StageManager.OnBattleStart += HidePreparationUI;
+
         StageManager.OnBattleEnd -= OpenBattleResult;
         StageManager.OnBattleEnd += OpenBattleResult;
 
+
         startButton.SetActive(true);
+        
     }
     public override void Close()
     {
@@ -55,9 +63,11 @@ public class UI_StageScreen : UI_ScreenBase
         GameManager.ResetBattle();
 
         InputManager.OnCancel -= ToggleMenu;
+        StageManager.OnBattleStart -= HidePreparationUI;
         StageManager.OnBattleEnd -= OpenBattleResult;
 
         hpBarGroup.ClearAllHPBars();
+        unitRemoveButton.Disconnect();
     }
 
     public void ToggleMenu(bool value)
@@ -98,7 +108,27 @@ public class UI_StageScreen : UI_ScreenBase
     private void ConnectStage(StageManager newStageManager)
     {
         stageManager = newStageManager;
+
         hpBarGroup.Connect(stageManager.CharacterRegistry);
         SetCostLimitText(stageManager.GetCostLimits());
+        unitRemoveButton.Connect(newStageManager.Indicator);
+
+        startButton.SetActive(true);
+        SetSelectAreaVisible(true);
+
+    }
+
+    public void HidePreparationUI()
+    {
+        startButton.SetActive(false);
+        SetSelectAreaVisible(false);
+    }
+
+
+    private void SetSelectAreaVisible(bool visible)
+    {
+        SelectArea.alpha = visible ? 1f : 0f;
+        SelectArea.interactable = visible;
+        SelectArea.blocksRaycasts = visible;
     }
 }
