@@ -99,6 +99,13 @@ public class ObjectManager : ManagerBase
 
         return result;
     }
+    public static GameObject CreateObjectWithoutRegistration(GameObject prefab, Transform parent = null)
+    {
+        if (prefab == null) return null;
+
+        GameObject result = Instantiate(prefab, parent);
+        return result;
+    }
 
     public static GameObject CreateObject(string wantName, Vector3 position)
     {
@@ -355,7 +362,7 @@ public class ObjectManager : ManagerBase
         PoolRequest currentRequest = DataManager.LoadDataFile<PoolRequest>(poolName);
         if (currentRequest == null) return;
         if (currentRequest.settings == null) return;
-        loadedPoolRequests.Add(currentRequest);
+        loadedPoolRequests.Add(currentRequest); 
         //애들마다 하나씩
         //         학생         다음학생    in     3학년4반
         foreach(PoolSetting currentSetting in currentRequest.settings)
