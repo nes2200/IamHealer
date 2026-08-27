@@ -267,10 +267,10 @@ public class UnitPlaceIndicator : MonoBehaviour
         }
     }
 
-    void ChangeCurrentSelectedUnit(GameObject selectedObject, int objectCost)
+    void ChangeCurrentSelectedUnit(UnitDefinition selectedUnitDefinition)
     {
-        if (!selectedObject) return;
-        UnitStatus status = selectedObject.GetComponent<CharacterBase>().Status;
+        if (!selectedUnitDefinition) return;
+        UnitStatus status = selectedUnitDefinition.Status;
         if (!status) return;
 
         SetMode(UnitPlacementMode.Place);

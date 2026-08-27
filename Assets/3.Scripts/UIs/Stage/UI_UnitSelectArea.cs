@@ -16,7 +16,7 @@ public class UI_UnitSelectArea : MonoBehaviour
         if (GameManager.StageLoad == null) return;
         GameManager.StageLoad.OnSelectableUnitsLoaded -= RebuildButtons;
         GameManager.StageLoad.OnSelectableUnitsLoaded += RebuildButtons;
-        RebuildButtons(GameManager.StageLoad.SelectableUnitPrefabs);
+        RebuildButtons(GameManager.StageLoad.SelectableUnitDefinitions);
     }
 
     private void OnDisable()
@@ -24,18 +24,18 @@ public class UI_UnitSelectArea : MonoBehaviour
         GameManager.StageLoad.OnSelectableUnitsLoaded -= RebuildButtons;
     }
 
-    public void RebuildButtons(IReadOnlyList<GameObject> unitPrefabs)
+    public void RebuildButtons(IReadOnlyList<UnitDefinition> unitDefinitions)
     {
         ClearButtons();
 
-        if (unitPrefabs == null) return;
+        if (unitDefinitions == null) return;
 
-        foreach(GameObject unitPrefab in unitPrefabs)
+        foreach(UnitDefinition unitDefinition in unitDefinitions)
         {
-            if (!unitPrefab) continue;
+            if (!unitDefinition) continue;
 
             UI_Button_UnitSelect button = Instantiate(buttonPrefab, buttonParent);
-            button.Initialize(unitPrefab);
+            button.Initialize(unitDefinition);
             createdButtons.Add(button);
         }
     }

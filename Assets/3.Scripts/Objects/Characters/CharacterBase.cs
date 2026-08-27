@@ -39,6 +39,11 @@ public class CharacterBase : MonoBehaviour
     [SerializeField] UnitStatus _status;
     public UnitStatus Status => _status;
 
+    public void SetStatus(UnitStatus newStatus)
+    {
+        _status = newStatus;
+    }
+
     [Header("UI Anchors")]
     [SerializeField] Transform hpBarAnchor;
     public Transform HPBarAnchor => hpBarAnchor;

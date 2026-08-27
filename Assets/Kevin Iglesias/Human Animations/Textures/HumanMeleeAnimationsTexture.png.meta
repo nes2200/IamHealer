@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 2c8e7f499d401414b8215275b03a4c66
+guid: 383925e5e45bc0e4a8cd8816f2aa537e
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -140,8 +140,8 @@ TextureImporter:
   assetBundleVariant: 
 AssetOrigin:
   serializedVersion: 1
-  productId: 165785
-  packageName: Human Melee Animations FREE
-  packageVersion: 2.0.2
+  productId: 151650
+  packageName: Human Melee Animations
+  packageVersion: 2.1
   assetPath: Assets/Kevin Iglesias/Human Animations/Textures/HumanMeleeAnimationsTexture.png
-  uploadId: 937352
+  uploadId: 937378

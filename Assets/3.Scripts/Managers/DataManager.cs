@@ -52,6 +52,8 @@ public class DataManager : ManagerBase
         yield return LoadAllFromAssetBundle<GameObject>("Global", ProgressOnLoad).WaitForTask();
         loadString = "Load Stage Datas";
         yield return LoadAllFromAssetBundle<TextAsset>("Global", ProgressOnLoad).WaitForTask();
+        loadString = "Load Unit Definitions";
+        yield return LoadAllFromAssetBundle<UnitDefinition>("Global", ProgressOnLoad).WaitForTask();
         loadString = "Load Pool Requests";
         yield return LoadAllFromAssetBundle<PoolRequest>("Global", ProgressOnLoad).WaitForTask();
         loadString = "Load Items";

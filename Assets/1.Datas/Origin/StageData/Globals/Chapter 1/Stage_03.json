@@ -1,13 +1,13 @@
 {
   "objects": [
     {
-      "name": "SM_Chr_Male_01_1H (2)",
-      "prefabName": "SM_Chr_Male_01_1H",
-      "parentName": "TeamB",
+      "name": "Acacia_Tree_l_03_LOD (2)",
+      "prefabName": "Acacia_Tree_l_03_LOD",
+      "parentName": "Probs",
       "position": {
-        "x": 3.79,
+        "x": -10.642,
         "y": 0.028,
-        "z": -2.05
+        "z": 10.677
       },
       "scale": {
         "x": 1.0,
@@ -16,9 +16,9 @@
       },
       "rotation": {
         "x": 0.0,
-        "y": 0.707,
+        "y": 0.874,
         "z": 0.0,
-        "w": -0.707
+        "w": 0.485
       }
     },
     {
@@ -43,55 +43,13 @@
       }
     },
     {
-      "name": "Acacia_Tree_l_03_LOD (1)",
-      "prefabName": "Acacia_Tree_l_03_LOD",
-      "parentName": "Probs",
-      "position": {
-        "x": -1.26,
-        "y": 0.028,
-        "z": 1.22
-      },
-      "scale": {
-        "x": 1.0,
-        "y": 1.0,
-        "z": 1.0
-      },
-      "rotation": {
-        "x": 0.0,
-        "y": 0.238,
-        "z": 0.0,
-        "w": 0.971
-      }
-    },
-    {
-      "name": "Terrain",
-      "prefabName": "Terrain",
-      "parentName": "Floor",
-      "position": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "scale": {
-        "x": 48.037,
-        "y": 0.055,
-        "z": 34.167
-      },
-      "rotation": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0,
-        "w": 1.0
-      }
-    },
-    {
-      "name": "SM_Chr_Male_01_1H (1)",
+      "name": "SM_Chr_Male_01_1H (2)",
       "prefabName": "SM_Chr_Male_01_1H",
       "parentName": "TeamB",
       "position": {
-        "x": 4.75,
+        "x": 3.79,
         "y": 0.028,
-        "z": -8.91
+        "z": -2.05
       },
       "scale": {
         "x": 1.0,
@@ -103,27 +61,6 @@
         "y": 0.707,
         "z": 0.0,
         "w": -0.707
-      }
-    },
-    {
-      "name": "Acacia_Tree_l_03_LOD (2)",
-      "prefabName": "Acacia_Tree_l_03_LOD",
-      "parentName": "Probs",
-      "position": {
-        "x": -10.642,
-        "y": 0.028,
-        "z": 10.677
-      },
-      "scale": {
-        "x": 1.0,
-        "y": 1.0,
-        "z": 1.0
-      },
-      "rotation": {
-        "x": 0.0,
-        "y": 0.874,
-        "z": 0.0,
-        "w": 0.485
       }
     },
     {
@@ -167,14 +104,77 @@
         "z": 0.0,
         "w": 0.707
       }
+    },
+    {
+      "name": "SM_Chr_Male_01_1H (1)",
+      "prefabName": "SM_Chr_Male_01_1H",
+      "parentName": "TeamB",
+      "position": {
+        "x": 4.75,
+        "y": 0.028,
+        "z": -8.91
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.707,
+        "z": 0.0,
+        "w": -0.707
+      }
+    },
+    {
+      "name": "Terrain",
+      "prefabName": "Terrain",
+      "parentName": "Floor",
+      "position": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 48.037,
+        "y": 0.055,
+        "z": 34.167
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 1.0
+      }
+    },
+    {
+      "name": "Acacia_Tree_l_03_LOD (1)",
+      "prefabName": "Acacia_Tree_l_03_LOD",
+      "parentName": "Probs",
+      "position": {
+        "x": -1.26,
+        "y": 0.028,
+        "z": 1.22
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.238,
+        "z": 0.0,
+        "w": 0.971
+      }
     }
   ],
   "selectableUnits": [
     {
-      "unitPrefabName": "SM_Chr_Male_01_1H"
+      "unitPrefabName": "M_Knight"
     },
     {
-      "unitPrefabName": "SM_Chr_Male_01_2H"
+      "unitPrefabName": "M_Swordsman"
     }
   ]
 }

@@ -7,8 +7,7 @@ public class PlacementManager : MonoBehaviour
     [Header("StageManager")]
     [SerializeField] StageManager stageManager;
 
-    GameObject unitPrefab;
-    int selectedUnitCost;
+    UnitDefinition selectedUnitDefinition;
 
     [Header("Each Team Parent")]
     [SerializeField] Transform teamA_Parent;
@@ -63,10 +62,10 @@ public class PlacementManager : MonoBehaviour
         if (stageManager.CurrentState != StageState.Ready) return;
 
         //프리팹에 유닛이 저장되있지 않으면 생성 안함
-        if(!unitPrefab) return;
+        if(!selectedUnitDefinition || !selectedUnitDefinition.IsValid) return;
 
         //생성할 유닛 비용이 추가될 시 리미트 최고점을 넘으면 생성 안함
-        if (!IsCostEnoughToSpawn(selectedUnitCost)) return;
+        if (!IsCostEnoughToSpawn(selectedUnitDefinition.Status.cost)) return;
 
         //생성 불가능한 위치라면 생성 안함
         if (!indicator.CanSpawn) return;
@@ -75,11 +74,17 @@ public class PlacementManager : MonoBehaviour
         if (worldPosition.x > 0) return;
 
         //바닥에 맞았으면 유닛 생성
-        GameObject newUnit = ObjectManager.CreateObjectWithoutRegistration(unitPrefab.name);
+        GameObject newUnit = ObjectManager.CreateObjectWithoutRegistration(selectedUnitDefinition.BasePrefab.name);
 
         //생성됬으면 등록하기
         if (newUnit)
         {
+            if (!TryConfigureUnit(newUnit, selectedUnitDefinition, out CharacterBase targetCharacter))
+            {
+                Destroy(newUnit);
+                return;
+            }
+
             Transform unitParent = teamA_Parent;
             //유닛의 부모 설정으로 팀 배정
             newUnit.transform.SetParent(unitParent, false);
@@ -96,7 +101,6 @@ public class PlacementManager : MonoBehaviour
             }
 
             //배치한 만큼 코스트 증가시키기
-            CharacterBase targetCharacter = newUnit.GetComponent<CharacterBase>();
             if (targetCharacter)
             {
                 stageManager.CharacterRegistry.Register(targetCharacter, TeamID.TeamA);
@@ -136,10 +140,35 @@ public class PlacementManager : MonoBehaviour
     }
 
     //유닛 선택 버튼 클릭시 해당 유닛 정보를 받아오는 기능
-    public void ChangeCurrentSelectedUnit(GameObject newUnit, int unitCost)
+    public void ChangeCurrentSelectedUnit(UnitDefinition newUnitDefinition)
     {
-        unitPrefab = newUnit;
-        selectedUnitCost = unitCost;
+        selectedUnitDefinition = newUnitDefinition;
+    }
+
+    bool TryConfigureUnit(GameObject unit, UnitDefinition definition, out CharacterBase character)
+    {
+        character = unit.GetComponent<CharacterBase>();
+        if (!character)
+        {
+            Debug.LogError($"[PlacementManager] '{unit.name}'에 CharacterBase가 없습니다.");
+            return false;
+        }
+
+        Animator animator = unit.GetComponentInChildren<Animator>(true);
+        if (!animator)
+        {
+            Debug.LogError($"[PlacementManager] '{unit.name}'에 Animator가 없습니다.");
+            return false;
+        }
+
+        MaleUnitAppearance appearance = unit.GetComponent<MaleUnitAppearance>();
+        if (!appearance) appearance = unit.AddComponent<MaleUnitAppearance>();
+
+        if (!appearance.ApplyJob(definition.Job)) return false;
+
+        character.SetStatus(definition.Status);
+        animator.runtimeAnimatorController = definition.AnimatorController;
+        return true;
     }
 
     public bool IsCostEnoughToSpawn(int unitCost)
