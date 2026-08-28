@@ -29,8 +29,9 @@ public class UnitPlaceIndicator : MonoBehaviour
     public bool IsRemoveMode => currentMode == UnitPlacementMode.Remove;
 
     Camera mainCam;
+    Material runtimeIndicatorMat;
 
-    readonly int tintColorPorpertyID = Shader.PropertyToID("_TintColor");
+    readonly int tintColorPorpertyID = Shader.PropertyToID("_Tint");
 
     float size;
     bool selected = false;
@@ -61,8 +62,12 @@ public class UnitPlaceIndicator : MonoBehaviour
         PlacementManager.OnUnitDespawn -= OnUnitDespawned;
         PlacementManager.OnUnitDespawn += OnUnitDespawned;
 
-
-        indicatorMat.SetColor(tintColorPorpertyID, Color.gray);
+        if(runtimeIndicatorMat == null)
+        {
+            runtimeIndicatorMat = new Material(indicatorMat);
+            decal.material = runtimeIndicatorMat;
+        }
+        runtimeIndicatorMat.SetColor(tintColorPorpertyID, Color.gray);
 
         mainCam = Camera.main;
     }
@@ -75,6 +80,14 @@ public class UnitPlaceIndicator : MonoBehaviour
         UI_StageScreen.OnMenuClose -= UpdateIndicatorStatusByMenuClose;
         PlacementManager.OnUnitSpawn -= OnUnitSpawned;
         PlacementManager.OnUnitDespawn -= OnUnitDespawned;
+    }
+
+    private void OnDestroy()
+    {
+        if (runtimeIndicatorMat != null)
+        {
+            Destroy(runtimeIndicatorMat);
+        }
     }
 
     void MoveToMouse(Vector2 screenPosition, Vector3 worldPosition)
@@ -255,16 +268,10 @@ public class UnitPlaceIndicator : MonoBehaviour
         UpdateIndicatorStatus(InputManager.CursorScreenPosition);
     }
 
-    void UpdateIndicatorColor(bool canSpawn)
+    void UpdateIndicatorColor(bool value)
     {
-        if (canSpawn)
-        {
-            indicatorMat.SetColor(tintColorPorpertyID, new Color(0f, 1f, 0f, 0.6f));
-        }
-        else
-        {
-            indicatorMat.SetColor(tintColorPorpertyID, new Color(1f, 0f, 0f, 0.6f));
-        }
+        Color color = value ? new Color(0f, 1f, 0f, 0.6f) : new Color(1f, 0f, 0f, 0.6f);
+        runtimeIndicatorMat.SetColor(tintColorPorpertyID, color);
     }
 
     void ChangeCurrentSelectedUnit(UnitDefinition selectedUnitDefinition)

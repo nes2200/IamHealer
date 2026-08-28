@@ -55,9 +55,10 @@ MonoBehaviour:
     m_Bits: 128
   placementManager: {fileID: 0}
   indicator: {fileID: 2933332116235917065}
-  indicatorMat: {fileID: 2100000, guid: d6d356ceb7531e848911940c5fc5a18d, type: 2}
+  indicatorMat: {fileID: 2100000, guid: 7d4e2abb6b6c0594e8e1cdaf55e92683, type: 2}
   decal: {fileID: 5863335077707174349}
   indicatorCollider: {fileID: 8907763973096195015}
+  currentMode: 0
 --- !u!1 &2933332116235917065
 GameObject:
   m_ObjectHideFlags: 0
@@ -103,7 +104,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.DecalProjector
-  m_Material: {fileID: 2100000, guid: d6d356ceb7531e848911940c5fc5a18d, type: 2}
+  m_Material: {fileID: 2100000, guid: 7d4e2abb6b6c0594e8e1cdaf55e92683, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 0.9
   m_StartAngleFade: 180
