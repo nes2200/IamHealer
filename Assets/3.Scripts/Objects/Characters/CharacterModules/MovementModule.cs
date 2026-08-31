@@ -10,7 +10,6 @@ public class MovementModule : CharacterModule, IRunnable
 
     [Header("필수 부속품들")]
     [SerializeField] NavMeshAgent navAgent;
-    [SerializeField] TargetingModule targetModule;
 
     //회전용
     Vector3? targetRotationDirection;
@@ -26,8 +25,6 @@ public class MovementModule : CharacterModule, IRunnable
         GameManager.OnPhysicsCharacter += MovementUpdate;
         SetNavmeshAgent();
 
-        targetModule.OnTargetScanned -= SetDestination;
-        targetModule.OnTargetScanned += SetDestination;
 
         newOwner.OnFaint -= StopAllMovementByFaint;
         newOwner.OnFaint += StopAllMovementByFaint;
@@ -38,7 +35,6 @@ public class MovementModule : CharacterModule, IRunnable
         base.OnUnregistration(oldOwner);
 
         GameManager.OnPhysicsCharacter -= MovementUpdate;
-        targetModule.OnTargetScanned -= SetDestination;
         oldOwner.OnFaint -= StopAllMovementByFaint;
     }
 
@@ -72,11 +68,14 @@ public class MovementModule : CharacterModule, IRunnable
     // destination은 TargetingModule이 담당하고, 이 명령은 정지 허용 거리만 설정한다.
     public void MoveToDestination(Vector3 destination, float tolerance)
     {
-        if (!navAgent) return;
+        if (!navAgent || !navAgent.isOnNavMesh) return;
 
         //새 이동 시작시 navMesh의 자동 회전과 충돌하지 않도록 해제하기
         targetRotationDirection = null;
+
+        navAgent.isStopped = false;
         navAgent.stoppingDistance = Mathf.Max(0f, tolerance);
+        navAgent.SetDestination(destination);
     }
 
     //회전 관련
@@ -101,7 +100,9 @@ public class MovementModule : CharacterModule, IRunnable
     public void StopMovement()
     {
         if (!navAgent || !navAgent.isOnNavMesh) return;
+        if (navAgent.isStopped) return;
 
+        navAgent.isStopped = true;
         navAgent.ResetPath();
     }
 

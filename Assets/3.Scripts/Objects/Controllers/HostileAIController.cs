@@ -4,14 +4,12 @@ public class HostileAIController : AIController
 {
     TargetingModule targetModule;
     AttackModule atkModule;
+    AttackRangeModule atkRangeModule;
+
+    CharacterBase targetCharacter;
     HitPointModule targetHPModule;
-    float targetRadius;
 
     TeamEliminateNotifier teamEliminateNotifier;
-
-    [Header("Attack Distance")]
-    [SerializeField] float attackDistance = 0.5f;
-    [SerializeField] float approachMargin = 0.05f;
     
     protected override void OnPossess(CharacterBase newCharacter)
     {
@@ -23,6 +21,7 @@ public class HostileAIController : AIController
 
         targetModule = Character.GetModule<TargetingModule>();
         atkModule = Character.GetModule<AttackModule>();
+        atkRangeModule = Character.GetModule<AttackRangeModule>();
         teamEliminateNotifier = GetComponentInParent<TeamEliminateNotifier>();
     }
     protected override void OnUnpossess(CharacterBase oldCharacter)
@@ -34,11 +33,11 @@ public class HostileAIController : AIController
     protected override void OnFocusTargetChanged(GameObject oldTarget, GameObject newTarget)
     {
         base.OnFocusTargetChanged(oldTarget, newTarget);
-        if (newTarget != null)
+        if (newTarget)
         {
             //매 프레임마다 타겟의 radius를 가져오면 일이 너무 많을 것 같아서, 타겟이 바뀔 때 이를 저장한다
-            targetRadius = newTarget.GetComponent<CharacterBase>().Status.colliderRadius;
-            targetHPModule = newTarget.GetComponent<HitPointModule>();
+            targetCharacter = newTarget.GetComponent<CharacterBase>();
+            targetHPModule = targetCharacter.GetModule<HitPointModule>();
         }
         else
         {
@@ -52,34 +51,45 @@ public class HostileAIController : AIController
         //나 죽었으면 생각을 중지
         if (!Character || !Character.IsAlive) return;
 
-        //target이 죽었는지 살았는지 체크
+        //공격 중에는 타겟 변경과 이동 금지
+        if (atkModule.IsAttacking)
+        {
+            CommandStop();
+            if (FocusTarget)
+            {
+                CommandMoveToDirection(FocusTarget.transform.position - transform.position);
+            }
+            return;
+        }
+
+        //바로 공격 가능한 적 공격
+        if (TryHandleInAttackRange()) return;
+
+        //공격 범위에 아무도 없을 때 스캔
+        //적이 죽었다면 일단 탐색
         if (!IsTargetAlive())
         {
-            //우선 비워주기
             SetFocusTarget(null);
-            //그리고 강제 스캔 돌리기
             targetModule.ForceScanReady();
         }
 
-        //스캔 주기마다 스캔 시도
-        if (targetModule.TryGetNewTarget(deltaTime, out GameObject newTarget))
+        if(targetModule.TryGetNewTarget(deltaTime, out GameObject newTarget))
         {
-            //스캔시도 됬으면 기존 목표와 같은지 체크, 다르면 그때 넣기
-            if(newTarget != FocusTarget)
+            //타겟이 다를때만 새 타겟으로 변경하는 기능 작동
+            if(FocusTarget != newTarget)
             {
                 SetFocusTarget(newTarget);
             }
         }
 
-        //목표가 없어? 그럼 여기서 끝. 가만히 있어
-        if (!FocusTarget) 
+        if(!FocusTarget)
         {
             CommandStop();
             return;
         }
 
-        //때리던지 움직이든지 해라
-        AttackOrMove();
+        CommandMoveToDestination(FocusTarget.transform.position, 0.05f);
+
     }
 
     protected bool IsTargetAlive()
@@ -89,45 +99,6 @@ public class HostileAIController : AIController
             return false;
         }
         return true;
-    }
-
-    protected void AttackOrMove()
-    {
-        //안전장치
-        if (!FocusTarget)
-        {
-            CommandStop();
-            return;
-        }
-
-
-        //공격 가능하냐?
-        //나와 타겟의 거리 차이. 그 중 캡슐 콜라이더의 radius를 빼면 타겟과 나의 실제 거리 차이가 나온다
-        //이때, 완전히 딱 붙는것을 방지하기 위해 아주 약갼의 여유공간을 두고 그 안에 들어오면 공격 가능하다
-
-        //사거리 내 적 들어오면 공격, 안되면 이동 시도
-
-        //상대와 나의 크기 값
-        float combineRadius = Character.Status.colliderRadius + targetRadius;
-        //상대와 나의 거리
-        float centerDistance = Vector3.Distance(transform.position, FocusTarget.transform.position);
-        //상대와 나의 거리에서 크기를 뺀 실제 거리값
-        float surfaceDistance = centerDistance - combineRadius;
-
-        //만약 여유공간 만큼 들어왔다면 공격, 아니면 이동
-        if (surfaceDistance <= attackDistance)
-        {
-            // 이동 경로를 끊어도 적을 향한 회전은 계속 갱신한다.
-            CommandStop();
-            CommandRotateToDirection(FocusTarget.transform.position - transform.position);
-            TryAttack();
-            return;
-        }
-
-        //NavMesh의 목적지는 대상의 중심이므로 반지름을 다시 더해서 정지거리를 만들어준다
-        float stoppingDistance = combineRadius + attackDistance - approachMargin;
-        CommandMoveToDestination(FocusTarget.transform.position, stoppingDistance);
-        
     }
 
     //타겟과 가까워 졌을때 호출
@@ -143,6 +114,36 @@ public class HostileAIController : AIController
                 damageAmount = Character.Status.damage
             });
         }
+    }
+
+    //공격 범위 내에 적이 있는지 보기
+    public bool TryHandleInAttackRange()
+    {
+        //현재 타겟이 범위 안이라면 그대로 유지
+        if(targetCharacter && atkRangeModule.Contains(targetCharacter))
+        {
+            StopAndTryAttack();
+            return true;
+        }
+
+        //현재 타겟은 밖이지만 다른 적이 바로 앞에 있음
+        if(atkRangeModule.TryGetClosestTarget(out CharacterBase inRangeTarget))
+        {
+            SetFocusTarget(inRangeTarget.gameObject);
+            StopAndTryAttack();
+            return true;
+        }
+
+        return false;
+    }
+
+    private void StopAndTryAttack()
+    {
+        CommandStop();
+
+        Vector3 direction = FocusTarget.transform.position - transform.position;
+        CommandRotateToDirection(direction);
+        TryAttack();
     }
 
     //죽었을 때, 내 모든 활동을 정지해야한다

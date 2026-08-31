@@ -22,8 +22,8 @@
       }
     },
     {
-      "name": "Unit_Test_02",
-      "prefabName": "Unit_Test_02",
+      "name": "Monster_Wolf",
+      "prefabName": "Monster_Wolf",
       "parentName": "TeamB",
       "position": {
         "x": 8.61,
