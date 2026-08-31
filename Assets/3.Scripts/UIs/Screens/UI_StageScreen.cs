@@ -124,7 +124,6 @@ public class UI_StageScreen : UI_ScreenBase
         SetSelectAreaVisible(false);
     }
 
-
     private void SetSelectAreaVisible(bool visible)
     {
         SelectArea.alpha = visible ? 1f : 0f;
