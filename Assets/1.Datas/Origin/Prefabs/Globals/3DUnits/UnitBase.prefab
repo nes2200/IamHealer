@@ -20,6 +20,7 @@ GameObject:
   - component: {fileID: -5608401926662398788}
   - component: {fileID: -8082197010707355841}
   - component: {fileID: 2997455962677522948}
+  - component: {fileID: 2085023195534024142}
   m_Layer: 7
   m_Name: UnitBase
   m_TagString: Untagged
@@ -96,6 +97,7 @@ MonoBehaviour:
   isRotationByMovement: 1
   mainCollider: {fileID: -5608401926662398788}
   mainRigid: {fileID: -8082197010707355841}
+  useDeathAnimation: 0
 --- !u!114 &3965736155650930506
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -135,7 +137,6 @@ MonoBehaviour:
   moveSpeed: 2
   rotateSpeed: 120
   navAgent: {fileID: 1920007813887236209}
-  targetModule: {fileID: -8216830479399972252}
 --- !u!114 &-8216830479399972252
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -165,7 +166,7 @@ NavMeshAgent:
   m_AngularSpeed: 120
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
+  m_AutoBraking: 0
   m_AutoRepath: 1
   m_Height: 2
   m_BaseOffset: 0
@@ -233,8 +234,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d87b210ba3818674681d9856fa241793, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HostileAIController
-  attackDistance: 0.5
-  approachMargin: 0.05
+--- !u!114 &2085023195534024142
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2226144352791122500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74abcb1481d16794dbf1ebe22589d6a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AttackSlotModule
+  slotCount: 4
+  margin: 0.05
 --- !u!1 &3035384091999026604
 GameObject:
   m_ObjectHideFlags: 0

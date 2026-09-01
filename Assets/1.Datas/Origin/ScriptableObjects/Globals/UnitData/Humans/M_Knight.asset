@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: M_Knight
   m_EditorClassIdentifier: Assembly-CSharp::UnitDefinition
   job: 1
-  basePrefab: {fileID: 2572708262289101028, guid: 9f226bcd93bdba442b7606ab80b95006, type: 3}
+  unitPrefab: {fileID: 201234668364554593, guid: 11a7924000240fd4cbcb1fb37955e63d, type: 3}
   status: {fileID: 11400000, guid: 04214c5a3938a4b439051dbe06900a46, type: 2}
   animatorController: {fileID: 9100000, guid: cf710b1b241c1b247a1d340b610aeff5, type: 2}

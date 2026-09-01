@@ -21,20 +21,16 @@ public class UnitDefinition : ScriptableObject
     [SerializeField] UnitJob job;
 
     [Header("Shared Base")]
-    [SerializeField] GameObject basePrefab;
+    [SerializeField] GameObject unitPrefab;
 
     [Header("Job Data")]
     [SerializeField] UnitStatus status;
     [SerializeField] RuntimeAnimatorController animatorController;
 
     public UnitJob Job => job;
-    public GameObject BasePrefab => basePrefab;
+    public GameObject UnitPrefab => unitPrefab;
     public UnitStatus Status => status;
     public RuntimeAnimatorController AnimatorController => animatorController;
 
-    public bool IsValid =>
-        job != UnitJob.None &&
-        basePrefab &&
-        status &&
-        animatorController;
+    public bool IsValid => job != UnitJob.None && unitPrefab && status && animatorController;
 }

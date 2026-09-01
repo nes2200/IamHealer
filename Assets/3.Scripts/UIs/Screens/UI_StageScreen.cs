@@ -54,7 +54,9 @@ public class UI_StageScreen : UI_ScreenBase
 
 
         startButton.SetActive(true);
-        
+
+        if (stageManager) ConnectStage(stageManager);
+
     }
     public override void Close()
     {
@@ -66,6 +68,7 @@ public class UI_StageScreen : UI_ScreenBase
         StageManager.OnBattleStart -= HidePreparationUI;
         StageManager.OnBattleEnd -= OpenBattleResult;
 
+        hpBarGroup.Disconnect();
         hpBarGroup.ClearAllHPBars();
         unitRemoveButton.Disconnect();
     }

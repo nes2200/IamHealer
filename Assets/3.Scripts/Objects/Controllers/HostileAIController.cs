@@ -1,3 +1,4 @@
+using Unity.Cinemachine;
 using UnityEngine;
 
 public class HostileAIController : AIController 
@@ -8,8 +9,12 @@ public class HostileAIController : AIController
 
     CharacterBase targetCharacter;
     HitPointModule targetHPModule;
+    AttackSlotModule targetSlotModule;
 
     TeamEliminateNotifier teamEliminateNotifier;
+
+    float selfRadius;
+    float targetRadius;
     
     protected override void OnPossess(CharacterBase newCharacter)
     {
@@ -23,27 +28,50 @@ public class HostileAIController : AIController
         atkModule = Character.GetModule<AttackModule>();
         atkRangeModule = Character.GetModule<AttackRangeModule>();
         teamEliminateNotifier = GetComponentInParent<TeamEliminateNotifier>();
+
+        selfRadius = newCharacter.Status.colliderRadius;
+
+       
     }
     protected override void OnUnpossess(CharacterBase oldCharacter)
     {
         GameManager.OnUpdateController -= Think;
         oldCharacter.OnFaint -= OnFaint;
+
+        if (targetSlotModule)
+        {
+            targetSlotModule.Release(oldCharacter);
+            targetSlotModule = null;
+        }
     }
 
     protected override void OnFocusTargetChanged(GameObject oldTarget, GameObject newTarget)
     {
         base.OnFocusTargetChanged(oldTarget, newTarget);
-        if (newTarget)
+
+        //기존 타겟 슬롯 반환
+        if(targetSlotModule && Character)
         {
-            //매 프레임마다 타겟의 radius를 가져오면 일이 너무 많을 것 같아서, 타겟이 바뀔 때 이를 저장한다
-            targetCharacter = newTarget.GetComponent<CharacterBase>();
-            targetHPModule = targetCharacter.GetModule<HitPointModule>();
+            targetSlotModule.Release(Character);
         }
-        else
-        {
-            //타겟이 null이니 hpmodule도 초기화
-            targetHPModule = null;
-        }
+
+        targetSlotModule = null;
+        targetCharacter = null;
+        targetHPModule = null;
+        targetRadius = 0f;
+
+        if (!newTarget) return;
+
+        targetCharacter = newTarget.GetComponent<CharacterBase>();
+
+        if (!targetCharacter) return;
+
+      
+        targetHPModule = targetCharacter.GetModule<HitPointModule>();
+        targetRadius = targetCharacter.Status.colliderRadius;
+        targetSlotModule = targetCharacter.GetModule<AttackSlotModule>();
+
+        targetSlotModule?.TryReserve(Character);
     }
 
     protected override void Think(float deltaTime)
@@ -57,7 +85,7 @@ public class HostileAIController : AIController
             CommandStop();
             if (FocusTarget)
             {
-                CommandMoveToDirection(FocusTarget.transform.position - transform.position);
+                CommandRotateToDirection(FocusTarget.transform.position - transform.position);
             }
             return;
         }
@@ -75,7 +103,6 @@ public class HostileAIController : AIController
 
         if(targetModule.TryGetNewTarget(deltaTime, out GameObject newTarget))
         {
-            //타겟이 다를때만 새 타겟으로 변경하는 기능 작동
             if(FocusTarget != newTarget)
             {
                 SetFocusTarget(newTarget);
@@ -88,8 +115,18 @@ public class HostileAIController : AIController
             return;
         }
 
-        CommandMoveToDestination(FocusTarget.transform.position, 0.05f);
+        //타겟이 다를때만 새 타겟으로 변경하는 기능 작동
+        if (targetSlotModule && targetSlotModule.TryGetOrReserveSlotPosition(Character, out Vector3 slotPosition))
+        {
+            CommandMoveToDestination(slotPosition, 0.02f);
+        }
+        else
+        {
+            // 모든 슬롯이 차 있으면 현재 자리에서 대기
+            CommandStop();
+        }
 
+        return;
     }
 
     protected bool IsTargetAlive()
@@ -151,5 +188,10 @@ public class HostileAIController : AIController
     {
         CommandStop();
         teamEliminateNotifier.TeamEliminateCheck();
+        if (targetSlotModule)
+        {
+            targetSlotModule.Release(Character);
+            targetSlotModule = null;
+        }
     }
 }

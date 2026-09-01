@@ -8,6 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -7886219411373045058, guid: 72de7f11dd0b67d4db1fcc339921200c, type: 3}
+      propertyPath: useDeathAnimation
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: -5608401926662398788, guid: 72de7f11dd0b67d4db1fcc339921200c, type: 3}
       propertyPath: m_Height
       value: 1.42
@@ -78,7 +82,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1920007813887236209, guid: 72de7f11dd0b67d4db1fcc339921200c, type: 3}
       propertyPath: m_Radius
-      value: 0.6
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 2226144352791122500, guid: 72de7f11dd0b67d4db1fcc339921200c, type: 3}
       propertyPath: m_Name
@@ -97,7 +101,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 3035384091999026604, guid: 72de7f11dd0b67d4db1fcc339921200c, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1123333105514737383}
+      addedObject: {fileID: 4842454196070131378}
   m_SourcePrefab: {fileID: 100100000, guid: 72de7f11dd0b67d4db1fcc339921200c, type: 3}
 --- !u!4 &5527394209303647509 stripped
 Transform:
@@ -109,8 +113,8 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3035384091999026604, guid: 72de7f11dd0b67d4db1fcc339921200c, type: 3}
   m_PrefabInstance: {fileID: 4880499043320390884}
   m_PrefabAsset: {fileID: 0}
---- !u!65 &1123333105514737383
-BoxCollider:
+--- !u!135 &4842454196070131378
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -128,8 +132,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.75, y: 0.33, z: 0.75}
-  m_Center: {x: 0, y: 0.85, z: 0.63}
+  m_Radius: 0.7
+  m_Center: {x: 0, y: 0.7, z: 0}
 --- !u!1001 &8936087245965833619
 PrefabInstance:
   m_ObjectHideFlags: 0

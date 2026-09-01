@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -45,6 +46,13 @@ public class MovementModule : CharacterModule, IRunnable
         navAgent.updateRotation = true;
         navAgent.speed = moveSpeed;
         navAgent.angularSpeed = rotateSpeed;
+
+        //우선순위 변경으로 양보하기 
+        int priorityOffset = (Owner.GetInstanceID() & int.MaxValue) % 11;
+
+
+        navAgent.avoidancePriority = 45 + priorityOffset;
+        navAgent.obstacleAvoidanceType = ObstacleAvoidanceType.GoodQualityObstacleAvoidance;
     }
 
     // 실제 목적지는 TargetingModule이 스캔한 위치로 계속 갱신한다.
@@ -61,7 +69,22 @@ public class MovementModule : CharacterModule, IRunnable
 
         UpdateRotation(deltaTime);
 
-        Vector3 positionDelta = navAgent.velocity * deltaTime;
+        if(!navAgent.isStopped && !navAgent.pathPending && navAgent.hasPath)
+        {
+            if(navAgent.remainingDistance <= navAgent.stoppingDistance)
+            {
+                StopMovement();
+            }
+            else if (navAgent.desiredVelocity.sqrMagnitude > 0.001f)
+            {
+                //navMesh가 계산한 회피 방향은 사용하되 속도는 고정
+                Vector3 direction = navAgent.desiredVelocity.normalized;
+                navAgent.velocity = direction * moveSpeed;
+            }
+        }
+        
+
+            Vector3 positionDelta = navAgent.velocity * deltaTime;
         Owner.MovementNotify(positionDelta);
     }
 
@@ -72,6 +95,7 @@ public class MovementModule : CharacterModule, IRunnable
 
         //새 이동 시작시 navMesh의 자동 회전과 충돌하지 않도록 해제하기
         targetRotationDirection = null;
+        navAgent.updateRotation = true;
 
         navAgent.isStopped = false;
         navAgent.stoppingDistance = Mathf.Max(0f, tolerance);
@@ -82,7 +106,7 @@ public class MovementModule : CharacterModule, IRunnable
     public void Rotate(Vector3 direction)
     {
         direction.y = 0f;
-
+        if (navAgent) navAgent.updateRotation = false;
         targetRotationDirection = direction.sqrMagnitude > Mathf.Epsilon ? direction.normalized : null;
     }
     private void UpdateRotation(float deltaTime)

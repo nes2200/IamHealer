@@ -92,7 +92,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a7d227340a2f934fa066dbde07f0eed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_UnitSelectButton
-  unitPrefab: {fileID: 6554844596053527657, guid: 7ee29d08994eefc409bf44c4732939cc, type: 3}
+  unitDefinition: {fileID: 11400000, guid: c477f621839342c7933ce4c5d9fe129c, type: 2}
   unitNameText: {fileID: 52238447037703895}
   unitCostText: {fileID: 8061420427929433172}
   unitImage: {fileID: 6318533664866450548}

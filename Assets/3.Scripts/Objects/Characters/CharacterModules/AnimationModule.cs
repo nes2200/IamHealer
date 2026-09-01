@@ -7,6 +7,7 @@ public class AnimationModule : CharacterModule
     [SerializeField] bool isRotationByMovement;
     [SerializeField] CapsuleCollider mainCollider;
     [SerializeField] Rigidbody mainRigid;
+    [SerializeField] bool useDeathAnimation;
 
     Rigidbody[] ragdollRigidbodies;
     public CapsuleCollider MainCollider => mainCollider;
@@ -67,13 +68,24 @@ public class AnimationModule : CharacterModule
     {
         if (!anim) return;
 
-        anim.enabled = false;
         mainCollider.enabled = false;
+        mainRigid.isKinematic = true;
+
+        //죽는 애니메이션을 쓸 친구들
+        if (useDeathAnimation)
+        {
+            anim.enabled = true;
+            anim.SetBool("IsAttacking", false);
+            anim.SetTrigger("Die");
+            return;
+        }
+
+        //죽는 애니메이션 없이 래그돌 쓸 친구들
+        anim.enabled = false;
         foreach (Rigidbody rigid in ragdollRigidbodies) 
         { 
             rigid.isKinematic = false; 
         }
-        mainRigid.isKinematic = true;
     }
 
     public void AnimationByDamaged(in DamageStruct info)

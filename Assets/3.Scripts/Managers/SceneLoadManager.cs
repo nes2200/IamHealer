@@ -1,9 +1,14 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class SceneLoadManager : ManagerBase
 {
+    private string currentStageSceneName;
+    private TextAsset currentStageData;
+    private bool isLoading;
+
     protected override IEnumerator Onconnected(GameManager newManager)
     {
         yield return null;
@@ -16,7 +21,35 @@ public class SceneLoadManager : ManagerBase
 
     public void LoadSceneAndSetup(string sceneName, TextAsset stageData)
     {
+        if (isLoading) return;
+
+        if (string.IsNullOrEmpty(sceneName) || !stageData)
+        {
+            Debug.LogError("[SceneLoadManager] 스테이지 정보가 올바르지 않습니다.");
+            return;
+        }
+
+        currentStageSceneName = sceneName;
+        currentStageData = stageData;
+
+        isLoading = true;
         StartCoroutine(CoReloadSceneAndSetup(sceneName, stageData));
+    }
+
+    public void RestartCurrentStage()
+    {
+        if (isLoading) return;
+
+        if (string.IsNullOrWhiteSpace(currentStageSceneName) || !currentStageData)
+        {
+            Debug.LogError("[SceneLoadManager] 다시 시작할 스테이지 정보가 없습니다.");
+            return;
+        }
+
+        UIManager.ClaimCloseUI(UIType.Stage);
+
+        isLoading = true;
+        StartCoroutine(CoReloadSceneAndSetup(currentStageSceneName, currentStageData));
     }
 
     private IEnumerator CoReloadSceneAndSetup(string sceneName, TextAsset stageData)
@@ -51,7 +84,9 @@ public class SceneLoadManager : ManagerBase
         //로드한 씬에서 스테이지 업데이트하기
         GameManager.StageLoad.LoadStage(stageData, newScene);
 
+        isLoading = false;
         yield return null;
     }
+
 
 }

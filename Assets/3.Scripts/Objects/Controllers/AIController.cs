@@ -15,11 +15,15 @@ public abstract class AIController : ControllerBase
 
     public GameObject SetFocusTarget(GameObject newTarget)
     {
-        if (IsFocussable(newTarget))
+        if (!IsFocussable(newTarget))
         {
-            _focusTarget = newTarget;
-            OnFocusTargetChanged(FocusTarget, newTarget);
+            return _focusTarget;
         }
+
+        GameObject oldTarget = _focusTarget;
+        _focusTarget = newTarget;
+        OnFocusTargetChanged(oldTarget, _focusTarget);
+        
         return _focusTarget;
     }
     protected virtual bool IsFocussable(GameObject target) => target != FocusTarget;
