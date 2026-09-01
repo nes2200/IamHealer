@@ -75,12 +75,11 @@ public class MovementModule : CharacterModule, IRunnable
             {
                 StopMovement();
             }
-            else if (navAgent.desiredVelocity.sqrMagnitude > 0.001f)
-            {
-                //navMesh가 계산한 회피 방향은 사용하되 속도는 고정
-                Vector3 direction = navAgent.desiredVelocity.normalized;
-                navAgent.velocity = direction * moveSpeed;
-            }
+            //else if (navAgent.desiredVelocity.sqrMagnitude > 0.001f)
+            //{
+            //    Vector3 direction = navAgent.desiredVelocity.normalized;
+            //    navAgent.velocity = direction * moveSpeed;
+            //}
         }
         
 
