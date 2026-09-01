@@ -126,17 +126,17 @@ public class PlacementManager : MonoBehaviour
 
         if(!mouseOverObj) return;
 
-        if (mouseOverObj.layer != LayerMask.NameToLayer("Character")) return;
+        CharacterBase targetCharacter = mouseOverObj.GetComponentInParent<CharacterBase>();
 
-        CharacterBase targetCharacter = mouseOverObj.GetComponent<CharacterBase>();
-        if (targetCharacter)
-        {
-            int unitCost = targetCharacter.Status.cost;
-            stageManager.CostDecreaseByUnitDespawn(unitCost);
-            OnUnitDespawn?.Invoke(targetCharacter);
-            stageManager.CharacterRegistry.Unregister(targetCharacter);
-            ObjectManager.DestroyObject(mouseOverObj);
-        }
+        if (!targetCharacter) return;
+        if (targetCharacter.Team != TeamID.TeamA) return;
+      
+        int unitCost = targetCharacter.Status.cost;
+        stageManager.CostDecreaseByUnitDespawn(unitCost);
+        OnUnitDespawn?.Invoke(targetCharacter);
+        stageManager.CharacterRegistry.Unregister(targetCharacter);
+        ObjectManager.DestroyObject(targetCharacter.gameObject); 
+        
     }
 
     //유닛 선택 버튼 클릭시 해당 유닛 정보를 받아오는 기능
@@ -163,6 +163,7 @@ public class PlacementManager : MonoBehaviour
 
         MaleUnitAppearance appearance = unit.GetComponent<MaleUnitAppearance>();
         if (!appearance) appearance = unit.AddComponent<MaleUnitAppearance>();
+        if (!appearance.ApplyAppearance(definition.Job)) return false;
 
         character.SetStatus(definition.Status);
         animator.runtimeAnimatorController = definition.AnimatorController;

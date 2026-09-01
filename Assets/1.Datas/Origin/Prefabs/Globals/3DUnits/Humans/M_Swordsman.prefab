@@ -174,7 +174,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2572708262289101028, guid: 9f226bcd93bdba442b7606ab80b95006, type: 3}
       propertyPath: m_Name
-      value: M_Swordman
+      value: M_Swordsman
       objectReference: {fileID: 0}
     - target: {fileID: 2630178974793343222, guid: 9f226bcd93bdba442b7606ab80b95006, type: 3}
       propertyPath: m_IsActive
@@ -287,6 +287,10 @@ PrefabInstance:
     - target: {fileID: 3629612457775444817, guid: 9f226bcd93bdba442b7606ab80b95006, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3669009385859782069, guid: 9f226bcd93bdba442b7606ab80b95006, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3676249350123702890, guid: 9f226bcd93bdba442b7606ab80b95006, type: 3}
       propertyPath: m_Layer

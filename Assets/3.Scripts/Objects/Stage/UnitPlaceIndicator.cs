@@ -141,13 +141,13 @@ public class UnitPlaceIndicator : MonoBehaviour
     {
         GameObject target = InputManager.CursorHoverObject;
 
-        if(!target || target.layer != LayerMask.NameToLayer("Character"))
+        if(!target)
         {
             SetIndicatorActive(false);
             return;
         }
-        CharacterBase character = target.GetComponent<CharacterBase>();
-        if (!character || character.Team == TeamID.TeamB)
+        CharacterBase character = target.GetComponentInParent<CharacterBase>();
+        if (!character || character.Team != TeamID.TeamA)
         {
             SetIndicatorActive(false);
             return;
