@@ -99,11 +99,8 @@ public class HostileAIController : AIController
         {
             SetFocusTarget(null);
             targetModule.ForceScanReady();
-        }
 
-        if(targetModule.TryGetNewTarget(deltaTime, out GameObject newTarget))
-        {
-            if(FocusTarget != newTarget)
+            if (targetModule.TryGetNewTarget(deltaTime, out GameObject newTarget))
             {
                 SetFocusTarget(newTarget);
             }
@@ -115,14 +112,20 @@ public class HostileAIController : AIController
             return;
         }
 
-        //타겟이 다를때만 새 타겟으로 변경하는 기능 작동
         if (targetSlotModule && targetSlotModule.TryGetOrReserveSlotPosition(Character, out Vector3 slotPosition))
         {
             CommandMoveToDestination(slotPosition, 0.02f);
+            
+            //이상한 방향 바라보는거 강제 제거
+            Vector3 targetDirection = FocusTarget.transform.position - transform.position;
+            CommandRotateToDirection(targetDirection);
         }
         else
         {
-            // 모든 슬롯이 차 있으면 현재 자리에서 대기
+            //슬롯 꽉차서 예약 못했으면 다른놈 찾기
+            Debug.Log($"{name}: 공격 슬롯 없음 - {FocusTarget.name}");
+            SetFocusTarget(null);
+            targetModule.ForceScanReady();
             CommandStop();
         }
 
@@ -163,13 +166,13 @@ public class HostileAIController : AIController
             return true;
         }
 
-        //현재 타겟은 밖이지만 다른 적이 바로 앞에 있음
-        if(atkRangeModule.TryGetClosestTarget(out CharacterBase inRangeTarget))
+        if (atkRangeModule.TryGetClosestTarget(out CharacterBase inRangeTarget))
         {
             SetFocusTarget(inRangeTarget.gameObject);
             StopAndTryAttack();
             return true;
         }
+
 
         return false;
     }

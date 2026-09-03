@@ -41,6 +41,18 @@ public class AttackSlotModule : CharacterModule
         return true;
     }
 
+    //현재 타깃에 내 슬롯이 있는지
+    public bool HasReservation(CharacterBase attacker)
+    {
+        return attacker && reservations.ContainsKey(attacker);
+    }
+    //기존 예약이 있거나 빈 슬롯이 있는지
+    public bool CanReserve(CharacterBase attacker)
+    {
+        if (!attacker) return false;
+
+        return reservations.ContainsKey(attacker) || reservations.Count < slotCount;
+    }
     public bool TryReserve(CharacterBase attacker)
     {
         if (!Owner || !attacker) return false;

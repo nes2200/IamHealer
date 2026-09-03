@@ -82,11 +82,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1920007813887236209, guid: 72de7f11dd0b67d4db1fcc339921200c, type: 3}
       propertyPath: m_Radius
-      value: 0.5
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2085023195534024142, guid: 72de7f11dd0b67d4db1fcc339921200c, type: 3}
+      propertyPath: slotCount
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 2226144352791122500, guid: 72de7f11dd0b67d4db1fcc339921200c, type: 3}
       propertyPath: m_Name
       value: Monster_WolfPup
+      objectReference: {fileID: 0}
+    - target: {fileID: 6738698059090476509, guid: 72de7f11dd0b67d4db1fcc339921200c, type: 3}
+      propertyPath: m_Height
+      value: 1.42
+      objectReference: {fileID: 0}
+    - target: {fileID: 6738698059090476509, guid: 72de7f11dd0b67d4db1fcc339921200c, type: 3}
+      propertyPath: m_Radius
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6738698059090476509, guid: 72de7f11dd0b67d4db1fcc339921200c, type: 3}
+      propertyPath: m_Center.y
+      value: 0.52
       objectReference: {fileID: 0}
     - target: {fileID: 8829088323077910805, guid: 72de7f11dd0b67d4db1fcc339921200c, type: 3}
       propertyPath: _status

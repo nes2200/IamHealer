@@ -111,6 +111,13 @@ public class TargetingModule : CharacterModule
                 continue;
             }
 
+            //¥ÎªÛ ΩΩ∑‘¿Ã ≤À √°¿∏∏È
+            AttackSlotModule targetSlotModule = target.GetModule<AttackSlotModule>();
+            if(!targetSlotModule || !targetSlotModule.CanReserve(Owner))
+            {
+                continue;
+            }
+
             float distance = (target.transform.position - currentPosition).sqrMagnitude;
 
             if (distance < closestDistance)

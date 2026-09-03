@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class CameraMover : MonoBehaviour
@@ -28,10 +27,10 @@ public class CameraMover : MonoBehaviour
 
     public void SetCameraMover()
     {
+        mainCamera = GameManager.Camera.MainCamera;
+
         GameManager.OnUpdateCamera -= CameraTransformUpdate;
         GameManager.OnUpdateCamera += CameraTransformUpdate;
-
-        mainCamera = GameManager.Camera.MainCamera;
 
         //처음에는 0f, 0f로 초기화 되어있기에 카메라가 확 튀어버리고 이를 방지하기 위해 초기값을 추가해준다
         Vector3 currentRotation = transform.localRotation.eulerAngles;
@@ -45,9 +44,22 @@ public class CameraMover : MonoBehaviour
 
     void CameraTransformUpdate(float deltaTime)
     {
+        Vector3 previousPosition = transform.position;
+        Quaternion previousRotation = transform.localRotation;
+        float previousFov = mainCamera.fieldOfView;
+
         MovementUpdate(deltaTime);
         RotateUpdate(deltaTime);
         ZoomUpdate(deltaTime);
+
+        bool positionChanged = transform.position != previousPosition;
+        bool rotationChanged = transform.localRotation != previousRotation;
+        bool zoomChanged = !Mathf.Approximately(mainCamera.fieldOfView, previousFov);
+
+        if (positionChanged || rotationChanged || zoomChanged)
+        {
+            GameManager.Camera.CameraChangedNotify();
+        }
     }
     private void MovementUpdate(float deltaTime)
     {
@@ -99,6 +111,9 @@ public class CameraMover : MonoBehaviour
     }
     public void ResetZoom()
     {
+        if (Mathf.Approximately(mainCamera.fieldOfView, mainFov))  return;
+        
         mainCamera.fieldOfView = mainFov;
+        GameManager.Camera.CameraChangedNotify();
     }
 }

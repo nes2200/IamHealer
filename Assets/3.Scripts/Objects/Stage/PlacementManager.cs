@@ -115,28 +115,16 @@ public class PlacementManager : MonoBehaviour
     private void TryUnitDespawn(bool value, Vector2 screenPosition, Vector3 worldPosition)
     {
         if (!GameManager.Instance.IsPlaying) return;
-
-        if (!indicator.isActiveAndEnabled) return;
-
         if (value) return;
-
-        if (worldPosition.x > 0) return;
-
-        GameObject mouseOverObj = InputManager.CursorHoverObject;
-
-        if(!mouseOverObj) return;
-
-        CharacterBase targetCharacter = mouseOverObj.GetComponentInParent<CharacterBase>();
-
-        if (!targetCharacter) return;
-        if (targetCharacter.Team != TeamID.TeamA) return;
+        if (!indicator.TryGetLockedRemoveTarget(out CharacterBase targetCharacter)) return;
+        if (targetCharacter.transform.position.x > 0f) return;
       
         int unitCost = targetCharacter.Status.cost;
+
         stageManager.CostDecreaseByUnitDespawn(unitCost);
         OnUnitDespawn?.Invoke(targetCharacter);
         stageManager.CharacterRegistry.Unregister(targetCharacter);
         ObjectManager.DestroyObject(targetCharacter.gameObject); 
-        
     }
 
     //유닛 선택 버튼 클릭시 해당 유닛 정보를 받아오는 기능

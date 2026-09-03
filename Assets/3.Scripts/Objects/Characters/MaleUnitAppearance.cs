@@ -38,7 +38,14 @@ public class MaleUnitAppearance : MonoBehaviour
             Debug.LogError( "[MaleUnitAppearance] M_Knight를 찾지 못했습니다.", this);
             return false;
         }
+
+        //if (!CreateRandomObjectsMaterial(knightRoot))
+        //{
+        //    return false;
+        //}
+
         RandomizeDecorations(knightRoot, KnightDecorationNames);
+
 
         Transform greatHelm = FindChildByName(knightRoot, "M_Knight_GreatHelm");
 
@@ -61,6 +68,10 @@ public class MaleUnitAppearance : MonoBehaviour
             Debug.LogError("[MaleUnitAppearance] M_Swordsman을 찾지 못했습니다.", this);
             return false;
         }
+        //if (!CreateRandomObjectsMaterial(swordsmantRoot))
+        //{
+        //    return false;
+        //}
 
         RandomizeDecorations(swordsmantRoot, SwordsmanDecorationNames);
 

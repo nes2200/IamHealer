@@ -53,6 +53,9 @@ MonoBehaviour:
   unitLayer:
     serializedVersion: 2
     m_Bits: 128
+  removeTargetLayer:
+    serializedVersion: 2
+    m_Bits: 2048
   placementManager: {fileID: 0}
   indicator: {fileID: 2933332116235917065}
   indicatorMat: {fileID: 2100000, guid: 7d4e2abb6b6c0594e8e1cdaf55e92683, type: 2}

@@ -11,6 +11,10 @@ public class CameraManager : ManagerBase
     CameraController _controller;
     public CameraController Controller => _controller;
 
+    public static event System.Action OnCameraViewChanged;
+    public void CameraChangedNotify() { OnCameraViewChanged?.Invoke();}
+
+
     //카메라 원래 위치 저장용 구조체
     struct MainCameraTransform
     {

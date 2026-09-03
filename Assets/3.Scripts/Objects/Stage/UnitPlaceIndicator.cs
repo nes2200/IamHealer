@@ -15,6 +15,7 @@ public class UnitPlaceIndicator : MonoBehaviour
     [SerializeField] float heightOffset = 5f;
     [SerializeField] LayerMask floorLayer;
     [SerializeField] LayerMask unitLayer;
+    [SerializeField] LayerMask removeTargetLayer;
     [SerializeField] PlacementManager placementManager;
 
     [Header("Indicator")]
@@ -27,6 +28,8 @@ public class UnitPlaceIndicator : MonoBehaviour
     //현재 유닛 설치모드인가 제거모드인가
     public UnitPlacementMode CurrentMode => currentMode;
     public bool IsRemoveMode => currentMode == UnitPlacementMode.Remove;
+
+    CharacterBase lockedRemovedTarget;
 
     Camera mainCam;
     Material runtimeIndicatorMat;
@@ -46,6 +49,9 @@ public class UnitPlaceIndicator : MonoBehaviour
 
         InputManager.OnMouseMove -= MoveToMouse;
         InputManager.OnMouseMove += MoveToMouse;
+
+        CameraManager.OnCameraViewChanged -= RefreshIndicatorStatus;
+        CameraManager.OnCameraViewChanged += RefreshIndicatorStatus;
 
         StageManager.OnBattleStart -= DisableIndicator;
         StageManager.OnBattleStart += DisableIndicator;
@@ -75,6 +81,7 @@ public class UnitPlaceIndicator : MonoBehaviour
     {
         InputManager.OnUnitSelect -= ChangeCurrentSelectedUnit;
         InputManager.OnMouseMove -= MoveToMouse;
+        CameraManager.OnCameraViewChanged -= RefreshIndicatorStatus;
         StageManager.OnBattleStart -= DisableIndicator;
         UI_StageScreen.OnMenuOpen -= UpdateIndicatorStatusByMenuOpen;
         UI_StageScreen.OnMenuClose -= UpdateIndicatorStatusByMenuClose;
@@ -101,6 +108,7 @@ public class UnitPlaceIndicator : MonoBehaviour
         //UI위에 있으면 그냥 사라질거임
         if(GameManager.Input.IsMouseOverUI)
         {
+            lockedRemovedTarget = null;
             SetIndicatorActive(false);
             _canSpawn = false;
             return;
@@ -139,19 +147,23 @@ public class UnitPlaceIndicator : MonoBehaviour
     }
     void UpdateRemoveIndicator(Vector2 screenPosition)
     {
-        GameObject target = InputManager.CursorHoverObject;
+        Ray ray = mainCam.ScreenPointToRay(screenPosition);
 
-        if(!target)
+        bool isHit = Physics.Raycast(ray, out RaycastHit hit, 1000f, removeTargetLayer, QueryTriggerInteraction.Collide);
+
+        if (!isHit)
         {
-            SetIndicatorActive(false);
+            ClearRemoveTarget();
             return;
         }
-        CharacterBase character = target.GetComponentInParent<CharacterBase>();
+
+        CharacterBase character = hit.collider.GetComponentInParent<CharacterBase>();
         if (!character || character.Team != TeamID.TeamA)
         {
-            SetIndicatorActive(false);
+            ClearRemoveTarget();
             return;
         }
+        lockedRemovedTarget = character;
 
         SetIndicatorActive(true);
         transform.position = character.transform.position + Vector3.up * heightOffset;
@@ -209,6 +221,18 @@ public class UnitPlaceIndicator : MonoBehaviour
         return hitColliders.Length == 0;
     }
 
+    public bool TryGetLockedRemoveTarget(out CharacterBase target)
+    {
+        target = lockedRemovedTarget;
+
+        return currentMode == UnitPlacementMode.Remove && indicator.activeSelf && target != null && target.Team == TeamID.TeamA;
+    }
+    void ClearRemoveTarget()
+    {
+        lockedRemovedTarget = null;
+        SetIndicatorActive(false);
+    }
+
     //설치 제거 토글
     public void ToggleMode()
     {
@@ -216,6 +240,7 @@ public class UnitPlaceIndicator : MonoBehaviour
     }
     public void SetMode(UnitPlacementMode newMode)
     {
+        lockedRemovedTarget = null;
         currentMode = newMode;
 
         _canSpawn = false;
@@ -233,8 +258,12 @@ public class UnitPlaceIndicator : MonoBehaviour
         _canSpawn = false;
         UpdateIndicatorColor(false);
     }
-    public void OnUnitDespawned(CharacterBase _)
+    public void OnUnitDespawned(CharacterBase despawnedCharacter)
     {
+        if(lockedRemovedTarget == despawnedCharacter)
+        {
+            ClearRemoveTarget();
+        }
         StartCoroutine(CoRefreshAfterDespawn());
     }
     IEnumerator CoRefreshAfterDespawn()
