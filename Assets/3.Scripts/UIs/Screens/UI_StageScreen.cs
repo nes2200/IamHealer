@@ -114,11 +114,11 @@ public class UI_StageScreen : UI_ScreenBase
 
         hpBarGroup.Connect(stageManager.CharacterRegistry);
         SetCostLimitText(stageManager.GetCostLimits());
+        starController.RefreshState(stageManager.GetCurrentCost());
         unitRemoveButton.Connect(newStageManager.Indicator);
 
         startButton.SetActive(true);
         SetSelectAreaVisible(true);
-
     }
 
     public void HidePreparationUI()

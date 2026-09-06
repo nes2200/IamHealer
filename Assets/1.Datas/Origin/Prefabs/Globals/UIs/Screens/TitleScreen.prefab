@@ -355,7 +355,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Primitive Man
+  m_text: 'Project
 
     Battle Simulator'
   m_isRightToLeft: 0

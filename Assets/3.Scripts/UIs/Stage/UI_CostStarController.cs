@@ -32,6 +32,14 @@ public class UI_CostStarController : MonoBehaviour
         }
     }
 
+    public void RefreshState(int currentCost)
+    {
+        CurrentCostTextChange(currentCost);
+
+        foreach (var star in coststars)
+            star.RefreshState(currentCost);
+    }
+
     public bool[] GetStageResult()
     {
         bool[] result = new bool[coststars.Length];

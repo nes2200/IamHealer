@@ -87,6 +87,8 @@ public class StageManager : MonoBehaviour
         return costTracker.GetCostLimits();
     }
 
+    public int GetCurrentCost() => costTracker.GetCurrentCost();
+
     public bool IsCostEnoughToSpawn(int unitCost)
     {
         return costTracker.IsCostEnoughToSpawn(unitCost);

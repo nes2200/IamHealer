@@ -200,7 +200,6 @@ public class SceneScannerWindow : EditorWindow
         }
 
         //내가 사용할 유닛 데이터 저장소
-
         StageDataAuthoring authoring = FindStageDataAuthoring();
         if (!authoring)
         {
